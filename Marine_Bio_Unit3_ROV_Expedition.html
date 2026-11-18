@@ -1,0 +1,4035 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>R/V Pelagia: Marine Invertebrate ROV Expedition — Grade 9 Marine Biology Unit 3</title>
+  <meta name="description" content="Interactive Grade 9 Marine Biology Unit 3 video game and virtual laboratory covering marine invertebrate phyla, dichotomous keys, adaptations, ecosystem engineers, and CER assignment submission." />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      background-color: hsl(206, 64%, 7%);
+      color: hsl(195, 38%, 95%);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body.pelagia-app {
+      --bg-abyss: hsl(206, 64%, 7%);
+      --bg-deep: hsl(204, 54%, 10%);
+      --bg-panel: hsl(203, 47%, 13%);
+      --bg-elevated: hsl(201, 41%, 17%);
+      --bg-hover: hsl(200, 38%, 21%);
+      --border-hairline: hsla(193, 60%, 76%, 0.14);
+      --border-strong: hsla(190, 72%, 68%, 0.30);
+      --text-main: hsl(195, 38%, 95%);
+      --text-secondary: hsl(198, 24%, 76%);
+      --text-muted: hsl(201, 18%, 57%);
+      --cyan: hsl(187, 84%, 47%);
+      --cyan-soft: hsla(187, 84%, 47%, 0.15);
+      --amber: hsl(39, 93%, 55%);
+      --amber-soft: hsla(39, 93%, 55%, 0.16);
+      --emerald: hsl(157, 68%, 45%);
+      --emerald-soft: hsla(157, 68%, 45%, 0.16);
+      --coral: hsl(12, 80%, 60%);
+      --coral-soft: hsla(12, 80%, 60%, 0.16);
+      --mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', Menlo, Consolas, monospace;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Top Telemetry Header */
+    .top-header {
+      background: linear-gradient(180deg, hsl(205, 58%, 11%) 0%, hsl(204, 52%, 9%) 100%);
+      border-bottom: 1px solid var(--border-hairline);
+      padding: 10px 18px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      position: sticky;
+      top: 0;
+      z-index: 40;
+    }
+
+    .brand-cluster {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .vessel-emblem {
+      width: 38px;
+      height: 38px;
+      border-radius: 9px;
+      background: hsla(187, 84%, 47%, 0.12);
+      border: 1px solid hsla(187, 84%, 47%, 0.35);
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+
+    .brand-titles h1 {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--text-main);
+    }
+
+    .brand-subtitle {
+      font-size: 12px;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .pilot-tag {
+      font-family: var(--mono);
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 5px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-hairline);
+      color: var(--amber);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .score-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      background: var(--bg-panel);
+      border: 1px solid var(--border-strong);
+      font-family: var(--mono);
+      font-size: 12px;
+    }
+
+    .score-pill strong {
+      color: var(--amber);
+      font-size: 14px;
+    }
+
+    /* Buttons */
+    button {
+      font-family: inherit;
+      font-size: 13px;
+      cursor: pointer;
+      transition: background-color 0.16s ease, border-color 0.16s ease, transform 0.1s ease;
+    }
+
+    button:active:not(:disabled) {
+      transform: translateY(1px);
+    }
+
+    button:disabled {
+      opacity: 0.48;
+      cursor: not-allowed;
+    }
+
+    .btn-ghost {
+      background: var(--bg-panel);
+      color: var(--text-secondary);
+      border: 1px solid var(--border-hairline);
+      padding: 7px 12px;
+      border-radius: 7px;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-ghost:hover:not(:disabled) {
+      background: var(--bg-elevated);
+      color: var(--text-main);
+      border-color: var(--border-strong);
+    }
+
+    .btn-primary {
+      background: var(--amber);
+      color: hsl(206, 65%, 8%);
+      border: 1px solid hsla(42, 100%, 75%, 0.4);
+      padding: 8px 15px;
+      border-radius: 7px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: hsl(40, 96%, 61%);
+    }
+
+    .btn-cyan {
+      background: var(--cyan);
+      color: hsl(206, 65%, 7%);
+      border: 1px solid hsla(187, 90%, 75%, 0.4);
+      padding: 8px 14px;
+      border-radius: 7px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-cyan:hover:not(:disabled) {
+      background: hsl(187, 88%, 54%);
+    }
+
+    .btn-emerald {
+      background: var(--emerald);
+      color: hsl(206, 65%, 7%);
+      border: 1px solid hsla(157, 80%, 72%, 0.4);
+      padding: 8px 14px;
+      border-radius: 7px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-emerald:hover:not(:disabled) {
+      background: hsl(157, 72%, 51%);
+    }
+
+    /* Mission Phase Navigation Bar */
+    .phase-nav {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      padding: 10px 18px;
+      background: var(--bg-deep);
+      border-bottom: 1px solid var(--border-hairline);
+    }
+
+    .phase-tab {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-hairline);
+      border-radius: 8px;
+      padding: 9px 12px;
+      text-align: left;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .phase-tab:hover {
+      background: var(--bg-elevated);
+      color: var(--text-main);
+    }
+
+    .phase-tab.active {
+      background: hsla(187, 84%, 47%, 0.13);
+      border-color: var(--cyan);
+      color: var(--text-main);
+    }
+
+    .phase-tab-label {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .phase-step {
+      font-family: var(--mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--cyan);
+    }
+
+    .phase-name {
+      font-weight: 600;
+      font-size: 13px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .phase-pts {
+      font-family: var(--mono);
+      font-size: 12px;
+      padding: 3px 7px;
+      border-radius: 5px;
+      background: hsla(206, 64%, 7%, 0.65);
+      color: var(--text-secondary);
+      flex-shrink: 0;
+    }
+
+    .phase-pts.done {
+      background: var(--emerald-soft);
+      color: hsl(157, 75%, 64%);
+    }
+
+    /* Main Workspace Container */
+    .main-stage {
+      flex: 1;
+      padding: 14px 18px 24px;
+      max-width: 1440px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .stage-panel {
+      display: none;
+    }
+
+    .stage-panel.active {
+      display: block;
+    }
+
+    /* Phase 1: ROV Dive Layout */
+    .dive-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 320px;
+      gap: 14px;
+      align-items: start;
+    }
+
+    .canvas-shell {
+      position: relative;
+      background: hsl(205, 70%, 6%);
+      border: 1px solid var(--border-strong);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.42);
+    }
+
+    .zone-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 9px 12px;
+      background: hsl(204, 54%, 10%);
+      border-bottom: 1px solid var(--border-hairline);
+      flex-wrap: wrap;
+    }
+
+    .zone-buttons {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .zone-btn {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-hairline);
+      color: var(--text-secondary);
+      padding: 6px 11px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .zone-btn.active {
+      background: var(--amber-soft);
+      border-color: var(--amber);
+      color: hsl(41, 96%, 72%);
+    }
+
+    .telemetry-strip {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text-secondary);
+      flex-wrap: wrap;
+    }
+
+    .telemetry-strip span strong {
+      color: var(--text-main);
+    }
+
+    .canvas-wrap {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9.4;
+      min-height: 430px;
+      background: #041322;
+    }
+
+    #rov-canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      cursor: crosshair;
+      touch-action: none;
+    }
+
+    /* On-Canvas HUD Overlays */
+    .canvas-hud-bottom {
+      position: absolute;
+      left: 12px;
+      right: 12px;
+      bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      pointer-events: none;
+      flex-wrap: wrap;
+    }
+
+    .controls-hint {
+      pointer-events: auto;
+      background: hsla(205, 62%, 8%, 0.84);
+      backdrop-filter: blur(6px);
+      border: 1px solid var(--border-hairline);
+      border-radius: 8px;
+      padding: 6px 11px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    kbd {
+      font-family: var(--mono);
+      font-size: 11px;
+      padding: 1px 5px;
+      border-radius: 4px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-strong);
+      color: var(--text-main);
+    }
+
+    .action-cluster {
+      pointer-events: auto;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .toast-banner {
+      position: absolute;
+      top: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: hsla(205, 65%, 9%, 0.90);
+      border: 1px solid var(--cyan);
+      color: var(--text-main);
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 12.5px;
+      font-weight: 600;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+      text-align: center;
+      max-width: 85%;
+      z-index: 10;
+    }
+
+    .toast-banner.visible {
+      opacity: 1;
+    }
+
+    /* Right Sidebar Telemetry & Checklist */
+    .dive-sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .panel-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-hairline);
+      border-radius: 11px;
+      padding: 14px;
+    }
+
+    .panel-card h2, .panel-card h3 {
+      margin: 0 0 8px 0;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .hull-meter-track {
+      width: 100%;
+      height: 9px;
+      background: hsla(206, 64%, 6%, 0.85);
+      border-radius: 99px;
+      overflow: hidden;
+      border: 1px solid var(--border-hairline);
+      margin-bottom: 8px;
+    }
+
+    .hull-meter-fill {
+      height: 100%;
+      background: var(--emerald);
+      transition: width 0.25s ease, background-color 0.25s ease;
+    }
+
+    .specimen-list {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      margin-top: 8px;
+    }
+
+    .specimen-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      background: var(--bg-deep);
+      border: 1px solid var(--border-hairline);
+      font-size: 12.5px;
+      cursor: pointer;
+    }
+
+    .specimen-row:hover {
+      border-color: var(--border-strong);
+      background: var(--bg-elevated);
+    }
+
+    .specimen-row.scanned {
+      border-color: hsla(157, 68%, 45%, 0.42);
+      background: hsla(157, 68%, 45%, 0.08);
+    }
+
+    .specimen-phylum {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-family: var(--mono);
+    }
+
+    .status-chip {
+      font-family: var(--mono);
+      font-size: 11px;
+      padding: 2px 7px;
+      border-radius: 5px;
+      background: var(--bg-elevated);
+      color: var(--text-secondary);
+      flex-shrink: 0;
+    }
+
+    .status-chip.done {
+      background: var(--emerald-soft);
+      color: hsl(157, 76%, 65%);
+    }
+
+    /* Phase 2: Dichotomous Key Wet-Lab */
+    .lab-grid {
+      display: grid;
+      grid-template-columns: 380px minmax(0, 1fr);
+      gap: 16px;
+      align-items: start;
+    }
+
+    .tray-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+
+    .tray-btn {
+      padding: 8px 8px;
+      border-radius: 7px;
+      background: var(--bg-deep);
+      border: 1px solid var(--border-hairline);
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .tray-btn.active {
+      background: var(--cyan-soft);
+      border-color: var(--cyan);
+      color: var(--text-main);
+    }
+
+    .tray-btn.solved {
+      border-color: hsla(157, 68%, 45%, 0.5);
+      color: hsl(157, 74%, 66%);
+    }
+
+    .scope-stage {
+      background: radial-gradient(circle at 50% 50%, hsl(200, 48%, 17%) 0%, hsl(205, 65%, 7%) 78%);
+      border: 1px solid var(--border-strong);
+      border-radius: 10px;
+      padding: 14px;
+      min-height: 230px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .scope-svg-holder {
+      width: 220px;
+      height: 175px;
+      display: grid;
+      place-items: center;
+      transition: transform 0.22s ease;
+    }
+
+    .scope-svg-holder.zoomed {
+      transform: scale(1.22);
+    }
+
+    .scope-controls {
+      display: flex;
+      gap: 6px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .morph-notes {
+      margin-top: 12px;
+      padding: 10px 12px;
+      background: var(--bg-deep);
+      border-radius: 8px;
+      border: 1px solid var(--border-hairline);
+      font-size: 12.5px;
+      color: var(--text-secondary);
+    }
+
+    .morph-notes li {
+      margin-bottom: 4px;
+    }
+
+    .key-trail {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 12px;
+      font-family: var(--mono);
+      font-size: 12px;
+    }
+
+    .crumb {
+      padding: 3px 9px;
+      border-radius: 5px;
+      background: var(--bg-deep);
+      border: 1px solid var(--border-hairline);
+      color: var(--cyan);
+    }
+
+    .couplet-box {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .couplet-choice {
+      background: var(--bg-deep);
+      border: 1px solid var(--border-strong);
+      border-radius: 9px;
+      padding: 14px 16px;
+      text-align: left;
+      color: var(--text-main);
+      font-size: 13.5px;
+      line-height: 1.5;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .couplet-choice:hover:not(:disabled) {
+      background: var(--bg-elevated);
+      border-color: var(--cyan);
+    }
+
+    .couplet-code {
+      font-family: var(--mono);
+      font-weight: 700;
+      font-size: 13px;
+      padding: 3px 8px;
+      border-radius: 5px;
+      background: var(--cyan-soft);
+      color: var(--cyan);
+      flex-shrink: 0;
+    }
+
+    .feedback-callout {
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      line-height: 1.5;
+      display: none;
+    }
+
+    .feedback-callout.show {
+      display: block;
+    }
+
+    .feedback-callout.ok {
+      background: var(--emerald-soft);
+      border: 1px solid hsla(157, 68%, 45%, 0.45);
+      color: hsl(156, 65%, 85%);
+    }
+
+    .feedback-callout.err {
+      background: var(--coral-soft);
+      border: 1px solid hsla(12, 80%, 60%, 0.45);
+      color: hsl(14, 80%, 88%);
+    }
+
+    /* Phase 3: Predator-Prey & Ecosystem Crisis Sim */
+    .crisis-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .matrix-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    .matrix-table th, .matrix-table td {
+      padding: 10px 12px;
+      border: 1px solid var(--border-hairline);
+      text-align: left;
+      vertical-align: top;
+      font-size: 13px;
+    }
+
+    .matrix-table th {
+      background: var(--bg-deep);
+      color: var(--text-secondary);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    select.marine-select, input.marine-input, textarea.marine-textarea {
+      width: 100%;
+      background: var(--bg-abyss);
+      color: var(--text-main);
+      border: 1px solid var(--border-strong);
+      border-radius: 7px;
+      padding: 8px 10px;
+      font-family: inherit;
+      font-size: 13px;
+    }
+
+    select.marine-select:focus, input.marine-input:focus, textarea.marine-textarea:focus {
+      outline: 2px solid var(--cyan);
+      outline-offset: 1px;
+    }
+
+    .crisis-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .crisis-station {
+      background: var(--bg-deep);
+      border: 1px solid var(--border-hairline);
+      border-radius: 10px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .crisis-station.restored {
+      border-color: hsla(157, 68%, 45%, 0.55);
+    }
+
+    .gauge-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-family: var(--mono);
+      font-size: 11.5px;
+    }
+
+    .gauge-bar {
+      height: 8px;
+      border-radius: 99px;
+      background: var(--bg-abyss);
+      overflow: hidden;
+      border: 1px solid var(--border-hairline);
+    }
+
+    .gauge-fill {
+      height: 100%;
+      background: var(--coral);
+      transition: width 0.45s ease, background-color 0.45s ease;
+    }
+
+    .gauge-fill.healthy {
+      background: var(--emerald);
+    }
+
+    /* Phase 4: CER & Submission Certificate */
+    .submit-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+      gap: 16px;
+      align-items: start;
+    }
+
+    .vocab-bank {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 8px 0 12px;
+    }
+
+    .vocab-chip {
+      font-family: var(--mono);
+      font-size: 11.5px;
+      padding: 3px 8px;
+      border-radius: 5px;
+      background: var(--bg-deep);
+      border: 1px solid var(--border-hairline);
+      color: var(--text-muted);
+    }
+
+    .vocab-chip.used {
+      background: var(--emerald-soft);
+      border-color: var(--emerald);
+      color: hsl(157, 78%, 68%);
+    }
+
+    .cer-field-group {
+      margin-bottom: 12px;
+    }
+
+    .cer-field-group label {
+      display: block;
+      font-weight: 600;
+      font-size: 13px;
+      margin-bottom: 5px;
+      color: var(--text-main);
+    }
+
+    .cert-preview {
+      background: linear-gradient(180deg, hsl(203, 48%, 14%) 0%, hsl(205, 56%, 10%) 100%);
+      border: 1px solid var(--border-strong);
+      border-radius: 12px;
+      padding: 18px;
+    }
+
+    .hash-box {
+      font-family: var(--mono);
+      font-size: 13px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      background: var(--bg-abyss);
+      border: 1px dashed var(--amber);
+      color: var(--amber);
+      word-break: break-all;
+      margin: 10px 0;
+    }
+
+    .breakdown-list {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      margin: 12px 0;
+    }
+
+    .breakdown-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 7px 10px;
+      border-radius: 7px;
+      background: var(--bg-deep);
+      font-size: 13px;
+    }
+
+    /* Modals */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(2, 9, 18, 0.80);
+      backdrop-filter: blur(5px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 90;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-strong);
+      border-radius: 14px;
+      max-width: 720px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 20px 22px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65);
+    }
+
+    .scan-header-grid {
+      display: grid;
+      grid-template-columns: 200px minmax(0, 1fr);
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 14px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border-hairline);
+    }
+
+    .scan-art-frame {
+      background: radial-gradient(circle, hsl(200, 52%, 18%) 0%, hsl(206, 65%, 8%) 80%);
+      border: 1px solid var(--border-strong);
+      border-radius: 10px;
+      height: 155px;
+      display: grid;
+      place-items: center;
+      padding: 8px;
+    }
+
+    .mc-options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .mc-btn {
+      background: var(--bg-deep);
+      border: 1px solid var(--border-hairline);
+      border-radius: 8px;
+      padding: 11px 14px;
+      text-align: left;
+      color: var(--text-main);
+      font-size: 13.5px;
+      line-height: 1.45;
+    }
+
+    .mc-btn:hover:not(:disabled) {
+      background: var(--bg-elevated);
+      border-color: var(--cyan);
+    }
+
+    .mc-btn.correct {
+      background: var(--emerald-soft);
+      border-color: var(--emerald);
+    }
+
+    .mc-btn.wrong {
+      background: var(--coral-soft);
+      border-color: var(--coral);
+      opacity: 0.78;
+    }
+
+    .guide-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .guide-card {
+      background: var(--bg-deep);
+      border: 1px solid var(--border-hairline);
+      border-radius: 9px;
+      padding: 12px;
+      font-size: 12.5px;
+    }
+
+    /* Printable Official Report (Hidden on Screen, Crisp on Print) */
+    #print-report-sheet {
+      display: none;
+    }
+
+    @media (max-width: 1024px) {
+      .dive-layout, .lab-grid, .submit-grid {
+        grid-template-columns: 1fr;
+      }
+      .crisis-cards-grid {
+        grid-template-columns: 1fr;
+      }
+      .phase-nav {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 620px) {
+      .scan-header-grid {
+        grid-template-columns: 1fr;
+      }
+      .phase-nav {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media print {
+      body.pelagia-app {
+        background: #ffffff !important;
+        color: #111827 !important;
+      }
+      .top-header, .phase-nav, .main-stage, .modal-backdrop {
+        display: none !important;
+      }
+      #print-report-sheet {
+        display: block !important;
+        padding: 18px 24px;
+        font-family: Georgia, 'Times New Roman', serif;
+        color: #111827;
+        font-size: 12.5px;
+        line-height: 1.45;
+      }
+      .print-banner {
+        border-bottom: 2px solid #0f172a;
+        padding-bottom: 10px;
+        margin-bottom: 14px;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+      }
+      .print-banner h2 {
+        margin: 0;
+        font-size: 19px;
+      }
+      .print-meta-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 6px 18px;
+        background: #f8fafc;
+        border: 1px solid #cbd5e1;
+        padding: 10px 14px;
+        margin-bottom: 14px;
+        font-family: sans-serif;
+        font-size: 12px;
+      }
+      .print-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 14px;
+        font-family: sans-serif;
+        font-size: 12px;
+      }
+      .print-table th, .print-table td {
+        border: 1px solid #94a3b8;
+        padding: 6px 9px;
+        text-align: left;
+      }
+      .print-table th {
+        background: #e2e8f0;
+      }
+      .print-box {
+        border: 1px solid #94a3b8;
+        padding: 10px 12px;
+        margin-bottom: 12px;
+        page-break-inside: avoid;
+      }
+      .print-hash {
+        font-family: monospace;
+        font-size: 13px;
+        font-weight: bold;
+        padding: 6px 10px;
+        border: 1.5px dashed #0f172a;
+        display: inline-block;
+      }
+    }
+  </style>
+</head>
+<body class="pelagia-app">
+  <!-- TOP TELEMETRY BAR -->
+  <header class="top-header">
+    <div class="brand-cluster">
+      <div class="vessel-emblem" aria-hidden="true">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M3 13c0-4 3.5-7 8.5-7h3.5c3.3 0 6 2.7 6 6s-2.7 6-6 6H9.5C5.8 18 3 15.8 3 13Z" stroke="#15c3da" stroke-width="1.8"/>
+          <circle cx="15.5" cy="12" r="2.3" stroke="#f5a623" stroke-width="1.7"/>
+          <path d="M2 10v6M11 6V3.5h3" stroke="#f5a623" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="brand-titles">
+        <h1>R/V Pelagia: Deep-Reef ROV Invertebrate Expedition</h1>
+        <div class="brand-subtitle">
+          <span>Grade 9 Marine Biology • Unit 3 Class Assignment</span>
+          <span class="pilot-tag" id="header-pilot-badge">Pilot: Unregistered</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <div class="score-pill" title="Current Unit 3 Assignment Score">
+        <span>ASSIGNMENT SCORE</span>
+        <strong id="header-total-score">0 / 100</strong>
+      </div>
+      <button type="button" class="btn-ghost" id="btn-open-guide">
+        Field Guide (<span id="guide-count">0</span>/12)
+      </button>
+      <button type="button" class="btn-ghost" id="btn-toggle-audio">
+        Audio: ON
+      </button>
+      <button type="button" class="btn-ghost" id="btn-open-profile">
+        Student Info
+      </button>
+      <button type="button" class="btn-ghost" id="btn-open-teacher">
+        Teacher Verify
+      </button>
+    </div>
+  </header>
+
+  <!-- 4-PHASE MISSION NAVIGATION -->
+  <nav class="phase-nav" aria-label="Unit 3 Expedition Phases">
+    <button type="button" class="phase-tab active" id="tab-phase-1" data-target="view-dive">
+      <div class="phase-tab-label">
+        <span class="phase-step">Phase 1 • ROV Survey</span>
+        <span class="phase-name">Ocean Bio-Scan Dive (12 Species)</span>
+      </div>
+      <span class="phase-pts" id="pts-badge-1">0 / 36</span>
+    </button>
+    <button type="button" class="phase-tab" id="tab-phase-2" data-target="view-lab">
+      <div class="phase-tab-label">
+        <span class="phase-step">Phase 2 • Lesson 5 Wet-Lab</span>
+        <span class="phase-name">Dichotomous Key Microscope</span>
+      </div>
+      <span class="phase-pts" id="pts-badge-2">0 / 24</span>
+    </button>
+    <button type="button" class="phase-tab" id="tab-phase-3" data-target="view-crisis">
+      <div class="phase-tab-label">
+        <span class="phase-step">Phase 3 • Ecological Systems</span>
+        <span class="phase-name">Predator Lab &amp; Reef/Kelp Crisis</span>
+      </div>
+      <span class="phase-pts" id="pts-badge-3">0 / 25</span>
+    </button>
+    <button type="button" class="phase-tab" id="tab-phase-4" data-target="view-submit">
+      <div class="phase-tab-label">
+        <span class="phase-step">Phase 4 • Turn In Assignment</span>
+        <span class="phase-name">CER Field Log &amp; Certificate</span>
+      </div>
+      <span class="phase-pts" id="pts-badge-4">0 / 15</span>
+    </button>
+  </nav>
+
+  <!-- MAIN INTERACTIVE WORKSPACE -->
+  <main class="main-stage">
+    <!-- ==================== PHASE 1: ROV OCEAN DIVE ==================== -->
+    <section class="stage-panel active" id="view-dive" aria-labelledby="tab-phase-1">
+      <div class="dive-layout">
+        <div class="canvas-shell">
+          <div class="zone-bar">
+            <div class="zone-buttons" role="group" aria-label="Ocean Dive Zones">
+              <button type="button" class="zone-btn active" id="btn-zone-0" data-zone="0">
+                Zone 1: Sunlit Coral Reef (0/4)
+              </button>
+              <button type="button" class="zone-btn" id="btn-zone-1" data-zone="1">
+                Zone 2: Seagrass &amp; Rocky Shore (0/4)
+              </button>
+              <button type="button" class="zone-btn" id="btn-zone-2" data-zone="2">
+                Zone 3: Giant Kelp &amp; Shelf (0/4)
+              </button>
+            </div>
+            <div class="telemetry-strip">
+              <span>DEPTH <strong id="hud-depth">6.2m</strong></span>
+              <span>SALINITY <strong>35.0 ppt</strong></span>
+              <span>STREAK <strong id="hud-streak">x1</strong></span>
+            </div>
+          </div>
+
+          <div class="canvas-wrap">
+            <canvas id="rov-canvas" width="1024" height="600"></canvas>
+            <div class="toast-banner" id="dive-toast">Sonar Online</div>
+
+            <div class="canvas-hud-bottom">
+              <div class="controls-hint">
+                <span>Pilot: <kbd>WASD</kbd> / <kbd>Arrows</kbd> or <strong>Click Ocean</strong></span>
+                <span>Bio-Scan: <kbd>SPACE</kbd> or <strong>Click Organism</strong></span>
+                <span>Lamp: <kbd>F</kbd></span>
+              </div>
+              <div class="action-cluster">
+                <button type="button" class="btn-ghost" id="btn-sonar-ping">Sonar Ping</button>
+                <button type="button" class="btn-cyan" id="btn-scan-nearest" disabled>Scan Target [SPACE]</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <aside class="dive-sidebar">
+          <div class="panel-card">
+            <h2>
+              <span>ROV Nautilus-IX Hull</span>
+              <span id="hud-hull-pct" style="font-family: var(--mono); color: var(--emerald);">100%</span>
+            </h2>
+            <div class="hull-meter-track">
+              <div class="hull-meter-fill" id="hud-hull-bar" style="width: 100%;"></div>
+            </div>
+            <div style="font-size: 12px; color: var(--text-secondary);">
+              Watch out for drifting <strong>Scyphozoan nematocysts</strong>, intertidal surge eddies, and cephalopod <strong>melanin ink clouds</strong>! Collect glowing eDNA plankton motes to repair hull.
+            </div>
+          </div>
+
+          <div class="panel-card">
+            <h3 id="zone-checklist-title">Zone 1 Target Invertebrates</h3>
+            <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 6px;">
+              Click any organism below to set an autopilot sonar beacon toward its habitat:
+            </div>
+            <div class="specimen-list" id="zone-specimen-list"></div>
+          </div>
+
+          <div class="panel-card" style="background: hsla(187, 84%, 47%, 0.07); border-color: var(--border-strong);">
+            <h3 style="margin-bottom: 4px;">Chief Biologist Dr. Vance</h3>
+            <p id="vance-comms" style="margin: 0; font-size: 12.5px; color: var(--text-secondary);">
+              "Welcome aboard R/V Pelagia! Invertebrates make up ~97% of all animal species on Earth. Pilot the ROV up to each marine invertebrate in all 3 zones and fire your Bio-Scanner!"
+            </p>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ==================== PHASE 2: LESSON 5 DICHOTOMOUS KEY LAB ==================== -->
+    <section class="stage-panel" id="view-lab" aria-labelledby="tab-phase-2">
+      <div class="lab-grid">
+        <div class="panel-card">
+          <h2>
+            <span>Stereomicroscope Specimen Tray</span>
+            <span style="font-family: var(--mono); font-size: 12px; color: var(--cyan);" id="lab-progress-label">0 / 6 Identified</span>
+          </h2>
+          <p style="margin: 0 0 10px; font-size: 12.5px; color: var(--text-secondary);">
+            Rule #1 of Taxonomy: Never guess by color alone, and <strong>always start at Couplet 1 (1a/1b)</strong> for every unknown specimen!
+          </p>
+
+          <div class="tray-tabs" id="lab-tray-tabs"></div>
+
+          <div class="scope-stage">
+            <div style="position: absolute; top: 8px; left: 10px; font-family: var(--mono); font-size: 11px; color: var(--text-muted);" id="scope-view-tag">
+              VIEW: DORSAL / ABORAL • 1x
+            </div>
+            <div class="scope-svg-holder" id="scope-svg-holder"></div>
+            <div class="scope-controls">
+              <button type="button" class="btn-ghost" id="btn-flip-specimen">Flip Surface (Oral / Aboral)</button>
+              <button type="button" class="btn-ghost" id="btn-zoom-specimen">Toggle 10x Hand Lens</button>
+            </div>
+          </div>
+
+          <div class="morph-notes" id="scope-morph-notes"></div>
+        </div>
+
+        <div class="panel-card">
+          <h2>
+            <span>Official Unit 3 Marine Invertebrate Dichotomous Key</span>
+            <button type="button" class="btn-ghost" id="btn-reset-couplet" style="padding: 4px 10px; font-size: 12px;">Restart at Step 1</button>
+          </h2>
+          <div class="key-trail" id="key-breadcrumb-trail"></div>
+          <div class="couplet-box" id="couplet-container"></div>
+          <div class="feedback-callout" id="lab-feedback-box"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== PHASE 3: PREDATOR MATRIX & ECOSYSTEM CRISIS ==================== -->
+    <section class="stage-panel" id="view-crisis" aria-labelledby="tab-phase-3">
+      <div class="crisis-stack">
+        <!-- Module 3A: Assessment Q11 Bivalve Predation & Defense Matrix -->
+        <div class="panel-card">
+          <h2>
+            <span>Part 3A: Comparative Bivalve Predation &amp; Defense Biomechanics Lab</span>
+            <span class="phase-pts" id="score-3a-badge">0 / 10 pts</span>
+          </h2>
+          <p style="margin: 0 0 8px; font-size: 13px; color: var(--text-secondary);">
+            Three benthic invertebrate predators from different phyla all prey on hard-shelled bivalve clams in rocky reefs. Match each predator to its specialized <strong>Clam-Opening Anatomical Mechanism</strong> and its <strong>Primary Anti-Predator Defense / Vulnerability</strong>, then run the biomechanical verification!
+          </p>
+
+          <div style="overflow-x: auto;">
+            <table class="matrix-table">
+              <thead>
+                <tr>
+                  <th style="width: 24%;">Predator &amp; Taxon</th>
+                  <th style="width: 38%;">Specialized Clam-Opening Mechanism</th>
+                  <th style="width: 38%;">Primary Defense &amp; Structural Trade-off</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <strong>Organism X: Common Reef Octopus</strong><br/>
+                    <span style="font-size: 12px; color: var(--cyan);">Phylum Mollusca • Class Cephalopoda</span>
+                  </td>
+                  <td>
+                    <select class="marine-select" id="q11-octo-feed" aria-label="Octopus clam-opening mechanism">
+                      <option value="">-- Select Feeding Mechanism --</option>
+                      <option value="tube">Attaches hydraulic tube feet and everts cardiac stomach into 0.1 mm gap</option>
+                      <option value="beak">Pulls valves or drills shell using sucker-lined arms, chitinous beak &amp; venomous radula</option>
+                      <option value="cheliped">Crushes calcium carbonate shell directly with calcified pincer chelipeds</option>
+                      <option value="choano">Pumps water through ostia pores using flagellated choanocytes</option>
+                    </select>
+                  </td>
+                  <td>
+                    <select class="marine-select" id="q11-octo-def" aria-label="Octopus defense mechanism">
+                      <option value="">-- Select Defense / Trade-off --</option>
+                      <option value="molt">Heavy chitin carapace &amp; claws, but defenseless while molting (ecdysis)</option>
+                      <option value="ink">Sub-second chromatophore camouflage, siphon jet propulsion &amp; melanin ink cloud</option>
+                      <option value="ossicle">Spiny dermal CaCO3 ossicles, mutable collagen &amp; arm regeneration</option>
+                      <option value="cnido">Sessile corallite cup armed with stinging nematocyst harpoons</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Organism Y: Ochre Sea Star</strong><br/>
+                    <span style="font-size: 12px; color: var(--cyan);">Phylum Echinodermata • Class Asteroidea</span>
+                  </td>
+                  <td>
+                    <select class="marine-select" id="q11-star-feed" aria-label="Sea star clam-opening mechanism">
+                      <option value="">-- Select Feeding Mechanism --</option>
+                      <option value="beak">Bites shell open with chitinous beak and jet-propels backward</option>
+                      <option value="tube">Uses hundreds of hydraulic tube feet (water vascular system) to pry valves 0.1 mm &amp; everts cardiac stomach</option>
+                      <option value="cheliped">Snips hinge ligament using jointed chitinous cheliped claws</option>
+                      <option value="gills">Filter-feeds on clam larvae using ciliated bivalve gills without a radula</option>
+                    </select>
+                  </td>
+                  <td>
+                    <select class="marine-select" id="q11-star-def" aria-label="Sea star defense mechanism">
+                      <option value="">-- Select Defense / Trade-off --</option>
+                      <option value="ossicle">Internal spiny CaCO3 ossicles under skin, catch collagen &amp; ability to regenerate lost arms</option>
+                      <option value="ink">Melanin ink cloud decoy and rapid chromatophore skin color waves</option>
+                      <option value="molt">Must shed exoskeleton via ecdysis to grow larger</option>
+                      <option value="spicule">Silica spicules and toxic sponge secondary metabolites</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Organism Z: Atlantic Blue Crab</strong><br/>
+                    <span style="font-size: 12px; color: var(--cyan);">Phylum Arthropoda • Subphylum Crustacea</span>
+                  </td>
+                  <td>
+                    <select class="marine-select" id="q11-crab-feed" aria-label="Blue crab clam-opening mechanism">
+                      <option value="">-- Select Feeding Mechanism --</option>
+                      <option value="tube">Pressurizes ampullae via madreporite to pull valves apart</option>
+                      <option value="cheliped">Crushes and chips clam valves using powerful jointed pincer claws (chelipeds)</option>
+                      <option value="radula">Scrapes clam shell silently using a single coiled gastropod shell</option>
+                      <option value="nema">Paralyzes clam using tentacles lined with stinging cnidocytes</option>
+                    </select>
+                  </td>
+                  <td>
+                    <select class="marine-select" id="q11-crab-def" aria-label="Blue crab defense mechanism">
+                      <option value="">-- Select Defense / Trade-off --</option>
+                      <option value="evisc">Ejects sticky internal organs (evisceration) and regrows them</option>
+                      <option value="molt">Armored chitin/CaCO3 carapace &amp; chelipeds, but highly vulnerable soft-shell stage during molting (ecdysis)</option>
+                      <option value="ink">Escapes via mantle-siphon jet propulsion and ink clouds</option>
+                      <option value="aposem">Paper-thin unsegmented body with aposematic warning stripes</option>
+                    </select>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div style="margin-top: 12px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+            <button type="button" class="btn-primary" id="btn-verify-matrix">Verify Biomechanical Matrix</button>
+            <span id="matrix-feedback" style="font-size: 13px; color: var(--text-secondary);"></span>
+          </div>
+        </div>
+
+        <!-- Module 3B: Coastal Ecosystem Engineer & Acidification Rescue Simulator -->
+        <div class="panel-card">
+          <h2>
+            <span>Part 3B: Marine Ecosystem Engineers &amp; Ocean Acidification Crisis Response</span>
+            <span class="phase-pts" id="score-3b-badge">0 / 15 pts</span>
+          </h2>
+          <p style="margin: 0 0 12px; font-size: 13px; color: var(--text-secondary);">
+            Diagnose three real-world marine invertebrate conservation emergencies (aligned to NGSS HS-LS2-2 &amp; HS-LS2-7) and deploy the evidence-based intervention to restore ecosystem stability!
+          </p>
+
+          <div class="crisis-cards-grid" id="crisis-stations-container"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== PHASE 4: CER SYNTHESIS & SUBMISSION ==================== -->
+    <section class="stage-panel" id="view-submit" aria-labelledby="tab-phase-4">
+      <div class="submit-grid">
+        <div class="panel-card">
+          <h2>
+            <span>Field Biologist's CER Synthesis Report</span>
+            <span class="phase-pts" id="score-cer-badge">0 / 15 pts</span>
+          </h2>
+          <p style="margin: 0 0 10px; font-size: 13px; color: var(--text-secondary);">
+            Complete your Expedition Logbook using scientific <strong>Claim – Evidence – Reasoning (CER)</strong> writing. Your exact written response is embedded verbatim into your completed class assignment report for your teacher!
+          </p>
+
+          <div class="cer-field-group">
+            <label for="cer-prompt-select">Choose Your Unit 3 Investigation Prompt:</label>
+            <select class="marine-select" id="cer-prompt-select">
+              <option value="A">Prompt A (Adaptations &amp; Survival): Compare how TWO marine invertebrate phyla you surveyed use specialized anatomical structures to obtain food and defend against predators.</option>
+              <option value="B">Prompt B (Ecosystem Engineers &amp; Conservation): Explain how two invertebrate groups (e.g., stony corals, bivalve oysters, keystone sea stars) sustain ocean biodiversity, how ocean acidification or warming threatens them, and propose a conservation solution.</option>
+            </select>
+          </div>
+
+          <div style="font-size: 12px; color: var(--text-secondary); margin-top: 8px;">
+            <strong>Live Unit 3 Scientific Vocabulary Detector</strong> (aim to naturally integrate <strong>at least 4 terms</strong> — chips light up green as you write!):
+          </div>
+          <div class="vocab-bank" id="cer-vocab-bank"></div>
+
+          <div class="cer-field-group">
+            <label for="cer-claim">1. Scientific Claim (4 pts — Direct 1–2 sentence thesis answering the prompt):</label>
+            <textarea class="marine-textarea" id="cer-claim" rows="2" placeholder="State a clear, accurate scientific claim addressing your chosen prompt..."></textarea>
+          </div>
+
+          <div class="cer-field-group">
+            <label for="cer-evidence">2. Anatomical &amp; Ecological Evidence (6 pts — Cite specific organisms, phyla &amp; structures observed):</label>
+            <textarea class="marine-textarea" id="cer-evidence" rows="4" placeholder="Provide specific biological evidence from at least two invertebrate groups (e.g., choanocytes, cnidocytes, zooxanthellae, radula, chromatophores, tube feet, chitin exoskeleton, filter-feeding gills)..."></textarea>
+          </div>
+
+          <div class="cer-field-group">
+            <label for="cer-reasoning">3. Scientific Reasoning &amp; Conservation Link (5 pts — Explain HOW structure enables function or ecosystem resilience):</label>
+            <textarea class="marine-textarea" id="cer-reasoning" rows="3" placeholder="Connect your evidence back to your claim using marine biology principles (e.g., trade-offs like ecdysis, keystone trophic cascades, or CaCO3 dissolution under ocean acidification)..."></textarea>
+          </div>
+
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;">
+            <button type="button" class="btn-primary" id="btn-score-cer">Save &amp; Score CER Entry</button>
+            <span id="cer-live-stats" style="font-family: var(--mono); font-size: 12px; color: var(--text-secondary);">0 words • 0/4 target terms</span>
+          </div>
+          <div class="feedback-callout" id="cer-feedback-box"></div>
+        </div>
+
+        <!-- OFFICIAL SUBMISSION CERTIFICATE PANEL -->
+        <div class="cert-preview">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px;">
+            <div>
+              <div style="font-family: var(--mono); font-size: 11px; color: var(--cyan); text-transform: uppercase;">
+                Official Unit 3 Class Assignment Record
+              </div>
+              <h2 style="margin: 3px 0 0; font-size: 18px;">Expedition Completion Certificate</h2>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-family: var(--mono); font-size: 24px; font-weight: 800; color: var(--amber);" id="cert-big-score">0 / 100</div>
+              <div style="font-size: 12px; color: var(--emerald); font-weight: 600;" id="cert-rank-title">Cadet Diver</div>
+            </div>
+          </div>
+
+          <div class="breakdown-list">
+            <div class="breakdown-item">
+              <span>Student Name &amp; Period</span>
+              <strong id="cert-student-line">Not Entered — Click "Edit Student Info"</strong>
+            </div>
+            <div class="breakdown-item">
+              <span>Phase 1: ROV Bio-Scan Field Survey (12 Species)</span>
+              <strong id="cert-p1">0 / 36 pts (0/12)</strong>
+            </div>
+            <div class="breakdown-item">
+              <span>Phase 2: Lesson 5 Dichotomous Key Wet-Lab</span>
+              <strong id="cert-p2">0 / 24 pts (0/6)</strong>
+            </div>
+            <div class="breakdown-item">
+              <span>Phase 3: Predator Matrix &amp; Ecosystem Crisis Sim</span>
+              <strong id="cert-p3">0 / 25 pts</strong>
+            </div>
+            <div class="breakdown-item">
+              <span>Phase 4: CER Scientific Synthesis Report</span>
+              <strong id="cert-p4">0 / 15 pts</strong>
+            </div>
+            <div class="breakdown-item">
+              <span>Active Expedition Time Logged</span>
+              <strong id="cert-time" style="font-family: var(--mono);">0m 00s</strong>
+            </div>
+          </div>
+
+          <div style="font-size: 12px; color: var(--text-secondary);">
+            Tamper-Evident Teacher Verification Code:
+          </div>
+          <div class="hash-box" id="cert-verification-code">COMPLETE STUDENT NAME TO GENERATE CODE</div>
+
+          <div id="submit-readiness-msg" style="font-size: 12.5px; color: var(--text-secondary); margin-bottom: 12px;"></div>
+
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <button type="button" class="btn-primary" id="btn-print-pdf" style="justify-content: center; width: 100%;">
+              Print / Save Official PDF Assignment Report (Recommended for Google Classroom)
+            </button>
+            <button type="button" class="btn-cyan" id="btn-download-receipt" style="justify-content: center; width: 100%;">
+              Download Locked HTML Submission File (.html)
+            </button>
+            <button type="button" class="btn-emerald" id="btn-copy-classroom" style="justify-content: center; width: 100%;">
+              Copy Submission Summary + CER for Google Classroom
+            </button>
+          </div>
+          <div id="copy-confirm-msg" style="margin-top: 8px; font-size: 12px; color: var(--emerald); text-align: center; min-height: 18px;"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ==================== MODALS ==================== -->
+  <!-- 1. Student Login & Briefing Modal -->
+  <div class="modal-backdrop open" id="modal-welcome" role="dialog" aria-modal="true" aria-labelledby="welcome-title">
+    <div class="modal-card" style="max-width: 580px;">
+      <div style="font-family: var(--mono); font-size: 11.5px; color: var(--cyan); text-transform: uppercase;">
+        Grade 9 Marine Biology • Unit 3: Marine Organisms — Invertebrates
+      </div>
+      <h2 id="welcome-title" style="margin: 4px 0 8px; font-size: 21px;">
+        Mission Briefing: R/V Pelagia ROV Expedition
+      </h2>
+      <p style="margin: 0 0 14px; color: var(--text-secondary); font-size: 13.5px;">
+        Step into the pilot seat of <strong>ROV Nautilus-IX</strong>! Explore three living marine habitats to bio-scan 12 invertebrate species across all major phyla, classify unknown specimens under the Lesson 5 Dichotomous Key microscope, resolve coastal trophic &amp; acidification crises, and generate your <strong>100-Point Class Assignment Report</strong>.
+      </p>
+
+      <div style="display: grid; grid-template-columns: 1.3fr 0.7fr; gap: 10px; margin-bottom: 12px;">
+        <div>
+          <label for="input-student-name" style="display:block; font-size:12.5px; font-weight:600; margin-bottom:4px;">Student Full Name (Required for Credit)</label>
+          <input type="text" class="marine-input" id="input-student-name" placeholder="e.g., Jordan Rivera" maxlength="60" />
+        </div>
+        <div>
+          <label for="input-student-period" style="display:block; font-size:12.5px; font-weight:600; margin-bottom:4px;">Class Period / Section</label>
+          <input type="text" class="marine-input" id="input-student-period" placeholder="e.g., Period 2 (M/W)" maxlength="30" />
+        </div>
+      </div>
+
+      <div style="margin-bottom: 16px;">
+        <label for="input-rov-color" style="display:block; font-size:12.5px; font-weight:600; margin-bottom:4px;">ROV Submersible Hull Trim</label>
+        <select class="marine-select" id="input-rov-color">
+          <option value="#f5a623">Alvin Deep-Submergence Gold</option>
+          <option value="#14c8df">Bioluminescent Pelagic Cyan</option>
+          <option value="#f26a4b">Anthozoan Reef Coral</option>
+        </select>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;">
+        <span style="font-size: 12px; color: var(--text-muted);" id="saved-progress-note">Progress auto-saves in your browser.</span>
+        <div style="display: flex; gap: 8px;">
+          <button type="button" class="btn-ghost" id="btn-reset-all-data" style="display: none;">Start Fresh</button>
+          <button type="button" class="btn-primary" id="btn-launch-expedition">Launch ROV Dive</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Bio-Scan Specimen Encounter Modal -->
+  <div class="modal-backdrop" id="modal-scan" role="dialog" aria-modal="true" aria-labelledby="scan-modal-title">
+    <div class="modal-card">
+      <div class="scan-header-grid">
+        <div class="scan-art-frame" id="scan-svg-box"></div>
+        <div>
+          <div style="font-family: var(--mono); font-size: 11.5px; color: var(--cyan);" id="scan-taxonomy-line"></div>
+          <h2 id="scan-modal-title" style="margin: 3px 0 6px; font-size: 19px;"></h2>
+          <p id="scan-obs-desc" style="margin: 0; font-size: 13px; color: var(--text-secondary);"></p>
+        </div>
+      </div>
+
+      <div style="font-weight: 600; font-size: 14px; color: var(--text-main);" id="scan-question-text"></div>
+      <div class="mc-options" id="scan-options-box"></div>
+      <div class="feedback-callout" id="scan-feedback-box"></div>
+
+      <div style="margin-top: 14px; display: flex; justify-content: flex-end; gap: 8px;">
+        <button type="button" class="btn-ghost" id="btn-close-scan">Return to Ocean</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Unlocked Digital Field Guide Modal -->
+  <div class="modal-backdrop" id="modal-guide" role="dialog" aria-modal="true" aria-labelledby="guide-modal-title">
+    <div class="modal-card" style="max-width: 880px;">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h2 id="guide-modal-title" style="margin: 0; font-size: 18px;">ROV Digital Invertebrate Field Guide</h2>
+        <button type="button" class="btn-ghost" id="btn-close-guide">Close</button>
+      </div>
+      <p style="margin: 6px 0 0; font-size: 12.5px; color: var(--text-secondary);">
+        Every marine invertebrate you bio-scan unlocks detailed anatomical &amp; ecological notes here — use this reference while writing your Phase 4 CER report!
+      </p>
+      <div class="guide-grid" id="guide-cards-container"></div>
+    </div>
+  </div>
+
+  <!-- 4. Teacher Verification & Rubric Modal -->
+  <div class="modal-backdrop" id="modal-teacher" role="dialog" aria-modal="true" aria-labelledby="teacher-modal-title">
+    <div class="modal-card" style="max-width: 600px;">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h2 id="teacher-modal-title" style="margin: 0; font-size: 18px;">Teacher Assignment Verification &amp; Rubric Tool</h2>
+        <button type="button" class="btn-ghost" id="btn-close-teacher">Close</button>
+      </div>
+      <p style="margin: 8px 0 12px; font-size: 13px; color: var(--text-secondary);">
+        Paste a student's Verification Code from their PDF, HTML receipt, or Google Classroom comment below to verify cryptographic checksum authenticity and decode their exact section sub-scores and active time:
+      </p>
+      <div style="display: flex; gap: 8px;">
+        <input type="text" class="marine-input" id="input-verify-code" placeholder="Paste code e.g. MB3-JRIV-94-36.24.23.11-12M-..." />
+        <button type="button" class="btn-cyan" id="btn-run-verify" style="flex-shrink: 0;">Verify Code</button>
+      </div>
+      <div class="feedback-callout" id="teacher-verify-output"></div>
+      <div style="margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border-hairline); font-size: 12px; color: var(--text-muted);">
+        <strong>Unit 3 Alignment (100 Points Total):</strong> Lessons 1–4 Bio-Scan Field Survey (36 pts) • Lesson 5 Dichotomous Key Stereomicroscope Lab (24 pts) • Assessment Q11 Predator Biomechanics &amp; Q12 Ecosystem Engineer/Acidification Crisis Lab (25 pts) • NGSS CER Written Synthesis (15 pts).
+      </div>
+    </div>
+  </div>
+
+  <!-- PRINT-ONLY ACADEMIC GRADE REPORT -->
+  <div id="print-report-sheet" aria-hidden="true"></div>
+  <script>
+  (function () {
+    'use strict';
+
+    // ==================== 1. PROCEDURAL WEB AUDIO SYNTH ====================
+    const SoundFX = {
+      ctx: null,
+      enabled: true,
+      init() {
+        if (!this.ctx && (window.AudioContext || window.webkitAudioContext)) {
+          try {
+            this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+          } catch (e) { this.ctx = null; }
+        }
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume().catch(() => {});
+        }
+      },
+      tone(freq, dur, type = 'sine', vol = 0.09, slideTo = null, delay = 0) {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+        try {
+          const t0 = this.ctx.currentTime + delay;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq, t0);
+          if (slideTo) osc.frequency.exponentialRampToValueAtTime(slideTo, t0 + dur);
+          gain.gain.setValueAtTime(0.0001, t0);
+          gain.gain.linearRampToValueAtTime(vol, t0 + 0.015);
+          gain.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(t0);
+          osc.stop(t0 + dur + 0.02);
+        } catch (e) {}
+      },
+      ping() {
+        this.tone(1180, 0.38, 'sine', 0.08, 980, 0);
+        this.tone(1770, 0.25, 'sine', 0.03, 1480, 0.06);
+      },
+      scanOpen() {
+        this.tone(520, 0.14, 'triangle', 0.08, 780, 0);
+        this.tone(780, 0.18, 'sine', 0.08, 1040, 0.09);
+      },
+      correct() {
+        this.tone(523.25, 0.14, 'triangle', 0.09, null, 0);
+        this.tone(659.25, 0.14, 'triangle', 0.09, null, 0.09);
+        this.tone(783.99, 0.22, 'sine', 0.10, null, 0.18);
+        this.tone(1046.5, 0.30, 'sine', 0.08, null, 0.27);
+      },
+      wrong() {
+        this.tone(240, 0.18, 'sawtooth', 0.06, 175, 0);
+        this.tone(185, 0.22, 'sawtooth', 0.06, 140, 0.12);
+      },
+      zap() {
+        this.tone(410, 0.24, 'sawtooth', 0.09, 95, 0);
+      },
+      mote() {
+        this.tone(880, 0.12, 'sine', 0.06, 1320, 0);
+      }
+    };
+
+    // ==================== 2. CUSTOM ANATOMICAL SVG ILLUSTRATIONS ====================
+    function getOrganismSVG(artKey, flipped = false) {
+      const svgs = {
+        sponge: `<svg viewBox="-18 0 216 144" width="205" height="138">
+          <defs><linearGradient id="spg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f6c445"/><stop offset="100%" stop-color="#b87814"/></linearGradient></defs>
+          <path d="M40 125 Q90 132 140 125" stroke="#5b7a8c" stroke-width="5" stroke-linecap="round"/>
+          <path d="M56 124 C50 85 54 44 64 30 C71 25 81 25 86 30 C94 46 92 86 86 124 Z" fill="url(#spg)" stroke="#ffe082" stroke-width="1.5"/>
+          <ellipse cx="75" cy="30" rx="11" ry="4.5" fill="#1b263b" stroke="#ffe082" stroke-width="1.4"/>
+          <path d="M95 124 C92 92 96 54 106 42 C113 38 122 38 127 42 C134 56 132 92 126 124 Z" fill="url(#spg)" stroke="#ffe082" stroke-width="1.5"/>
+          <ellipse cx="116" cy="42" rx="10" ry="4" fill="#1b263b" stroke="#ffe082" stroke-width="1.4"/>
+          ${flipped
+            ? `<rect x="61" y="48" width="26" height="58" rx="4" fill="#0d1f33" stroke="#15c3da" stroke-width="1.3"/>
+               <text x="92" y="20" fill="#7ce8ff" font-size="9.5" text-anchor="middle" font-family="monospace">Osculum Exit ↑</text>
+               <path d="M75 96 L75 18 M116 36 L116 18" stroke="#15c3da" stroke-width="1.6" stroke-dasharray="3 2"/>
+               <text x="90" y="137" fill="#cbd5e1" font-size="9" text-anchor="middle">Cross-section: Choanocytes &amp; Spicules</text>`
+            : `<circle cx="66" cy="62" r="2.2" fill="#3e2723"/><circle cx="78" cy="76" r="2.2" fill="#3e2723"/><circle cx="69" cy="94" r="2.2" fill="#3e2723"/>
+               <circle cx="109" cy="68" r="2.2" fill="#3e2723"/><circle cx="120" cy="86" r="2.2" fill="#3e2723"/><circle cx="112" cy="102" r="2.2" fill="#3e2723"/>
+               <path d="M34 72 L52 72 M34 92 L52 92 M146 78 L131 78" stroke="#15c3da" stroke-width="1.5"/>
+               <path d="M75 24 L75 8 M116 36 L116 18" stroke="#7ce8ff" stroke-width="1.8"/>
+               <text x="90" y="136" fill="#9bd6e8" font-size="9" text-anchor="middle">Ostia Pores (In) → Osculum (Out)</text>`}
+        </svg>`,
+
+        jelly: `<svg viewBox="-18 0 216 144" width="205" height="138">
+          <path d="M42 62 C42 22 138 22 138 62 C118 56 102 64 90 60 C78 64 62 56 42 62 Z" fill="rgba(126,232,250,0.32)" stroke="#8be9fd" stroke-width="2"/>
+          <circle cx="76" cy="44" r="6" fill="none" stroke="#ffb86c" stroke-width="2.2"/>
+          <circle cx="104" cy="44" r="6" fill="none" stroke="#ffb86c" stroke-width="2.2"/>
+          <path d="M82 61 Q76 88 84 118 M98 61 Q104 88 96 118" stroke="#bdeeff" stroke-width="3.2" fill="none" stroke-linecap="round"/>
+          <path d="M52 62 Q46 94 55 128 M66 61 Q61 95 69 130 M114 61 Q120 96 111 130 M128 62 Q135 94 125 128" stroke="#56cfe1" stroke-width="1.6" fill="none"/>
+          <text x="90" y="16" fill="#9bd6e8" font-size="9.5" text-anchor="middle">Medusa Bell • Radial Symmetry</text>
+          <text x="90" y="137" fill="#ffb86c" font-size="9" text-anchor="middle">Tentacles Armed w/ Cnidocytes</text>
+        </svg>`,
+
+        coral: `<svg viewBox="-18 0 216 144" width="205" height="138">
+          <ellipse cx="90" cy="122" rx="56" ry="10" fill="#294356"/>
+          <path d="M88 120 L88 74 L56 40 M88 82 L124 44 M70 55 L50 28 M108 61 L132 30 M88 74 L90 26" stroke="#f27a5e" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <path d="M88 120 L88 74 L56 40 M88 82 L124 44 M70 55 L50 28 M108 61 L132 30 M88 74 L90 26" stroke="#ffd166" stroke-width="3" stroke-dasharray="2 8" stroke-linecap="round" fill="none"/>
+          ${flipped
+            ? `<circle cx="90" cy="70" r="28" fill="#0d2236" stroke="#15c3da" stroke-width="1.6"/>
+               <path d="M74 88 L74 68 L106 68 L106 88 Z" fill="#e2e8f0"/>
+               <path d="M78 68 C74 54 70 50 66 48 M90 68 L90 45 M102 68 C106 54 110 50 114 48" stroke="#ff9f1c" stroke-width="2.2" fill="none"/>
+               <text x="90" y="136" fill="#7ce8ff" font-size="9" text-anchor="middle">Single Polyp in CaCO3 Corallite Cup</text>`
+            : `<text x="90" y="15" fill="#ffd166" font-size="9" text-anchor="middle">Colonial Polyps + Zooxanthellae</text>
+               <text x="90" y="137" fill="#9bd6e8" font-size="9" text-anchor="middle">Biogenic CaCO3 Reef Framework</text>`}
+        </svg>`,
+
+        flatworm: `<svg viewBox="-18 0 216 144" width="205" height="138">
+          <path d="M30 78 C38 42 78 36 122 46 C148 52 156 68 148 84 C132 104 72 108 38 92 C28 87 27 83 30 78 Z" fill="#14213d" stroke="#fca311" stroke-width="3.2"/>
+          <path d="M44 72 Q90 62 138 70" stroke="#00f5d4" stroke-width="3" fill="none"/>
+          <circle cx="44" cy="66" r="2.5" fill="#ffffff"/><circle cx="44" cy="77" r="2.5" fill="#ffffff"/>
+          <path d="M31 66 L22 61 M31 78 L22 83" stroke="#fca311" stroke-width="2.2" stroke-linecap="round"/>
+          <text x="90" y="24" fill="#fca311" font-size="9.5" text-anchor="middle">Aposematic Warning Coloration</text>
+          <text x="90" y="128" fill="#9bd6e8" font-size="9" text-anchor="middle">Bilateral • Unsegmented • Skin Diffusion</text>
+        </svg>`,
+
+        polychaete: `<svg viewBox="-18 0 216 144" width="205" height="138">
+          ${Array.from({length: 9}, (_, i) => {
+            const x = 34 + i * 13;
+            const y = 68 + Math.sin(i * 0.8) * 10;
+            return `<g>
+              <line x1="${x}" y1="${y - 9}" x2="${x - 3}" y2="${y - 21}" stroke="#f5a623" stroke-width="2"/>
+              <line x1="${x + 2}" y1="${y - 19}" x2="${x - 6}" y2="${y - 24}" stroke="#e2e8f0" stroke-width="1"/>
+              <line x1="${x}" y1="${y + 9}" x2="${x - 3}" y2="${y + 21}" stroke="#f5a623" stroke-width="2"/>
+              <line x1="${x + 2}" y1="${y + 19}" x2="${x - 6}" y2="${y + 24}" stroke="#e2e8f0" stroke-width="1"/>
+              <rect x="${x - 6}" y="${y - 9}" width="12" height="18" rx="4" fill="#2ec4b6" stroke="#0b525b" stroke-width="1.3"/>
+            </g>`;
+          }).join('')}
+          <circle cx="23" cy="66" r="8" fill="#2ec4b6" stroke="#cbf3f0" stroke-width="1.3"/>
+          <path d="M16 62 L7 55 M16 70 L7 77 M20 58 L14 48" stroke="#ff9f1c" stroke-width="1.8" stroke-linecap="round"/>
+          <text x="90" y="22" fill="#9bd6e8" font-size="9.5" text-anchor="middle">Repeated Segments • Cephalized Head</text>
+          <text x="90" y="132" fill="#ffd166" font-size="9" text-anchor="middle">Paired Parapodia + Chitinous Setae</text>
+        </svg>`,
+
+        oyster: `<svg viewBox="-18 0 216 144" width="205" height="138">
+          ${flipped
+            ? `<path d="M40 75 C42 36 115 28 142 62 C148 88 112 114 56 104 C43 100 38 88 40 75 Z" fill="#e2e8f0" stroke="#94a3b8" stroke-width="2.5"/>
+               <ellipse cx="106" cy="72" rx="13" ry="9" fill="#9b5de5" fill-opacity="0" stroke="#dc2626" stroke-width="2"/>
+               <path d="M62 56 Q95 48 124 62 M64 66 Q95 58 126 70" stroke="#0ea5e9" stroke-width="2.2" fill="none"/>
+               <text x="46" y="76" fill="#0f172a" font-size="8.5" font-weight="bold">Umbo</text>
+               <text x="106" y="92" fill="#b91c1c" font-size="8.5" text-anchor="middle">Adductor Scar</text>
+               <text x="90" y="133" fill="#7ce8ff" font-size="9" text-anchor="middle">Ciliated Filter Gills • No Head / No Radula</text>`
+            : `<path d="M36 82 C40 44 108 32 142 62 C146 74 134 98 84 106 C50 108 34 96 36 82 Z" fill="#64748b" stroke="#cbd5e1" stroke-width="2"/>
+               <path d="M44 76 Q86 56 132 68 M50 88 Q90 74 128 82" stroke="#334155" stroke-width="2" fill="none"/>
+               <circle cx="152" cy="54" r="2.2" fill="#7ce8ff"/><circle cx="158" cy="66" r="2.5" fill="#7ce8ff"/><circle cx="149" cy="76" r="2" fill="#7ce8ff"/>
+               <text x="90" y="22" fill="#9bd6e8" font-size="9.5" text-anchor="middle">Two Hinged CaCO3 Valves (Bivalvia)</text>
+               <text x="90" y="133" fill="#7ce8ff" font-size="9" text-anchor="middle">Filters up to 50 Gal/Day • Living Reef</text>`}
+        </svg>`,
+
+        conch: `<svg viewBox="-18 0 216 144" width="205" height="138">
+          <path d="M34 104 Q92 114 146 102 C140 92 124 88 94 88 C62 88 42 94 34 104 Z" fill="#f4a261" stroke="#ffe8d6" stroke-width="1.5"/>
+          <path d="M52 88 C52 46 92 26 126 48 C142 58 140 82 118 88 Z" fill="#e76f51" stroke="#ffd6ba" stroke-width="2"/>
+          <path d="M76 68 C78 52 100 46 112 58 C118 66 110 78 96 78" fill="none" stroke="#ffe8d6" stroke-width="2"/>
+          <path d="M138 94 L152 82 M142 97 L156 91" stroke="#f4a261" stroke-width="2.4" stroke-linecap="round"/>
+          <circle cx="152" cy="82" r="2.2" fill="#ffffff"/>
+          <text x="90" y="22" fill="#9bd6e8" font-size="9.5" text-anchor="middle">Single Coiled Shell (Class Gastropoda)</text>
+          <text x="90" y="132" fill="#ffd166" font-size="9" text-anchor="middle">Ventral Muscular Foot + Toothed Radula</text>
+        </svg>`,
+
+        crab: `<svg viewBox="-18 0 216 144" width="205" height="138">
+          <path d="M46 68 L90 42 L134 68 L118 96 L62 96 Z" fill="#2a9d8f" stroke="#a8dadc" stroke-width="2"/>
+          <path d="M54 56 C32 42 24 28 38 22 C48 20 52 30 44 36 C54 34 62 42 58 52" fill="#1d70b8" stroke="#90e0ef" stroke-width="1.8"/>
+          <path d="M126 56 C148 42 156 28 142 22 C132 20 128 30 136 36 C126 34 118 42 122 52" fill="#1d70b8" stroke="#90e0ef" stroke-width="1.8"/>
+          <path d="M54 76 L26 82 M56 85 L28 96 M58 92 L38 112 M126 76 L154 82 M124 85 L152 96 M122 92 L142 112" stroke="#e9c46a" stroke-width="3" stroke-linecap="round"/>
+          <ellipse cx="40" cy="112" rx="8" ry="4" fill="#e76f51"/><ellipse cx="140" cy="112" rx="8" ry="4" fill="#e76f51"/>
+          ${flipped
+            ? `<polygon points="78,95 90,64 102,95" fill="#f1faee" stroke="#1d3557" stroke-width="1.5"/>
+               <text x="90" y="133" fill="#7ce8ff" font-size="9" text-anchor="middle">Ventral Apron • Jointed Legs &amp; Swimmerets</text>`
+            : `<circle cx="80" cy="45" r="2.6" fill="#fff"/><circle cx="100" cy="45" r="2.6" fill="#fff"/>
+               <text x="90" y="133" fill="#ffd166" font-size="9" text-anchor="middle">Chitin Carapace + Chelipeds • Molts via Ecdysis</text>`}
+        </svg>`,
+
+        octopus: `<svg viewBox="-18 0 216 144" width="205" height="138">
+          <ellipse cx="92" cy="44" rx="28" ry="22" fill="#e05746" stroke="#ffadad" stroke-width="1.8"/>
+          <path d="M68 54 L56 62 L64 68" fill="#c94234" stroke="#ffadad" stroke-width="1.4"/>
+          <circle cx="80" cy="48" r="5" fill="#fff"/><rect x="77" y="47" width="6" height="2.2" fill="#0f172a"/>
+          <path d="M74 62 C52 78 34 74 26 92 M80 64 C64 88 52 104 38 114 M88 65 C82 92 78 110 70 120 M96 65 C100 92 106 110 116 120 M104 64 C118 88 134 102 146 112 M110 60 C130 74 148 74 156 90" stroke="#e05746" stroke-width="5" fill="none" stroke-linecap="round"/>
+          <text x="90" y="15" fill="#9bd6e8" font-size="9.5" text-anchor="middle">Mantle Siphon • Camera Eye • 8 Sucker Arms</text>
+          <text x="90" y="135" fill="#ffd166" font-size="9" text-anchor="middle">Chromatophore Camouflage + Ink + Beak</text>
+        </svg>`,
+
+        squid: `<svg viewBox="-18 0 216 144" width="205" height="138">
+          <polygon points="90,14 114,36 66,36" fill="#ef476f" stroke="#ffd6e0" stroke-width="1.4"/>
+          <path d="M74 34 L106 34 L100 82 L80 82 Z" fill="#f78c6b" stroke="#ffd6e0" stroke-width="1.6"/>
+          <circle cx="84" cy="74" r="4" fill="#fff"/><circle cx="84" cy="74" r="1.8" fill="#073b4c"/>
+          <circle cx="96" cy="74" r="4" fill="#fff"/><circle cx="96" cy="74" r="1.8" fill="#073b4c"/>
+          <path d="M82 82 L70 112 M86 82 L80 115 M90 82 L90 116 M94 82 L100 115 M98 82 L110 112" stroke="#f78c6b" stroke-width="2.6" stroke-linecap="round"/>
+          <path d="M83 82 Q64 106 58 126 M97 82 Q116 106 122 126" stroke="#ffd166" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+          <text x="90" y="136" fill="#9bd6e8" font-size="9" text-anchor="middle">8 Arms + 2 Tentacles • Siphon Jet • Internal Pen</text>
+        </svg>`,
+
+        barnacle: `<svg viewBox="-18 0 216 144" width="205" height="138">
+          <rect x="28" y="108" width="124" height="14" rx="4" fill="#334155"/>
+          <polygon points="44,108 58,66 84,66 98,108" fill="#cbd5e1" stroke="#64748b" stroke-width="2"/>
+          <polygon points="88,108 102,72 124,72 138,108" fill="#e2e8f0" stroke="#64748b" stroke-width="2"/>
+          <path d="M66 66 C60 44 50 34 42 28 M71 66 C68 42 64 30 60 22 M76 66 C78 42 84 32 92 26" stroke="#f5a623" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <path d="M110 72 C106 52 100 44 94 38 M116 72 C118 52 126 44 132 38" stroke="#f5a623" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <text x="90" y="16" fill="#ffd166" font-size="9.5" text-anchor="middle">Feathery Jointed Cirri (Filter Legs)</text>
+          <text x="90" y="135" fill="#9bd6e8" font-size="9" text-anchor="middle">Sessile Crustacean • Planktonic Larvae</text>
+        </svg>`,
+
+        seastar: `<svg viewBox="-18 0 216 144" width="205" height="138">
+          <polygon points="90,16 104,52 144,54 112,78 124,116 90,94 56,116 68,78 36,54 76,52" fill="${flipped ? '#f4a261' : '#e76f51'}" stroke="#ffd166" stroke-width="2" stroke-linejoin="round"/>
+          ${flipped
+            ? `<line x1="90" y1="68" x2="90" y2="24" stroke="#1d3557" stroke-width="3.5"/>
+               <line x1="90" y1="68" x2="136" y2="56" stroke="#1d3557" stroke-width="3.5"/>
+               <line x1="90" y1="68" x2="118" y2="110" stroke="#1d3557" stroke-width="3.5"/>
+               <line x1="90" y1="68" x2="62" y2="110" stroke="#1d3557" stroke-width="3.5"/>
+               <line x1="90" y1="68" x2="44" y2="56" stroke="#1d3557" stroke-width="3.5"/>
+               <circle cx="90" cy="68" r="5.5" fill="#0f172a" stroke="#7ce8ff" stroke-width="1.5"/>
+               <text x="90" y="133" fill="#7ce8ff" font-size="9" text-anchor="middle">ORAL SURFACE: Central Mouth + Tube Feet Grooves</text>`
+            : `<circle cx="98" cy="60" r="4.5" fill="#ffe8d6" stroke="#1d3557" stroke-width="1.3"/>
+               <circle cx="90" cy="36" r="1.8" fill="#ffe8d6"/><circle cx="118" cy="62" r="1.8" fill="#ffe8d6"/><circle cx="72" cy="84" r="1.8" fill="#ffe8d6"/>
+               <line x1="103" y1="57" x2="132" y2="34" stroke="#7ce8ff" stroke-width="1.4"/>
+               <text x="142" y="31" fill="#7ce8ff" font-size="8.5" text-anchor="middle">Madreporite</text>
+               <text x="90" y="133" fill="#9bd6e8" font-size="9" text-anchor="middle">ABORAL SURFACE: Pentaradial • Dermal Ossicles</text>`}
+        </svg>`,
+
+        cucumber: `<svg viewBox="-18 0 216 144" width="205" height="138">
+          <path d="M28 88 C28 66 56 60 94 64 C122 67 132 82 124 96 C112 106 46 106 32 96 Z" fill="#8d5b4c" stroke="#eab69f" stroke-width="1.8"/>
+          <path d="M28 84 L16 76 M28 88 L14 88 M29 92 L17 100" stroke="#f4a261" stroke-width="2.2" stroke-linecap="round"/>
+          <circle cx="150" cy="82" r="14" fill="#3b2f63" stroke="#cbd5e1" stroke-width="1.4"/>
+          ${Array.from({length: 12}, (_, i) => {
+            const a = (i / 12) * Math.PI * 2;
+            return `<line x1="${150 + Math.cos(a)*13}" y1="${82 + Math.sin(a)*13}" x2="${150 + Math.cos(a)*24}" y2="${82 + Math.sin(a)*24}" stroke="#cbd5e1" stroke-width="1.6"/>`;
+          }).join('')}
+          <text x="90" y="24" fill="#9bd6e8" font-size="9.5" text-anchor="middle">Exclusively Marine (Isotonic w/ 35 ppt)</text>
+          <text x="90" y="132" fill="#ffd166" font-size="9" text-anchor="middle">Deposit Feeder (Evisceration) + Grazing Urchin</text>
+        </svg>`
+      };
+      return svgs[artKey] || svgs.sponge;
+    }
+
+    // ==================== 3. UNIT 3 CURRICULUM DATA (12 ROV SPECIES) ====================
+    const ZONES = [
+      {
+        id: 0,
+        name: 'Zone 1: Sunlit Coral Reef',
+        depthBase: 5.4,
+        bgTop: '#0b4f6c',
+        bgBottom: '#041b2d',
+        briefing: 'Sunlit tropical reef! Scan Porifera, Scyphozoan medusae, Anthozoan reef-building polyps, and aposematic flatworms. Avoid jellyfish nematocysts!'
+      },
+      {
+        id: 1,
+        name: 'Zone 2: Seagrass & Rocky Shore',
+        depthBase: 3.8,
+        bgTop: '#0d4749',
+        bgBottom: '#051923',
+        briefing: 'Coastal eelgrass & intertidal boulders! Survey polychaete bristle-worms, filter-feeding oyster reefs, radula-bearing gastropods, and molting blue crabs.'
+      },
+      {
+        id: 2,
+        name: 'Zone 3: Giant Kelp & Shelf',
+        depthBase: 24.5,
+        bgTop: '#072a40',
+        bgBottom: '#020d18',
+        briefing: 'Cool-water Macrocystis kelp forest! Toggle headlamps [F] and scan camouflaged octopuses, barnacle colonies, keystone sea stars, and sea cucumbers.'
+      }
+    ];
+
+    const SPECIES_DATA = [
+      // ZONE 0
+      {
+        id: 'sponge', zone: 0, x: 310, y: 690, art: 'sponge',
+        name: 'Yellow Tube Sponge (Aplysina)',
+        taxonomy: 'Phylum Porifera • Asymmetrical • Sessile Filter Feeder',
+        obs: 'ROV dye-tracer shows seawater pulled inward through thousands of tiny wall pores (ostia) and expelled upward out the large top osculum.',
+        question: 'Sponges lack true tissues, organs, a mouth, and a nervous system. Which specialized flagellated cells generate this water current and trap bacteria/plankton?',
+        options: [
+          'Cnidocytes containing barbed nematocyst harpoons',
+          'Choanocytes (flagellated collar cells) lining internal chambers supported by spicules/spongin',
+          'Muscular ampullae pressurizing hydraulic tube feet',
+          'Ciliated bivalve gills attached to a shell-secreting mantle'
+        ],
+        correct: 1,
+        hint: 'Recall Lesson 1: Cnidocytes belong to Phylum Cnidaria. Think of the flagellated "collar cells" unique to Phylum Porifera!',
+        explain: 'Correct! Flagellated collar cells (choanocytes) beat their flagella to pump water in through ostia pores, capture microscopic food in their collars, and push filtered water out the top osculum.',
+        guideSummary: 'Asymmetrical pore-bearers lacking true tissues/nerves; choanocytes pump water (ostia → osculum); supported by silica/CaCO3 spicules or spongin.'
+      },
+      {
+        id: 'jelly', zone: 0, x: 760, y: 310, art: 'jelly', hazard: 'sting',
+        name: 'Moon Jellyfish (Aurelia aurita)',
+        taxonomy: 'Phylum Cnidaria • Class Scyphozoa • Radial Symmetry',
+        obs: 'Free-swimming bell-shaped organism pulsing rhythmically in the water column with downward-facing mouth and trailing marginal tentacles.',
+        question: 'How does this Class Scyphozoa jellyfish differ structurally from a sea anemone, and how do its tentacles capture fish larvae?',
+        options: [
+          'It exhibits the free-swimming medusa body form and fires venomous nematocysts from stinging cnidocytes',
+          'It exhibits the sessile polyp body form and scrapes prey using a toothed radula',
+          'It has bilateral cephalization and crushes prey with chitinous parapodia',
+          'It uses pentaradial tube feet and an everted cardiac stomach'
+        ],
+        correct: 0,
+        hint: 'Compare the two Cnidarian body plans from Lesson 1: upward-facing attached polyp vs. downward-facing bell medusa, plus their signature stinging cells!',
+        explain: 'Spot on! True jellyfish (Class Scyphozoa) have a dominant bell-shaped medusa stage and capture prey using cnidocytes housing pressurized, toxin-injecting nematocyst capsules.',
+        guideSummary: 'Radially symmetrical medusa form (mouth/tentacles down); true tissues & nerve net; gastrovascular cavity; armed with cnidocytes/nematocysts.'
+      },
+      {
+        id: 'coral', zone: 0, x: 1180, y: 665, art: 'coral',
+        name: 'Staghorn Stony Coral (Acropora)',
+        taxonomy: 'Phylum Cnidaria • Class Anthozoa • Calcifying Ecosystem Engineer',
+        obs: 'Thousands of genetically identical polyps sit inside calcium carbonate (CaCO3) corallite cups, shimmering golden-brown in sunlit shallow water.',
+        question: 'Why are reef-building stony corals (Class Anthozoa) restricted to clear sunlit waters, and why does severe ocean warming turn them stark white?',
+        options: [
+          'They must molt their chitin carapace using ultraviolet sunlight',
+          'They live only as medusae that sink in cold aphotic water',
+          'Symbiotic photosynthetic zooxanthellae algae live inside polyp tissues, supplying up to 90% of energy for CaCO3 reef building until heat stress causes bleaching',
+          'They lack cnidocytes and rely exclusively on deposit-feeding in deep mud'
+        ],
+        correct: 2,
+        hint: 'Think of the mutualistic dinoflagellate symbiont inside Anthozoan coral polyps that photosynthesizes and powers CaCO3 calcification!',
+        explain: 'Exactly! Class Anthozoa corals exist only as polyps and partner with photosynthetic zooxanthellae; thermal stress expels the algae (coral bleaching), starving the colony.',
+        guideSummary: 'Polyp-only Class Anthozoa; mutualism with photosynthetic zooxanthellae fuels biogenic CaCO3 reef skeletons sheltering ~25% of marine species.'
+      },
+      {
+        id: 'flatworm', zone: 0, x: 1350, y: 470, art: 'flatworm',
+        name: 'Polyclad Reef Flatworm',
+        taxonomy: 'Phylum Platyhelminthes • Bilateral Symmetry • Cephalized',
+        obs: 'Paper-thin, unsegmented worm gliding openly over sunlit coral heads while displaying neon orange-and-cyan border stripes.',
+        question: 'Why must marine flatworms maintain a paper-thin body plan, and what evolutionary function do their vivid neon colors serve?',
+        options: [
+          'Flatness fits inside hinged bivalve shells; neon stripes attract mates for internal brooding',
+          'Lacking respiratory and circulatory systems, they rely on direct oxygen diffusion across flat skin, while aposematic warning coloration advertises toxicity to predators',
+          'Flatness anchors their water vascular madreporite; colors mimic kelp blades (cryptic camouflage)',
+          'They are asymmetrical sponges that flatten during ecdysis'
+        ],
+        correct: 1,
+        hint: 'Check Lesson 2 (Platyhelminthes diffusion) and Lesson 4 (bright colors that warn predators "do not eat — toxic!").',
+        explain: 'Great reasoning! Platyhelminthes have bilateral symmetry and cephalization, rely on skin diffusion because they lack gills/blood vessels, and use aposematic coloration to warn predators of chemical toxins.',
+        guideSummary: 'Bilateral, cephalized, unsegmented flatworms; no circulatory/respiratory organs (gas exchange by diffusion); vivid aposematic warning colors.'
+      },
+
+      // ZONE 1
+      {
+        id: 'polychaete', zone: 1, x: 340, y: 610, art: 'polychaete',
+        name: 'Clamworm / Sandworm (Nereis)',
+        taxonomy: 'Phylum Annelida • Class Polychaeta • Segmented Marine Worm',
+        obs: 'Elongated worm divided into repeated ring-like segments, swimming and burrowing with paired lateral paddles tipped with stiff bristles.',
+        question: 'Which diagnostic anatomical structures identify this organism as a marine polychaete (Phylum Annelida) rather than a roundworm or flatworm?',
+        options: [
+          'True body segmentation with paired paddle-like parapodia and chitinous bristles (setae), plus a closed circulatory system',
+          'An unsegmented muscular foot, visceral mass, and shell-secreting mantle',
+          'Five-part pentaradial symmetry and internal calcareous ossicles',
+          'Ten jointed decapod legs covered by a fused dorsal carapace'
+        ],
+        correct: 0,
+        hint: 'Polychaeta literally means "many bristles" — look for repeated segments and paddle-like lateral appendages!',
+        explain: 'Correct! Class Polychaeta annelids feature repeated body segments bearing paired parapodia and chitinous setae used for crawling, swimming, burrowing, and gas exchange.',
+        guideSummary: 'Segmented bilateral annelids; closed circulatory system; paired lateral parapodia with chitinous setae bristles.'
+      },
+      {
+        id: 'oyster', zone: 1, x: 740, y: 710, art: 'oyster',
+        name: 'Eastern Oyster Reef (Crassostrea)',
+        taxonomy: 'Phylum Mollusca • Class Bivalvia • Estuarine Ecosystem Engineer',
+        obs: 'Dense cluster of rough two-valved shells cemented onto estuarine rock, clearing murky water so nearby eelgrass receives sunlight.',
+        question: 'How has Class Bivalvia modified the ancestral molluscan body plan to specialize as a high-volume suspension filter feeder?',
+        options: [
+          'Bivalves evolved 8 sucker-lined arms and a venomous chitinous beak',
+          'Bivalves retained the mantle and foot, but lost a distinct head and radula, using enlarged ciliated gills to filter plankton (up to 50 gal/day)',
+          'Bivalves shed their hinged valves every summer through crustacean ecdysis',
+          'Bivalves pump water through a madreporite into hydraulic tube feet'
+        ],
+        correct: 1,
+        hint: 'Remember Question 6 from Unit 3: almost all mollusks have a toothed radula EXCEPT one filter-feeding class!',
+        explain: 'Exactly! Bivalves have two hinged CaCO3 valves secreted by the mantle, adductor muscles, and enlarged ciliated filter-feeding gills, having lost both the head and the radula.',
+        guideSummary: 'Two hinged valves (umbo + adductor muscles), muscular foot, visceral mass, mantle; NO head or radula; filters up to 50 gal/day & builds reefs.'
+      },
+      {
+        id: 'conch', zone: 1, x: 1090, y: 725, art: 'conch',
+        name: 'Queen Conch Snail (Aliger gigas)',
+        taxonomy: 'Phylum Mollusca • Class Gastropoda • Grazer',
+        obs: 'Large single spiral CaCO3 shell gliding steadily over sandy seagrass beds on a broad ventral muscular foot while rasping microalgae.',
+        question: 'Which specialized feeding organ inside a gastropod\'s mouth acts like a microscopic toothed conveyor belt to scrape algae (or inject venom in cone snails)?',
+        options: [
+          'Aristotle\'s lantern five-tooth jaw',
+          'The toothed chitinous radula',
+          'Feathery thoracic cirri',
+          'Flagellated choanocyte collars'
+        ],
+        correct: 1,
+        hint: 'Think of the signature ribbon-like rasping tongue shared by Gastropods and Cephalopods in Phylum Mollusca!',
+        explain: 'Right! The radula is a chitinous, ribbon-like tongue lined with microscopic teeth used by herbivorous gastropods to graze algae and modified into a venom harpoon in predatory cone snails.',
+        guideSummary: 'Class Gastropoda ("stomach-foot"): single coiled shell, cephalized head, ventral crawling foot, and toothed radula.'
+      },
+      {
+        id: 'crab', zone: 1, x: 1360, y: 660, art: 'crab',
+        name: 'Atlantic Blue Crab (Callinectes sapidus)',
+        taxonomy: 'Phylum Arthropoda • Subphylum Crustacea • Order Decapoda',
+        obs: 'Armored decapod crustacean hiding among dense eelgrass blades right after backing out of its old, split outer shell.',
+        question: 'Why must crustaceans periodically shed their chitin/CaCO3 exoskeleton (molting / ecdysis), and what major survival trade-off does this create?',
+        options: [
+          'A rigid exoskeleton cannot grow continuously, so the crab must molt to expand in size—leaving it soft-shelled and highly vulnerable to predators until the new cuticle calcifies',
+          'Molting switches the adult crab from bilateral symmetry to pentaradial symmetry',
+          'Crabs molt only to release broadcast-spawned medusae into the water column',
+          'Molting replaces jointed legs with hydraulic echinoderm tube feet'
+        ],
+        correct: 0,
+        hint: 'Think about why an external suit of armor limits body growth and why "soft-shell crabs" hide in seagrass!',
+        explain: 'Spot on! Because a chitinous exoskeleton does not expand once hardened, arthropods must undergo ecdysis (molting) to grow, creating an intense predation-risk window while soft.',
+        guideSummary: 'Subphylum Crustacea (Decapoda): fused carapace over cephalothorax, 2 pairs antennae, pincer chelipeds, paddle swimmerets, chitin exoskeleton + ecdysis.'
+      },
+
+      // ZONE 2
+      {
+        id: 'octopus', zone: 2, x: 420, y: 560, art: 'octopus', hazard: 'ink',
+        name: 'Common Reef Octopus (Octopus vulgaris)',
+        taxonomy: 'Phylum Mollusca • Class Cephalopoda • Active Predator',
+        obs: 'Soft-bodied predator matching the exact color and texture of a kelp-covered boulder in 0.3 seconds before jetting away with a puff of dark ink.',
+        question: 'Evolutionarily, how did Class Cephalopoda become agile, intelligent apex invertebrate predators compared to slow-moving snails and clams?',
+        options: [
+          'They fused two heavy external shells together and cemented themselves to rocks',
+          'They reduced or lost the heavy external shell, evolving mantle-siphon jet propulsion, camera-like eyes, sucker arms, a beak, ink decoys, and millisecond chromatophore camouflage',
+          'They evolved a water vascular system and calcareous dermal ossicles',
+          'They lost cephalization and switched to sessile suspension feeding'
+        ],
+        correct: 1,
+        hint: 'Consider how losing a heavy snail shell unlocked speed, intelligence, and dynamic skin-pigment camouflage!',
+        explain: 'Brilliant! Cephalopods ("head-foot") traded external shell armor for high-speed siphon jet propulsion, complex brains/camera eyes, chitinous beaks, melanin ink, and neural chromatophore control.',
+        guideSummary: 'Class Cephalopoda: reduced/absent shell, siphon jet propulsion, 8 sucker arms, beak/radula, camera eyes, chromatophores, ink sac, maternal egg brooding.'
+      },
+      {
+        id: 'barnacle', zone: 2, x: 760, y: 390, art: 'barnacle',
+        name: 'Acorn Barnacle Colony (Balanus)',
+        taxonomy: 'Phylum Arthropoda • Subphylum Crustacea • Infraclass Cirripedia',
+        obs: 'Volcano-shaped calcareous plates cemented permanently to rocky reefs, rhythmically sweeping feathery jointed appendages through passing currents.',
+        question: 'Wait—barnacles look like tiny shells, so why are they classified as Crustaceans (Arthropoda), and how do sessile adults colonize distant rocks?',
+        options: [
+          'They have choanocytes and reproduce only by asexual sponge fragmentation',
+          'Inside their plates they have segmented bodies and sweep jointed chitinous legs (cirri) to filter plankton, dispersing to new habitats via free-swimming planktonic larvae',
+          'They possess five ambulacral grooves and crawl at night on tube feet',
+          'They are gastropod snails that lost their radula'
+        ],
+        correct: 1,
+        hint: 'Famous zoologist Louis Agassiz described a barnacle as "nothing more than a little shrimp-like animal standing on its head in a limestone house and kicking food into its mouth"!',
+        explain: 'Exactly! Barnacles are sessile crustaceans with jointed feathery legs (cirri) and typical crustacean planktonic larvae (nauplius/cyprid) that swim to new substrates before cementing head-first.',
+        guideSummary: 'Sessile crustaceans (Cirripedia) inside calcareous plates; filter-feed with feathery jointed cirri; disperse via swimming planktonic larvae.'
+      },
+      {
+        id: 'seastar', zone: 2, x: 1090, y: 695, art: 'seastar',
+        name: 'Sunflower / Ochre Sea Star (Asteroidea)',
+        taxonomy: 'Phylum Echinodermata • Class Asteroidea • Keystone Predator',
+        obs: 'Five-armed predator clinging tightly to mussel-covered rock via hundreds of suction-cupped feet pressurized through an aboral sieve plate.',
+        question: 'What proves that pentaradial adult sea stars evolved from bilateral ancestors, and how does their unique hydraulic system open bivalve prey?',
+        options: [
+          'Their planktonic larvae are bilaterally symmetrical; as adults, seawater enters the madreporite to pressurize ampullae and hydraulic tube feet that pry shells open 0.1 mm for the everted cardiac stomach',
+          'Adults have cephalized heads with antennae and crush shells using Aristotle\'s lantern',
+          'Larvae are asymmetrical sponges; adults sting mussels with nematocysts',
+          'They shed chitin exoskeletons and jet-propel with a mantle siphon'
+        ],
+        correct: 0,
+        hint: 'Check Lesson 3: compare larval vs. adult symmetry in Echinodermata, and trace Madreporite → Canals → Ampullae → Tube Feet!',
+        explain: '100% accurate! Echinoderms have bilaterally symmetrical larvae (confirming bilateral ancestry) and pentaradial adults powered by the hydraulic water vascular system and internal CaCO3 ossicles.',
+        guideSummary: 'Bilateral larvae → pentaradial adults; endoskeleton of CaCO3 ossicles + catch collagen; water vascular system (madreporite → ampullae → tube feet); arm regeneration.'
+      },
+      {
+        id: 'cucumber', zone: 2, x: 1380, y: 735, art: 'cucumber',
+        name: 'Sea Cucumber & Purple Sea Urchin',
+        taxonomy: 'Phylum Echinodermata • Classes Holothuroidea & Echinoidea',
+        obs: 'Soft elongated sea cucumber vacuuming organic sediment beside a spiny spherical urchin grazing giant kelp holdfasts.',
+        question: 'Why are ALL echinoderms exclusively marine (never freshwater), and how do sea cucumbers feed and defend themselves when attacked by a predator?',
+        options: [
+          'They require freshwater to molt; sea cucumbers sting with cnidocytes',
+          'They lack osmoregulatory organs (isotonic with ~35 ppt seawater); sea cucumbers are benthic deposit feeders that defend themselves via evisceration—ejecting internal organs as a decoy and regenerating them',
+          'They breathe air at low tide; sea cucumbers escape via melanin ink clouds',
+          'They are filter-feeding bivalves that clamp two hinged shells shut'
+        ],
+        correct: 1,
+        hint: 'Recall Lesson 3 & 4: isotonic internal fluids keep echinoderms in 35 ppt ocean water, and sea cucumbers have one of the wildest organ-regenerating defenses in nature!',
+        explain: 'Awesome work! Echinoderms are strictly marine (isotonic with seawater); Holothuroidea recycle seafloor nutrients as deposit feeders and can eject/regenerate sticky internal organs (evisceration).',
+        guideSummary: 'Exclusively marine phylum; Holothuroidea = deposit feeders w/ evisceration defense; Echinoidea = herbivorous grazers w/ Aristotle\'s lantern jaws.'
+      }
+    ];
+
+    // ==================== 4. LESSON 5 OFFICIAL DICHOTOMOUS KEY DATA ====================
+    const COUPLETS = {
+      1: {
+        a: { text: 'Body is asymmetrical or irregular with numerous tiny surface pores (ostia) and larger exit openings (oscula); no mouth, tentacles, organs, or nervous system; skeleton of spicules or spongin.', result: 'Phylum PORIFERA (Sponges)' },
+        b: { text: 'Body has definite symmetry (radial, pentaradial, or bilateral) with true tissues and a mouth.', next: 2 }
+      },
+      2: {
+        a: { text: 'Adult body has radial or five-part (pentaradial) symmetry around a central axis; no distinct left/right sides or head.', next: 3 },
+        b: { text: 'Adult body has bilateral symmetry (distinct left and right sides, anterior/posterior ends, or coiled/hinged shell).', next: 4 }
+      },
+      3: {
+        a: { text: 'Body is soft/gelatinous or secretes an external stony CaCO3 cup/corallite; mouth surrounded by flexible tentacles armed with stinging cnidocytes; single body opening; NO tube feet.', result: 'Phylum CNIDARIA (Class Anthozoa / Scyphozoa)' },
+        b: { text: 'Body has 5-part (pentaradial) symmetry with spiny internal calcareous ossicles; rows of hydraulic tube feet in ambulacral grooves and an aboral sieve plate (madreporite).', result: 'Phylum ECHINODERMATA (Class Asteroidea)' }
+      },
+      4: {
+        a: { text: 'Body is elongated, soft, and worm-like without a hard shell or jointed legs; divided into many repeated ring-like segments, each bearing lateral paddle-like parapodia and bristles (setae).', result: 'Phylum ANNELIDA, Class Polychaeta' },
+        b: { text: 'Body is NOT a segmented bristle-worm; possesses either a muscular foot/mantle (with shell or sucker arms) OR a segmented chitinous exoskeleton with jointed appendages.', next: 5 }
+      },
+      5: {
+        a: { text: 'Body possesses a segmented external skeleton (exoskeleton) of chitin/CaCO3 and paired, jointed appendages (legs, pincer chelipeds, antennae, or cirri).', result: 'Phylum ARTHROPODA, Subphylum Crustacea' },
+        b: { text: 'Body is soft and unsegmented with a muscular foot and mantle (no jointed legs); has 1 coiled shell, 2 hinged shells, or 8–10 sucker-lined arms/tentacles.', result: 'Phylum MOLLUSCA (Class Cephalopoda / Bivalvia)' }
+      }
+    };
+
+    const LAB_SPECIMENS = [
+      {
+        code: 'Specimen A', art: 'sponge', path: ['1a'],
+        answerTitle: 'Phylum Porifera (Marine Tube Sponge)',
+        morph: [
+          'Symmetry: Irregular / Asymmetrical (no left/right or central axis)',
+          'Surface: Covered in microscopic ostia pores + 2 large oscula chimneys',
+          'Skeleton: Rough microscopic silica spicules & fibrous spongin; no mouth or organs'
+        ],
+        wrongTip: 'Examine symmetry & tissues first: Specimen A has NO mouth, NO true tissues, and irregular porous walls!'
+      },
+      {
+        code: 'Specimen B', art: 'coral', path: ['1b', '2a', '3a'],
+        answerTitle: 'Phylum Cnidaria, Class Anthozoa (Stony Coral)',
+        morph: [
+          'Symmetry: Cylindrical polyps with radial symmetry around central mouth',
+          'Appendages: Ring of soft tentacles armed with microscopic stinging cnidocytes',
+          'Skeleton: External stony CaCO3 corallite cups; single gut opening; NO tube feet'
+        ],
+        wrongTip: 'Notice Specimen B has true tissues & radial polyps around a central mouth, with stinging tentacles and NO hydraulic tube feet!'
+      },
+      {
+        code: 'Specimen C', art: 'seastar', path: ['1b', '2a', '3b'],
+        answerTitle: 'Phylum Echinodermata, Class Asteroidea (Ochre Sea Star)',
+        morph: [
+          'Symmetry: Adult displays 5-part pentaradial symmetry around central disc (no head)',
+          'Aboral Surface: Spiny dermal CaCO3 ossicles + off-center sieve plate (madreporite)',
+          'Oral Surface (Flip View!): Central mouth + 5 ambulacral grooves packed with hydraulic tube feet'
+        ],
+        wrongTip: 'Flip Specimen C between Oral and Aboral views! Notice the 5-part radial body, aboral madreporite, and rows of hydraulic tube feet.'
+      },
+      {
+        code: 'Specimen D', art: 'polychaete', path: ['1b', '2b', '4a'],
+        answerTitle: 'Phylum Annelida, Class Polychaeta (Nereis Clamworm)',
+        morph: [
+          'Symmetry: Distinct bilateral symmetry with anterior sensory head & posterior tail',
+          'Body Plan: Soft, elongated body divided into dozens of repeated ring-like segments',
+          'Appendages: Every segment bears paired paddle-like parapodia with chitinous setae bristles'
+        ],
+        wrongTip: 'Specimen D has left/right bilateral symmetry with an anterior head, and its body is a soft segmented worm with lateral parapodia!'
+      },
+      {
+        code: 'Specimen E', art: 'squid', path: ['1b', '2b', '4b', '5b'],
+        answerTitle: 'Phylum Mollusca, Class Cephalopoda (Humboldt Squid)',
+        morph: [
+          'Symmetry: Streamlined bilateral body with large vertebrate-like camera eyes',
+          'Body Plan: Unsegmented muscular mantle + siphon funnel (internal chitinous pen, no external shell)',
+          'Appendages: 8 sucker-lined arms + 2 long feeding tentacles surrounding a chitinous beak (no jointed legs)'
+        ],
+        wrongTip: 'Check carefully: Specimen E is bilaterally symmetrical, NOT a segmented bristle-worm, and has soft sucker-lined arms/mantle rather than jointed chitinous legs!'
+      },
+      {
+        code: 'Specimen F', art: 'crab', path: ['1b', '2b', '4b', '5a'],
+        answerTitle: 'Phylum Arthropoda, Subphylum Crustacea (Blue Crab)',
+        morph: [
+          'Symmetry: Bilateral symmetry with anterior stalked compound eyes & 2 pairs of antennae',
+          'Skeleton: Rigid external chitin/CaCO3 carapace shield covering cephalothorax',
+          'Appendages: 5 pairs of jointed appendages (1st pair pincer chelipeds, last pair paddle swimmerets)'
+        ],
+        wrongTip: 'Look at the skeleton and legs: Specimen F wears a rigid external chitin carapace and walks on paired, jointed appendages!'
+      }
+    ];
+
+    // ==================== 5. PHASE 3B CRISIS STATIONS DATA ====================
+    const CRISIS_STATIONS = [
+      {
+        id: 'kelp',
+        title: 'Crisis 1: California Kelp Forest Collapse',
+        metricLabel: 'Giant Kelp Canopy & Trophic Balance',
+        startVal: 18,
+        scenario: 'Sea Star Wasting Syndrome decimated keystone predator Pycnopodia (Sunflower Sea Stars). Unchecked purple sea urchins devoured giant kelp holdfasts, turning a biodiverse forest into an "urchin barren." (Contrast: On Caribbean coral reefs, grazing Diadema urchins HELP corals by eating macroalgae!)',
+        options: [
+          'Introduce invasive macroalgae to feed the purple urchins',
+          'Restore top-down keystone predation (captive-bred Pycnopodia sea stars & sea otter protection) + targeted urchin culling so giant kelp holdfasts recover',
+          'Remove all filter-feeding bivalves from nearby estuaries',
+          'Lower seawater pH to dissolve kelp pneumatocysts'
+        ],
+        correct: 1,
+        explain: 'Ecosystem Restored! In kelp forests, kelp IS the foundational habitat builder—restoring keystone predators (Sunflower Sea Stars) controls grazing purple urchins and halts trophic collapse.'
+      },
+      {
+        id: 'estuary',
+        title: 'Crisis 2: Turbid Eutrophic Estuary',
+        metricLabel: 'Water Clarity & Seagrass Light Penetration',
+        startVal: 22,
+        scenario: 'Overharvesting removed 95% of native oyster reefs in a coastal bay. Phytoplankton blooms and suspended sediment block sunlight from underwater seagrass nurseries, while storm waves erode the shoreline.',
+        options: [
+          'Construct protected 3D Eastern Oyster living shoreline reefs—each adult bivalve filters up to 50 gallons/day via ciliated gills while buffering wave energy',
+          'Release Scyphozoan jellyfish medusae to sting suspended silt particles',
+          'Dredge the remaining seagrass roots to deepen the channel',
+          'Harvest polychaete worms to stop sediment bioturbation'
+        ],
+        correct: 0,
+        explain: 'Water Clarity Restored! Bivalve oysters are dual ecosystem engineers: suspension filter-feeding clears water for photosynthetic seagrass, and biogenic CaCO3 shells form storm-buffering habitat.'
+      },
+      {
+        id: 'acid',
+        title: 'Crisis 3: Ocean Acidification (pH 7.75)',
+        metricLabel: 'Carbonate Ion Availability & Larval Shell Survival',
+        startVal: 20,
+        scenario: 'Excess atmospheric CO2 dissolving into seawater forms carbonic acid, lowering ocean pH and depleting carbonate ions (CO3²⁻). Hatchery bivalve oyster larvae, stony coral polyps, and echinoderm ossicles are failing to calcify their CaCO3 skeletons.',
+        options: [
+          'Increase coastal fossil-fuel emissions to warm the hatchery water faster',
+          'Force crustaceans and bivalves to build silica sponge spicules instead of CaCO3',
+          'Cut CO2 emissions globally while buffering hatchery seawater chemistry and co-culturing photosynthetic seagrass/kelp ("blue carbon" phytoremediation) to locally raise pH for calcifying larvae',
+          'Eliminate zooxanthellae from stony corals so polyps stop calcifying'
+        ],
+        correct: 2,
+        explain: 'Calcifier Resilience Active! Cutting CO2 tackles the root cause of ocean acidification, while local carbonate buffering and seagrass/kelp photosynthesis locally elevate pH during vulnerable larval shell formation.'
+      }
+    ];
+
+    const CER_VOCAB_TERMS = [
+      'choanocytes', 'ostia', 'osculum', 'cnidocytes', 'nematocysts', 'zooxanthellae',
+      'parapodia', 'radula', 'mantle', 'chromatophores', 'exoskeleton', 'ecdysis',
+      'molting', 'pentaradial', 'water vascular system', 'tube feet', 'madreporite',
+      'ossicles', 'filter feeder', 'keystone', 'acidification', 'calcium carbonate'
+    ];
+
+    // ==================== 6. PERSISTENT GAME STATE ====================
+    const STORAGE_KEY = 'pelagia_marine_bio_u3_v1';
+    const state = {
+      studentName: '',
+      studentPeriod: '',
+      rovColor: '#f5a623',
+      activePhase: 'view-dive',
+      currentZone: 0,
+      hull: 100,
+      streak: 1,
+      headlamp: true,
+      elapsedSec: 0,
+      // Phase 1: { [speciesId]: { attempts: number, solved: bool, pts: number, missedFirst: bool } }
+      scans: {},
+      // Phase 2: { [idx]: { mistakes: number, solved: bool, pts: number } }
+      lab: {},
+      activeLabIdx: 0,
+      currentCouplet: 1,
+      coupletTrail: [],
+      scopeFlipped: false,
+      scopeZoomed: false,
+      // Phase 3A & 3B
+      matrixSelections: { octoFeed: '', octoDef: '', starFeed: '', starDef: '', crabFeed: '', crabDef: '' },
+      score3A: 0,
+      crisisSolved: {}, // { [stationId]: { attempts, pts, solved } }
+      // Phase 4 CER
+      cerPrompt: 'A',
+      cerClaim: '',
+      cerEvidence: '',
+      cerReasoning: '',
+      scoreCER: 0
+    };
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (e) {}
+      refreshAllScoreUI();
+    }
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return false;
+        const parsed = JSON.parse(raw);
+        Object.assign(state, parsed);
+        return true;
+      } catch (e) { return false; }
+    }
+
+    // ==================== 7. SCORE & CRYPTOGRAPHIC VERIFICATION ENGINE ====================
+    function getScores() {
+      const p1 = Object.values(state.scans).reduce((s, v) => s + (v.pts || 0), 0);
+      const p2 = Object.values(state.lab).reduce((s, v) => s + (v.pts || 0), 0);
+      const p3b = Object.values(state.crisisSolved).reduce((s, v) => s + (v.pts || 0), 0);
+      const p3 = (state.score3A || 0) + p3b;
+      const p4 = state.scoreCER || 0;
+      const total = p1 + p2 + p3 + p4;
+      return { p1, p2, p3a: state.score3A || 0, p3b, p3, p4, total };
+    }
+
+    function getRankTitle(total) {
+      if (total >= 93) return 'Chief Benthic Taxonomist (Mastery A)';
+      if (total >= 85) return 'Senior ROV Marine Biologist (Proficient B+)';
+      if (total >= 75) return 'Research Vessel Specialist (Developing C+)';
+      if (total >= 60) return 'Expedition Field Intern';
+      return 'Cadet Diver (Expedition In Progress)';
+    }
+
+    // Deterministic FNV-1a checksum so teacher can verify code without a backend
+    function computeChecksum(payload) {
+      let h = 0x811c9dc5;
+      const salted = payload + '|SCA-MARINE-BIO-U3-2026';
+      for (let i = 0; i < salted.length; i++) {
+        h ^= salted.charCodeAt(i);
+        h = Math.imul(h, 0x01000193);
+      }
+      return (h >>> 0).toString(36).toUpperCase().padStart(7, '0').slice(0, 6);
+    }
+
+    function generateVerificationCode() {
+      const cleanName = (state.studentName || '').trim();
+      if (!cleanName) return 'ENTER STUDENT NAME TO GENERATE VERIFICATION CODE';
+      const initials = cleanName.replace(/[^a-zA-Z]/g, '').toUpperCase().slice(0, 4).padEnd(4, 'X');
+      const per = (state.studentPeriod || 'P0').replace(/[^a-zA-Z0-9]/g, '').toUpperCase().slice(0, 4) || 'P0';
+      const sc = getScores();
+      const mins = Math.max(1, Math.floor(state.elapsedSec / 60));
+      const core = `MB3-${initials}-${per}-${sc.total}-${sc.p1}.${sc.p2}.${sc.p3}.${sc.p4}-${mins}M`;
+      const sig = computeChecksum(core);
+      return `${core}-${sig}`;
+    }
+
+    function verifyTeacherCode(codeStr) {
+      const trimmed = (codeStr || '').trim().toUpperCase();
+      const lastDash = trimmed.lastIndexOf('-');
+      if (!trimmed.startsWith('MB3-') || lastDash < 10) {
+        return { valid: false, msg: 'Invalid code format. Expected format starting with MB3-... followed by 6-character checksum.' };
+      }
+      const core = trimmed.slice(0, lastDash);
+      const sig = trimmed.slice(lastDash + 1);
+      const expected = computeChecksum(core);
+      if (sig !== expected) {
+        return { valid: false, msg: `CHECKSUM MISMATCH! Provided signature (${sig}) does not match cryptographic calculation. Score or text may have been altered.` };
+      }
+      const parts = core.split('-');
+      // MB3, INITIALS, PER, TOTAL, P1.P2.P3.P4, MINS
+      const [prefix, initTag, perTag, totalStr, subStr, minTag] = parts;
+      const subs = (subStr || '').split('.');
+      return {
+        valid: true,
+        msg: `AUTHENTIC VERIFIED SUBMISSION! Student Tag: ${initTag} | Period: ${perTag} | Total Score: ${totalStr}/100 (Phase 1 Dive: ${subs[0]}/36, Phase 2 Key Lab: ${subs[1]}/24, Phase 3 Crisis: ${subs[2]}/25, Phase 4 CER: ${subs[3]}/15) | Active Time: ${minTag}.`
+      };
+    }
+
+    // ==================== 8. CANVAS 2D ROV UNDERWATER ENGINE ====================
+    const canvas = document.getElementById('rov-canvas');
+    const ctx = canvas.getContext('2d');
+    const WORLD_W = 1580;
+    const WORLD_H = 860;
+
+    const rov = {
+      x: 180, y: 260, vx: 0, vy: 0,
+      facing: 1, tilt: 0, propAngle: 0,
+      targetX: null, targetY: null, autoScanId: null,
+      scanPulse: 0, invuln: 0
+    };
+
+    const keys = {};
+    const bubbles = [];
+    const inkClouds = [];
+    const motes = [];
+    const planktonSnow = Array.from({ length: 65 }, () => ({
+      x: Math.random() * WORLD_W,
+      y: Math.random() * WORLD_H,
+      r: 1 + Math.random() * 2.2,
+      sp: 8 + Math.random() * 16
+    }));
+
+    function spawnZoneMotes() {
+      motes.length = 0;
+      for (let i = 0; i < 8; i++) {
+        motes.push({
+          x: 220 + i * 175 + (Math.random() * 60 - 30),
+          y: 180 + Math.random() * 440,
+          collected: false,
+          phase: Math.random() * Math.PI * 2
+        });
+      }
+    }
+    spawnZoneMotes();
+
+    function showDiveToast(msg) {
+      const el = document.getElementById('dive-toast');
+      el.textContent = msg;
+      el.classList.add('visible');
+      clearTimeout(showDiveToast._t);
+      showDiveToast._t = setTimeout(() => el.classList.remove('visible'), 2900);
+    }
+
+    function setComms(text) {
+      document.getElementById('vance-comms').textContent = `"${text}"`;
+    }
+
+    // Keyboard & Pointer Listeners
+    window.addEventListener('keydown', (e) => {
+      const tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : '';
+      if (tag === 'input' || tag === 'textarea' || tag === 'select') return;
+      keys[e.code] = true;
+      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(e.code) && state.activePhase === 'view-dive' && !isAnyModalOpen()) {
+        e.preventDefault();
+      }
+      if (e.code === 'Space' && state.activePhase === 'view-dive' && !isAnyModalOpen()) {
+        tryScanNearest();
+      }
+      if (e.code === 'KeyF' && state.activePhase === 'view-dive' && !isAnyModalOpen()) {
+        state.headlamp = !state.headlamp;
+        showDiveToast(`ROV Dual Headlamps: ${state.headlamp ? 'ON' : 'OFF'}`);
+      }
+    });
+
+    window.addEventListener('keyup', (e) => {
+      keys[e.code] = false;
+    });
+
+    function isAnyModalOpen() {
+      return document.querySelectorAll('.modal-backdrop.open').length > 0;
+    }
+
+    function getCamera() {
+      const cw = canvas.width;
+      const ch = canvas.height;
+      const camX = Math.max(0, Math.min(WORLD_W - cw, rov.x - cw / 2));
+      const camY = Math.max(0, Math.min(WORLD_H - ch, rov.y - ch / 2));
+      return { camX, camY };
+    }
+
+    canvas.addEventListener('pointerdown', (e) => {
+      SoundFX.init();
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+      const { camX, camY } = getCamera();
+      const wx = (e.clientX - rect.left) * scaleX + camX;
+      const wy = (e.clientY - rect.top) * scaleY + camY;
+
+      // Check if clicked directly on a zone organism
+      const zoneOrgs = getZoneOrganisms(state.currentZone);
+      let clickedOrg = null;
+      for (const org of zoneOrgs) {
+        const pos = getAnimatedOrgPos(org, performance.now() / 1000);
+        if (Math.hypot(wx - pos.x, wy - pos.y) < 58) {
+          clickedOrg = org;
+          break;
+        }
+      }
+
+      if (clickedOrg) {
+        const pos = getAnimatedOrgPos(clickedOrg, performance.now() / 1000);
+        if (Math.hypot(rov.x - pos.x, rov.y - pos.y) <= 145) {
+          openBioScanModal(clickedOrg);
+        } else {
+          rov.targetX = pos.x - 65;
+          rov.targetY = pos.y - 25;
+          rov.autoScanId = clickedOrg.id;
+          showDiveToast(`Autopilot locked onto ${clickedOrg.name.split('(')[0].trim()}...`);
+        }
+      } else {
+        rov.targetX = Math.max(55, Math.min(WORLD_W - 55, wx));
+        rov.targetY = Math.max(85, Math.min(WORLD_H - 95, wy));
+        rov.autoScanId = null;
+      }
+    });
+
+    function getZoneOrganisms(z) {
+      return SPECIES_DATA.filter(s => s.zone === z);
+    }
+
+    function getAnimatedOrgPos(org, t) {
+      let x = org.x;
+      let y = org.y;
+      if (org.id === 'jelly') {
+        y = org.y + Math.sin(t * 1.5) * 95;
+        x = org.x + Math.cos(t * 0.7) * 45;
+      } else if (org.id === 'flatworm') {
+        x = org.x + Math.sin(t * 0.9) * 75;
+        y = org.y + Math.cos(t * 1.4) * 28;
+      } else if (org.id === 'polychaete') {
+        x = org.x + Math.sin(t * 1.2) * 65;
+        y = org.y + Math.sin(t * 2.1) * 22;
+      } else if (org.id === 'crab') {
+        x = org.x + Math.sin(t * 1.6) * 52;
+      } else if (org.id === 'octopus') {
+        x = org.x + Math.cos(t * 0.85) * 58;
+        y = org.y + Math.sin(t * 1.1) * 34;
+      }
+      return { x, y };
+    }
+
+    function findNearestScannable(t) {
+      const orgs = getZoneOrganisms(state.currentZone);
+      let best = null;
+      let bestDist = 148;
+      for (const org of orgs) {
+        const p = getAnimatedOrgPos(org, t);
+        const d = Math.hypot(rov.x - p.x, rov.y - p.y);
+        if (d < bestDist) {
+          bestDist = d;
+          best = { org, x: p.x, y: p.y, dist: d };
+        }
+      }
+      return best;
+    }
+
+    function tryScanNearest() {
+      const near = findNearestScannable(performance.now() / 1000);
+      if (near) {
+        rov.scanPulse = 1.0;
+        openBioScanModal(near.org);
+      } else {
+        SoundFX.ping();
+        rov.scanPulse = 1.0;
+        showDiveToast('Move closer to a marine invertebrate (within sonar ring) to Bio-Scan!');
+      }
+    }
+
+    function damageHull(amount, reason) {
+      if (rov.invuln > 0) return;
+      rov.invuln = 1.8;
+      SoundFX.zap();
+      state.hull = Math.max(0, state.hull - amount);
+      if (state.hull <= 0) {
+        state.hull = 100;
+        state.streak = 1;
+        showDiveToast('Nanobot Repair Drone deployed! Hull restored to 100%.');
+        setComms('Hull patched by our support drone! Keep a safe scan distance from Scyphozoan nematocysts.');
+      } else {
+        showDiveToast(`${reason} (-${amount}% Hull)`);
+      }
+      updateDiveHUD();
+    }
+
+    function updateDiveHUD() {
+      const pct = Math.round(state.hull);
+      const bar = document.getElementById('hud-hull-bar');
+      const lbl = document.getElementById('hud-hull-pct');
+      bar.style.width = `${pct}%`;
+      const col = pct > 60 ? 'hsl(157, 68%, 45%)' : (pct > 30 ? 'hsl(39, 93%, 55%)' : 'hsl(12, 80%, 60%)');
+      bar.style.backgroundColor = col;
+      lbl.style.color = col;
+      lbl.textContent = `${pct}%`;
+
+      const zInfo = ZONES[state.currentZone];
+      const calcDepth = (zInfo.depthBase + (rov.y / WORLD_H) * 11.5).toFixed(1);
+      document.getElementById('hud-depth').textContent = `${calcDepth}m`;
+      document.getElementById('hud-streak').textContent = `x${state.streak}`;
+    }
+
+    function updatePhysics(dt, t) {
+      if (state.activePhase !== 'view-dive' || isAnyModalOpen()) return;
+
+      const accel = 650;
+      let ax = 0, ay = 0;
+      if (keys['KeyW'] || keys['ArrowUp']) { ay -= accel; rov.targetX = null; rov.autoScanId = null; }
+      if (keys['KeyS'] || keys['ArrowDown']) { ay += accel; rov.targetX = null; rov.autoScanId = null; }
+      if (keys['KeyA'] || keys['ArrowLeft']) { ax -= accel; rov.facing = -1; rov.targetX = null; rov.autoScanId = null; }
+      if (keys['KeyD'] || keys['ArrowRight']) { ax += accel; rov.facing = 1; rov.targetX = null; rov.autoScanId = null; }
+
+      if (rov.targetX !== null && rov.targetY !== null) {
+        const dx = rov.targetX - rov.x;
+        const dy = rov.targetY - rov.y;
+        const dist = Math.hypot(dx, dy);
+        let openedAuto = false;
+        if (rov.autoScanId) {
+          const targetOrg = SPECIES_DATA.find(s => s.id === rov.autoScanId);
+          if (targetOrg) {
+            const p = getAnimatedOrgPos(targetOrg, t);
+            if (Math.hypot(rov.x - p.x, rov.y - p.y) <= 118) {
+              rov.targetX = null;
+              rov.targetY = null;
+              rov.autoScanId = null;
+              rov.scanPulse = 1.0;
+              openBioScanModal(targetOrg);
+              openedAuto = true;
+            }
+          }
+        }
+        if (!openedAuto) {
+          if (dist < 18) {
+            rov.targetX = null;
+            rov.targetY = null;
+            rov.autoScanId = null;
+          } else {
+            ax = (dx / dist) * accel * 0.96;
+            ay = (dy / dist) * accel * 0.96;
+            if (Math.abs(dx) > 4) rov.facing = dx >= 0 ? 1 : -1;
+          }
+        }
+      }
+
+      // Zone 1 Intertidal Wave Surge subtle current
+      if (state.currentZone === 1 && rov.y < 360) {
+        ax += Math.sin(t * 1.4) * 75;
+      }
+
+      rov.vx = (rov.vx + ax * dt) * Math.pow(0.14, dt);
+      rov.vy = (rov.vy + ay * dt) * Math.pow(0.14, dt);
+      rov.x = Math.max(52, Math.min(WORLD_W - 52, rov.x + rov.vx * dt));
+      rov.y = Math.max(82, Math.min(WORLD_H - 95, rov.y + rov.vy * dt));
+
+      rov.tilt = Math.max(-0.22, Math.min(0.22, (rov.vy / 340) * 0.18));
+      const speed = Math.hypot(rov.vx, rov.vy);
+      rov.propAngle += dt * (6 + speed * 0.06);
+      if (rov.scanPulse > 0) rov.scanPulse = Math.max(0, rov.scanPulse - dt * 1.5);
+      if (rov.invuln > 0) rov.invuln = Math.max(0, rov.invuln - dt);
+
+      // Bubbles from thruster
+      if (speed > 25 && Math.random() < 0.35) {
+        bubbles.push({
+          x: rov.x - rov.facing * 32,
+          y: rov.y + 4 + (Math.random() * 8 - 4),
+          r: 1.8 + Math.random() * 3,
+          vy: -28 - Math.random() * 26,
+          alpha: 0.75
+        });
+      }
+      for (let i = bubbles.length - 1; i >= 0; i--) {
+        bubbles[i].y += bubbles[i].vy * dt;
+        bubbles[i].alpha -= dt * 0.45;
+        if (bubbles[i].alpha <= 0) bubbles.splice(i, 1);
+      }
+
+      // Plankton snow
+      for (const p of planktonSnow) {
+        p.y += p.sp * dt * 0.4;
+        p.x += Math.sin(t + p.y * 0.02) * 8 * dt;
+        if (p.y > WORLD_H - 70) { p.y = 65; p.x = Math.random() * WORLD_W; }
+      }
+
+      // Collectible eDNA motes
+      for (const m of motes) {
+        if (!m.collected && Math.hypot(rov.x - m.x, rov.y - m.y) < 36) {
+          m.collected = true;
+          SoundFX.mote();
+          state.hull = Math.min(100, state.hull + 8);
+          showDiveToast('Collected eDNA Plankton Sample! (+8% ROV Hull)');
+        }
+      }
+
+      // Hazards: Jellyfish Nematocyst Sting & Octopus Ink Cloud
+      for (const org of getZoneOrganisms(state.currentZone)) {
+        const p = getAnimatedOrgPos(org, t);
+        const d = Math.hypot(rov.x - p.x, rov.y - p.y);
+        if (org.hazard === 'sting' && d < 52) {
+          rov.vx = ((rov.x - p.x) / (d || 1)) * 260;
+          rov.vy = ((rov.y - p.y) / (d || 1)) * 260;
+          damageHull(12, 'Scyphozoan Nematocyst Tentacle Sting!');
+        }
+        if (org.hazard === 'ink' && d < 54 && speed > 135 && inkClouds.length < 3) {
+          inkClouds.push({ x: p.x, y: p.y, r: 22, alpha: 0.88 });
+          SoundFX.wrong();
+          showDiveToast('Startled Cephalopod deployed Melanin Ink Decoy!');
+        }
+      }
+
+      for (let i = inkClouds.length - 1; i >= 0; i--) {
+        inkClouds[i].r += dt * 36;
+        inkClouds[i].alpha -= dt * 0.24;
+        if (inkClouds[i].alpha <= 0) inkClouds.splice(i, 1);
+      }
+
+      // Enable/disable Scan button
+      const near = findNearestScannable(t);
+      const scanBtn = document.getElementById('btn-scan-nearest');
+      if (near) {
+        scanBtn.disabled = false;
+        scanBtn.textContent = `Bio-Scan: ${near.org.name.split('(')[0].trim()} [SPACE]`;
+      } else {
+        scanBtn.disabled = true;
+        scanBtn.textContent = 'Move Near Specimen [SPACE]';
+      }
+
+      updateDiveHUD();
+    }
+
+    // ==================== 9. PROCEDURAL UNDERWATER RENDERING ====================
+    function drawWorld(t) {
+      const cw = canvas.width;
+      const ch = canvas.height;
+      const { camX, camY } = getCamera();
+      const z = ZONES[state.currentZone];
+
+      // 1. Pelagic Water Gradient
+      const grad = ctx.createLinearGradient(0, 0, 0, ch);
+      grad.addColorStop(0, z.bgTop);
+      grad.addColorStop(1, z.bgBottom);
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, cw, ch);
+
+      ctx.save();
+      ctx.translate(-camX, -camY);
+
+      // 2. Sunlit Caustic Rays (stronger in Zones 0 & 1, twilight in Zone 2)
+      const rayAlpha = state.currentZone === 2 ? 0.035 : 0.085;
+      ctx.fillStyle = `rgba(140, 238, 255, ${rayAlpha})`;
+      for (let i = 0; i < 9; i++) {
+        const rx = 110 + i * 185 + Math.sin(t * 0.5 + i) * 28;
+        ctx.beginPath();
+        ctx.moveTo(rx, 48);
+        ctx.lineTo(rx + 65, 48);
+        ctx.lineTo(rx + 175, WORLD_H - 90);
+        ctx.lineTo(rx + 45, WORLD_H - 90);
+        ctx.closePath();
+        ctx.fill();
+      }
+
+      // 3. Surface Wave Ribbon
+      ctx.fillStyle = 'rgba(126, 232, 250, 0.22)';
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      for (let x = 0; x <= WORLD_W; x += 40) {
+        ctx.lineTo(x, 48 + Math.sin(x * 0.018 + t * 2.1) * 7);
+      }
+      ctx.lineTo(WORLD_W, 0);
+      ctx.closePath();
+      ctx.fill();
+
+      // 4. Background Habitat Scenery by Zone
+      drawZoneHabitat(state.currentZone, t);
+
+      // 5. Drifting Plankton Snow & Collectible eDNA Motes
+      ctx.fillStyle = 'rgba(205, 244, 255, 0.35)';
+      for (const p of planktonSnow) {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      for (const m of motes) {
+        if (m.collected) continue;
+        const bob = Math.sin(t * 2.6 + m.phase) * 5;
+        ctx.fillStyle = 'rgba(20, 224, 186, 0.24)';
+        ctx.beginPath();
+        ctx.arc(m.x, m.y + bob, 11, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#56f5d5';
+        ctx.beginPath();
+        ctx.arc(m.x, m.y + bob, 4.2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // 6. Draw All 4 Zone Invertebrates Live in Habitat
+      const near = findNearestScannable(t);
+      for (const org of getZoneOrganisms(state.currentZone)) {
+        const pos = getAnimatedOrgPos(org, t);
+        const isScanned = !!(state.scans[org.id] && state.scans[org.id].solved);
+        const isTarget = near && near.org.id === org.id;
+        drawOrganismOnCanvas(org, pos.x, pos.y, t, isScanned, isTarget);
+      }
+
+      // 7. Waypoint Beacon if Click-to-Pilot is Active
+      if (rov.targetX !== null && rov.targetY !== null) {
+        ctx.strokeStyle = 'rgba(21, 195, 218, 0.7)';
+        ctx.lineWidth = 1.6;
+        ctx.setLineDash([4, 4]);
+        ctx.beginPath();
+        ctx.moveTo(rov.x, rov.y);
+        ctx.lineTo(rov.targetX, rov.targetY);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.beginPath();
+        ctx.arc(rov.targetX, rov.targetY, 10 + Math.sin(t * 6) * 3, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      // 8. Bubbles & ROV Submersible + Headlamp Cone
+      for (const b of bubbles) {
+        ctx.strokeStyle = `rgba(186, 240, 255, ${b.alpha})`;
+        ctx.lineWidth = 1.3;
+        ctx.beginPath();
+        ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      drawROV(t);
+
+      // 9. Melanin Ink Clouds
+      for (const ic of inkClouds) {
+        const ig = ctx.createRadialGradient(ic.x, ic.y, 4, ic.x, ic.y, ic.r);
+        ig.addColorStop(0, `rgba(12, 10, 24, ${ic.alpha})`);
+        ig.addColorStop(1, 'rgba(12, 10, 24, 0)');
+        ctx.fillStyle = ig;
+        ctx.beginPath();
+        ctx.arc(ic.x, ic.y, ic.r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      ctx.restore();
+
+      // 10. Corner Sonar Minimap Overlay
+      drawMinimap(cw, ch, t);
+    }
+
+    function drawZoneHabitat(zoneIdx, t) {
+      // Distant reef ridges
+      ctx.fillStyle = zoneIdx === 2 ? '#041929' : '#072c42';
+      ctx.beginPath();
+      ctx.moveTo(0, WORLD_H);
+      for (let x = 0; x <= WORLD_W; x += 120) {
+        ctx.lineTo(x, 665 + Math.sin(x * 0.006 + zoneIdx) * 55);
+      }
+      ctx.lineTo(WORLD_W, WORLD_H);
+      ctx.closePath();
+      ctx.fill();
+
+      // Zone-specific flora & benthic substrates
+      if (zoneIdx === 0) {
+        // Coral Reef Heads & Sea Fans
+        for (let x = 140; x < WORLD_W; x += 260) {
+          ctx.fillStyle = '#143c52';
+          ctx.beginPath();
+          ctx.arc(x, 760, 75, Math.PI, 0);
+          ctx.fill();
+          // Swaying Gorgonian Sea Fan
+          ctx.strokeStyle = 'rgba(242, 122, 94, 0.45)';
+          ctx.lineWidth = 3;
+          const sway = Math.sin(t * 1.6 + x) * 8;
+          ctx.beginPath();
+          ctx.moveTo(x + 60, 755);
+          ctx.quadraticCurveTo(x + 60 + sway, 705, x + 45 + sway, 675);
+          ctx.moveTo(x + 60, 725);
+          ctx.lineTo(x + 80 + sway, 685);
+          ctx.stroke();
+        }
+      } else if (zoneIdx === 1) {
+        // Waving Zostera Eelgrass Meadows & Intertidal Boulders
+        for (let x = 90; x < WORLD_W; x += 48) {
+          if (x > 650 && x < 840) continue; // Oyster ledge clearing
+          const sway = Math.sin(t * 2.1 + x * 0.05) * 14;
+          ctx.strokeStyle = '#1f7a5c';
+          ctx.lineWidth = 4.5;
+          ctx.beginPath();
+          ctx.moveTo(x, 775);
+          ctx.quadraticCurveTo(x + sway * 0.5, 710, x + sway, 650 + (x % 35));
+          ctx.stroke();
+        }
+        // Rocky shore boulders
+        ctx.fillStyle = '#1e2f3d';
+        ctx.beginPath();
+        ctx.arc(740, 765, 95, Math.PI, 0);
+        ctx.arc(1360, 760, 110, Math.PI, 0);
+        ctx.fill();
+      } else if (zoneIdx === 2) {
+        // Towering Macrocystis Giant Kelp Forest w/ Holdfasts & Gas Bladders
+        for (let x = 130; x < WORLD_W; x += 175) {
+          ctx.strokeStyle = '#1f6f54';
+          ctx.lineWidth = 5;
+          ctx.beginPath();
+          ctx.moveTo(x, 770);
+          for (let y = 770; y >= 130; y -= 65) {
+            const sx = x + Math.sin(t * 1.3 + y * 0.012 + x) * 18;
+            ctx.lineTo(sx, y);
+          }
+          ctx.stroke();
+          // Blades & Pneumatocysts
+          for (let y = 690; y >= 170; y -= 80) {
+            const sx = x + Math.sin(t * 1.3 + y * 0.012 + x) * 18;
+            ctx.fillStyle = '#2a8c68';
+            ctx.beginPath();
+            ctx.ellipse(sx + 18, y, 18, 6, 0.25, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#d9a036';
+            ctx.beginPath();
+            ctx.arc(sx + 4, y, 3.2, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+        // Rocky reefs for barnacles & sea stars
+        ctx.fillStyle = '#1a2a3a';
+        ctx.beginPath();
+        ctx.ellipse(760, 445, 72, 34, 0, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // Seafloor Sandy / Benthic Base
+      const floorGrad = ctx.createLinearGradient(0, 745, 0, WORLD_H);
+      floorGrad.addColorStop(0, zoneIdx === 2 ? '#162636' : '#264653');
+      floorGrad.addColorStop(1, '#0b1622');
+      ctx.fillStyle = floorGrad;
+      ctx.beginPath();
+      ctx.moveTo(0, 765);
+      for (let x = 0; x <= WORLD_W; x += 80) {
+        ctx.lineTo(x, 760 + Math.sin(x * 0.015 + zoneIdx * 2) * 14);
+      }
+      ctx.lineTo(WORLD_W, WORLD_H);
+      ctx.lineTo(0, WORLD_H);
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    function drawOrganismOnCanvas(org, x, y, t, isScanned, isTarget) {
+      ctx.save();
+      ctx.translate(x, y);
+
+      // Subtle Bio-Telemetry Halo
+      ctx.strokeStyle = isScanned ? 'rgba(42, 201, 138, 0.55)' : (isTarget ? '#15c3da' : 'rgba(140, 232, 255, 0.26)');
+      ctx.lineWidth = isTarget ? 2.4 : 1.3;
+      ctx.beginPath();
+      ctx.arc(0, 0, isTarget ? 48 + Math.sin(t * 6) * 4 : 42, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Custom Live Procedural Organism Drawing
+      switch (org.id) {
+        case 'sponge': {
+          ctx.fillStyle = '#eab308';
+          ctx.beginPath();
+          ctx.roundRect(-20, -28, 16, 52, 6);
+          ctx.roundRect(2, -20, 16, 44, 6);
+          ctx.fill();
+          ctx.fillStyle = '#1e293b';
+          ctx.beginPath();
+          ctx.ellipse(-12, -27, 6, 2.5, 0, 0, Math.PI * 2);
+          ctx.ellipse(10, -19, 6, 2.5, 0, 0, Math.PI * 2);
+          ctx.fill();
+          // Filtered Osculum Plume
+          ctx.fillStyle = '#7ce8ff';
+          const py = -35 - ((t * 28) % 24);
+          ctx.beginPath();
+          ctx.arc(-12, py, 2.2, 0, Math.PI * 2);
+          ctx.arc(10, py + 8, 2.2, 0, Math.PI * 2);
+          ctx.fill();
+          break;
+        }
+        case 'jelly': {
+          const pulse = Math.sin(t * 4) * 4;
+          ctx.fillStyle = 'rgba(139, 233, 253, 0.42)';
+          ctx.strokeStyle = '#8be9fd';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.arc(0, -4, 26 - pulse * 0.5, Math.PI, 0);
+          ctx.closePath();
+          ctx.fill();
+          ctx.stroke();
+          ctx.strokeStyle = 'rgba(255, 184, 108, 0.85)';
+          ctx.lineWidth = 1.6;
+          for (let k = -18; k <= 18; k += 9) {
+            ctx.beginPath();
+            ctx.moveTo(k, -2);
+            ctx.quadraticCurveTo(k + Math.sin(t * 4 + k) * 6, 18, k, 36);
+            ctx.stroke();
+          }
+          break;
+        }
+        case 'coral': {
+          ctx.strokeStyle = '#f27a5e';
+          ctx.lineWidth = 7;
+          ctx.lineCap = 'round';
+          ctx.beginPath();
+          ctx.moveTo(0, 26); ctx.lineTo(0, -18);
+          ctx.moveTo(0, 6); ctx.lineTo(-22, -16);
+          ctx.moveTo(0, 2); ctx.lineTo(22, -18);
+          ctx.stroke();
+          ctx.fillStyle = '#ffd166';
+          [[-22, -16], [0, -18], [22, -18], [-11, -5], [11, -7]].forEach(([px, py]) => {
+            ctx.beginPath(); ctx.arc(px, py, 2.5, 0, Math.PI * 2); ctx.fill();
+          });
+          break;
+        }
+        case 'flatworm': {
+          ctx.fillStyle = '#14213d';
+          ctx.strokeStyle = '#fca311';
+          ctx.lineWidth = 2.5;
+          ctx.beginPath();
+          ctx.ellipse(0, 0, 26, 12 + Math.sin(t * 5) * 2, 0, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+          ctx.strokeStyle = '#00f5d4';
+          ctx.beginPath(); ctx.moveTo(-18, 0); ctx.lineTo(18, 0); ctx.stroke();
+          break;
+        }
+        case 'polychaete': {
+          for (let s = -3; s <= 3; s++) {
+            const sx = s * 9;
+            const sy = Math.sin(t * 6 + s * 0.9) * 5;
+            ctx.strokeStyle = '#f5a623';
+            ctx.lineWidth = 1.6;
+            ctx.beginPath();
+            ctx.moveTo(sx, sy - 11); ctx.lineTo(sx, sy + 11);
+            ctx.stroke();
+            ctx.fillStyle = '#2ec4b6';
+            ctx.beginPath();
+            ctx.arc(sx, sy, 5, 0, Math.PI * 2);
+            ctx.fill();
+          }
+          break;
+        }
+        case 'oyster': {
+          ctx.fillStyle = '#94a3b8';
+          ctx.strokeStyle = '#e2e8f0';
+          ctx.lineWidth = 1.6;
+          [[-14, 6], [8, 2], [-2, -8]].forEach(([ox, oy]) => {
+            ctx.beginPath();
+            ctx.ellipse(ox, oy, 16, 10, -0.2, 0, Math.PI * 2);
+            ctx.fill(); ctx.stroke();
+          });
+          break;
+        }
+        case 'conch': {
+          ctx.fillStyle = '#f4a261';
+          ctx.beginPath();
+          ctx.ellipse(0, 14, 24, 6, 0, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = '#e76f51';
+          ctx.beginPath();
+          ctx.moveTo(-16, 12); ctx.quadraticCurveTo(0, -20, 18, 10); ctx.closePath();
+          ctx.fill();
+          break;
+        }
+        case 'crab': {
+          ctx.strokeStyle = '#e9c46a';
+          ctx.lineWidth = 2.4;
+          for (let l = -1; l <= 1; l += 2) {
+            ctx.beginPath();
+            ctx.moveTo(l * 12, 2); ctx.lineTo(l * 28, 12);
+            ctx.moveTo(l * 12, -2); ctx.lineTo(l * 24, -16);
+            ctx.stroke();
+          }
+          ctx.fillStyle = '#2a9d8f';
+          ctx.beginPath();
+          ctx.ellipse(0, 0, 18, 11, 0, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = '#1d70b8';
+          ctx.beginPath();
+          ctx.arc(-24, -16, 5, 0, Math.PI * 2);
+          ctx.arc(24, -16, 5, 0, Math.PI * 2);
+          ctx.fill();
+          break;
+        }
+        case 'octopus': {
+          // Chromatophore color-shifting wave!
+          const hue = 10 + Math.sin(t * 2.2) * 18;
+          ctx.fillStyle = `hsl(${hue}, 74%, 56%)`;
+          ctx.beginPath();
+          ctx.ellipse(0, -10, 16, 13, 0, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.strokeStyle = `hsl(${hue}, 74%, 56%)`;
+          ctx.lineWidth = 3.6;
+          for (let a = -2; a <= 2; a++) {
+            ctx.beginPath();
+            ctx.moveTo(a * 4, 0);
+            ctx.quadraticCurveTo(a * 9 + Math.sin(t * 4 + a) * 5, 14, a * 11, 24);
+            ctx.stroke();
+          }
+          ctx.fillStyle = '#fff';
+          ctx.beginPath(); ctx.arc(-5, -9, 3, 0, Math.PI * 2); ctx.fill();
+          break;
+        }
+        case 'barnacle': {
+          ctx.fillStyle = '#cbd5e1';
+          [[-14, 10], [8, 12]].forEach(([bx, by]) => {
+            ctx.beginPath();
+            ctx.moveTo(bx - 11, by); ctx.lineTo(bx - 5, by - 18);
+            ctx.lineTo(bx + 5, by - 18); ctx.lineTo(bx + 11, by);
+            ctx.closePath(); ctx.fill();
+            // Sweeping cirri
+            const sweep = Math.sin(t * 5 + bx) * 6;
+            ctx.strokeStyle = '#f5a623';
+            ctx.lineWidth = 1.6;
+            ctx.beginPath();
+            ctx.moveTo(bx, by - 18); ctx.quadraticCurveTo(bx + sweep, by - 30, bx + sweep * 1.4, by - 35);
+            ctx.stroke();
+          });
+          break;
+        }
+        case 'seastar': {
+          ctx.fillStyle = '#e76f51';
+          ctx.beginPath();
+          for (let i = 0; i < 10; i++) {
+            const rad = i % 2 === 0 ? 25 : 10;
+            const ang = (i * Math.PI) / 5 - Math.PI / 2;
+            const px = Math.cos(ang) * rad;
+            const py = Math.sin(ang) * rad;
+            if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+          }
+          ctx.closePath();
+          ctx.fill();
+          ctx.fillStyle = '#ffe8d6';
+          ctx.beginPath(); ctx.arc(4, -3, 2.5, 0, Math.PI * 2); ctx.fill();
+          break;
+        }
+        case 'cucumber': {
+          ctx.fillStyle = '#8d5b4c';
+          ctx.beginPath();
+          ctx.roundRect(-26, 2, 34, 14, 7);
+          ctx.fill();
+          ctx.fillStyle = '#4c3575';
+          ctx.beginPath();
+          ctx.arc(20, 6, 9, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.strokeStyle = '#cbd5e1';
+          ctx.lineWidth = 1.3;
+          for (let i = 0; i < 8; i++) {
+            const a = (i / 8) * Math.PI * 2;
+            ctx.beginPath();
+            ctx.moveTo(20, 6);
+            ctx.lineTo(20 + Math.cos(a) * 15, 6 + Math.sin(a) * 15);
+            ctx.stroke();
+          }
+          break;
+        }
+      }
+
+      // Floating Label Tag
+      ctx.font = '600 11.5px Inter, sans-serif';
+      const label = isScanned ? `✓ ${org.name.split('(')[0].trim()}` : (isTarget ? '[SPACE / CLICK] Bio-Scan' : org.name.split('(')[0].trim());
+      const tw = ctx.measureText(label).width + 14;
+      ctx.fillStyle = 'rgba(4, 18, 32, 0.82)';
+      ctx.beginPath();
+      ctx.roundRect(-tw / 2, -56, tw, 20, 5);
+      ctx.fill();
+      ctx.fillStyle = isScanned ? '#5ef2b8' : (isTarget ? '#7ce8ff' : '#e2f1f8');
+      ctx.textAlign = 'center';
+      ctx.fillText(label, 0, -42);
+
+      ctx.restore();
+    }
+
+    function drawROV(t) {
+      ctx.save();
+      ctx.translate(rov.x, rov.y);
+
+      //Expanding Sonar / Scan Pulse Ring
+      if (rov.scanPulse > 0) {
+        const r = (1 - rov.scanPulse) * 175 + 24;
+        ctx.strokeStyle = `rgba(21, 195, 218, ${rov.scanPulse * 0.85})`;
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.arc(0, 0, r, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      ctx.scale(rov.facing, 1);
+      ctx.rotate(rov.tilt);
+
+      // Dual-LED Headlamp Beam
+      if (state.headlamp) {
+        const beam = ctx.createLinearGradient(22, 0, 250, 0);
+        beam.addColorStop(0, state.currentZone === 2 ? 'rgba(255, 244, 180, 0.30)' : 'rgba(255, 244, 180, 0.14)');
+        beam.addColorStop(1, 'rgba(255, 244, 180, 0)');
+        ctx.fillStyle = beam;
+        ctx.beginPath();
+        ctx.moveTo(24, -4);
+        ctx.lineTo(255, -68);
+        ctx.lineTo(255, 68);
+        ctx.lineTo(24, 6);
+        ctx.closePath();
+        ctx.fill();
+      }
+
+      // Bottom Skids & Sampling Basket
+      ctx.strokeStyle = '#94a3b8';
+      ctx.lineWidth = 2.6;
+      ctx.beginPath();
+      ctx.moveTo(-24, 19); ctx.lineTo(24, 19);
+      ctx.moveTo(-14, 12); ctx.lineTo(-14, 19);
+      ctx.moveTo(14, 12); ctx.lineTo(14, 19);
+      ctx.stroke();
+
+      // Rear Spinning Propeller
+      ctx.strokeStyle = '#e2e8f0';
+      ctx.lineWidth = 2.4;
+      const bladeH = Math.sin(rov.propAngle) * 10;
+      ctx.beginPath();
+      ctx.moveTo(-31, -bladeH);
+      ctx.lineTo(-31, bladeH);
+      ctx.stroke();
+
+      // Main ROV Pressure Hull
+      ctx.fillStyle = rov.invuln > 0 && Math.floor(t * 14) % 2 === 0 ? '#ef4444' : state.rovColor;
+      ctx.strokeStyle = '#0f172a';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.roundRect(-28, -15, 52, 28, 11);
+      ctx.fill();
+      ctx.stroke();
+
+      // Panoramic Acrylic Viewport Dome
+      ctx.fillStyle = '#7ce8ff';
+      ctx.beginPath();
+      ctx.arc(16, -1, 10.5, -Math.PI / 2, Math.PI / 2);
+      ctx.fill();
+      ctx.fillStyle = 'rgba(255,255,255,0.65)';
+      ctx.beginPath();
+      ctx.arc(19, -5, 3, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Top Beacon Mast
+      ctx.strokeStyle = '#cbd5e1';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(-6, -15); ctx.lineTo(-6, -24);
+      ctx.stroke();
+      ctx.fillStyle = Math.floor(t * 2) % 2 === 0 ? '#15c3da' : '#f5a623';
+      ctx.beginPath();
+      ctx.arc(-6, -25, 2.8, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.restore();
+    }
+
+    function drawMinimap(cw, ch, t) {
+      const mw = 148, mh = 82;
+      const mx = cw - mw - 14;
+      const my = 14;
+      ctx.save();
+      ctx.fillStyle = 'rgba(3, 15, 28, 0.82)';
+      ctx.strokeStyle = 'rgba(21, 195, 218, 0.45)';
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.roundRect(mx, my, mw, mh, 7);
+      ctx.fill();
+      ctx.stroke();
+
+      // Organism Blips
+      for (const org of getZoneOrganisms(state.currentZone)) {
+        const p = getAnimatedOrgPos(org, t);
+        const bx = mx + (p.x / WORLD_W) * mw;
+        const by = my + (p.y / WORLD_H) * mh;
+        const done = !!(state.scans[org.id] && state.scans[org.id].solved);
+        ctx.fillStyle = done ? '#2dd4bf' : '#fbbf24';
+        ctx.beginPath();
+        ctx.arc(bx, by, 3.2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // ROV Blip
+      const rx = mx + (rov.x / WORLD_W) * mw;
+      const ry = my + (rov.y / WORLD_H) * mh;
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.arc(rx, ry, 3.6, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    // ==================== 10. PHASE 1 BIO-SCAN MODAL & SIDEBAR ====================
+    let activeScanOrg = null;
+
+    function renderZoneSidebar() {
+      const z = ZONES[state.currentZone];
+      document.getElementById('zone-checklist-title').textContent = `${z.name.split(':')[0]} Specimens`;
+      const listEl = document.getElementById('zone-specimen-list');
+      listEl.innerHTML = '';
+
+      for (const org of getZoneOrganisms(state.currentZone)) {
+        const rec = state.scans[org.id];
+        const done = !!(rec && rec.solved);
+        const row = document.createElement('div');
+        row.className = `specimen-row ${done ? 'scanned' : ''}`;
+        row.innerHTML = `
+          <div>
+            <div style="font-weight: 600; color: var(--text-main);">${org.name.split('(')[0].trim()}</div>
+            <div class="specimen-phylum">${done ? org.taxonomy.split('•')[0].trim() : 'Sonar Contact Detected — Click to Pilot'}</div>
+          </div>
+          <span class="status-chip ${done ? 'done' : ''}">${done ? `${rec.pts}/3 pts` : 'LOCATE'}</span>
+        `;
+        row.addEventListener('click', () => {
+          const p = getAnimatedOrgPos(org, performance.now() / 1000);
+          rov.targetX = Math.max(60, p.x - 65);
+          rov.targetY = Math.max(90, p.y - 20);
+          rov.autoScanId = org.id;
+          SoundFX.ping();
+          showDiveToast(`Autopilot navigating to ${org.name.split('(')[0].trim()}...`);
+        });
+        listEl.appendChild(row);
+      }
+
+      // Update 3 Zone Buttons
+      ZONES.forEach((zn, idx) => {
+        const btn = document.getElementById(`btn-zone-${idx}`);
+        const count = getZoneOrganisms(idx).filter(o => state.scans[o.id] && state.scans[o.id].solved).length;
+        const shortLabels = ['Sunlit Coral Reef', 'Seagrass & Rocky Shore', 'Giant Kelp & Shelf'];
+        btn.textContent = `Zone ${idx + 1}: ${shortLabels[idx]} (${count}/4)`;
+        btn.classList.toggle('active', idx === state.currentZone);
+      });
+    }
+
+    function openBioScanModal(org) {
+      activeScanOrg = org;
+      SoundFX.scanOpen();
+      if (!state.scans[org.id]) {
+        state.scans[org.id] = { attempts: 0, solved: false, pts: 0, missedFirst: false };
+      }
+      const rec = state.scans[org.id];
+
+      document.getElementById('scan-svg-box').innerHTML = getOrganismSVG(org.art, false);
+      document.getElementById('scan-taxonomy-line').textContent = org.taxonomy;
+      document.getElementById('scan-modal-title').textContent = org.name;
+      document.getElementById('scan-obs-desc').textContent = org.obs;
+      document.getElementById('scan-question-text').textContent = org.question;
+
+      const optBox = document.getElementById('scan-options-box');
+      const fbBox = document.getElementById('scan-feedback-box');
+      optBox.innerHTML = '';
+      fbBox.className = 'feedback-callout';
+      fbBox.textContent = '';
+
+      org.options.forEach((optText, idx) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'mc-btn';
+        btn.textContent = `${String.fromCharCode(65 + idx)}. ${optText}`;
+        if (rec.solved) {
+          btn.disabled = true;
+          if (idx === org.correct) btn.classList.add('correct');
+        }
+        btn.addEventListener('click', () => handleScanChoice(org, idx, btn));
+        optBox.appendChild(btn);
+      });
+
+      if (rec.solved) {
+        fbBox.className = 'feedback-callout show ok';
+        fbBox.textContent = `Specimen Already Logged (${rec.pts}/3 pts): ${org.explain}`;
+      }
+
+      document.getElementById('modal-scan').classList.add('open');
+    }
+
+    function handleScanChoice(org, idx, clickedBtn) {
+      const rec = state.scans[org.id];
+      if (rec.solved) return;
+      rec.attempts += 1;
+      const fbBox = document.getElementById('scan-feedback-box');
+
+      if (idx === org.correct) {
+        rec.solved = true;
+        rec.pts = rec.attempts === 1 ? 3 : (rec.attempts === 2 ? 2 : 1);
+        state.streak = rec.attempts === 1 ? state.streak + 1 : 1;
+        state.hull = Math.min(100, state.hull + 6);
+        clickedBtn.classList.add('correct');
+        document.querySelectorAll('#scan-options-box .mc-btn').forEach(b => { b.disabled = true; });
+        SoundFX.correct();
+
+        fbBox.className = 'feedback-callout show ok';
+        fbBox.textContent = `+${rec.pts}/3 Assignment Points! ${org.explain} (Unlocked in Field Guide!)`;
+
+        renderZoneSidebar();
+        saveState();
+
+        // Check zone completion
+        const zDone = getZoneOrganisms(state.currentZone).every(o => state.scans[o.id] && state.scans[o.id].solved);
+        const all12 = SPECIES_DATA.every(o => state.scans[o.id] && state.scans[o.id].solved);
+        if (all12) {
+          setComms('All 12 Marine Invertebrates bio-scanned across all 3 zones! Head to Phase 2: Lesson 5 Dichotomous Key Microscope Lab!');
+        } else if (zDone && state.currentZone < 2) {
+          setComms(`Zone ${state.currentZone + 1} survey complete! Switch to Zone ${state.currentZone + 2} on the top bar to continue your dive.`);
+        }
+      } else {
+        if (rec.attempts === 1) rec.missedFirst = true;
+        state.streak = 1;
+        clickedBtn.classList.add('wrong');
+        clickedBtn.disabled = true;
+        SoundFX.wrong();
+        fbBox.className = 'feedback-callout show err';
+        fbBox.textContent = `Not quite — try again for partial credit! Scientific Hint: ${org.hint}`;
+        saveState();
+      }
+    }
+
+    // ==================== 11. PHASE 2: DICHOTOMOUS KEY WET-LAB ====================
+    function renderLabUI() {
+      const tabsEl = document.getElementById('lab-tray-tabs');
+      tabsEl.innerHTML = '';
+      let solvedCount = 0;
+
+      LAB_SPECIMENS.forEach((sp, i) => {
+        const rec = state.lab[i];
+        const solved = !!(rec && rec.solved);
+        if (solved) solvedCount++;
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = `tray-btn ${i === state.activeLabIdx ? 'active' : ''} ${solved ? 'solved' : ''}`;
+        b.textContent = solved ? `✓ ${sp.code} (${rec.pts}/4)` : sp.code;
+        b.addEventListener('click', () => {
+          state.activeLabIdx = i;
+          state.currentCouplet = 1;
+          state.coupletTrail = [];
+          state.scopeFlipped = false;
+          document.getElementById('lab-feedback-box').className = 'feedback-callout';
+          renderLabUI();
+        });
+        tabsEl.appendChild(b);
+      });
+
+      document.getElementById('lab-progress-label').textContent = `${solvedCount} / 6 Identified`;
+
+      const cur = LAB_SPECIMENS[state.activeLabIdx];
+      const holder = document.getElementById('scope-svg-holder');
+      holder.innerHTML = getOrganismSVG(cur.art, state.scopeFlipped);
+      holder.classList.toggle('zoomed', state.scopeZoomed);
+      document.getElementById('scope-view-tag').textContent =
+        `VIEW: ${state.scopeFlipped ? 'VENTRAL / ORAL / INTERNAL' : 'DORSAL / ABORAL'} • ${state.scopeZoomed ? '10x LENS' : '1x'}`;
+
+      document.getElementById('scope-morph-notes').innerHTML = `
+        <div style="font-weight:700; color:var(--text-main); margin-bottom:4px;">${cur.code} — Stereomicroscope Notes:</div>
+        <ul style="margin:0; padding-left:18px;">
+          ${cur.morph.map(m => `<li>${m}</li>`).join('')}
+        </ul>
+      `;
+
+      // Breadcrumb trail
+      const trailEl = document.getElementById('key-breadcrumb-trail');
+      trailEl.innerHTML = state.coupletTrail.length === 0
+        ? `<span class="crumb">Starting at Couplet 1 (1a vs 1b)</span>`
+        : state.coupletTrail.map(c => `<span class="crumb">Step ${c} ✓</span>`).join(' ') +
+          (!(state.lab[state.activeLabIdx] && state.lab[state.activeLabIdx].solved) ? ` <span class="crumb">→ Now at Couplet ${state.currentCouplet}</span>` : '');
+
+      const cBox = document.getElementById('couplet-container');
+      cBox.innerHTML = '';
+      const rec = state.lab[state.activeLabIdx];
+
+      if (rec && rec.solved) {
+        cBox.innerHTML = `
+          <div class="feedback-callout show ok" style="margin-top:0;">
+            <strong>✓ Specimen Classified (${rec.pts}/4 pts): ${cur.answerTitle}</strong><br/>
+            Verified Dichotomous Path: <code>${cur.path.join(' → ')}</code>.<br/>
+            Select the next mystery specimen on the left tray!
+          </div>
+        `;
+        return;
+      }
+
+      const pair = COUPLETS[state.currentCouplet];
+      ['a', 'b'].forEach(letter => {
+        const code = `${state.currentCouplet}${letter}`;
+        const branch = pair[letter];
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'couplet-choice';
+        const destText = branch.next ? `Go to Step ${branch.next}` : `Identify: ${branch.result}`;
+        btn.innerHTML = `
+          <span class="couplet-code">Step ${code}</span>
+          <div>
+            <div>${branch.text}</div>
+            <div style="margin-top:4px; font-family:var(--mono); font-size:11.5px; color:var(--amber);">→ ${destText}</div>
+          </div>
+        `;
+        btn.addEventListener('click', () => handleCoupletStep(code, branch));
+        cBox.appendChild(btn);
+      });
+    }
+
+    function handleCoupletStep(code, branch) {
+      const idx = state.activeLabIdx;
+      const cur = LAB_SPECIMENS[idx];
+      if (!state.lab[idx]) state.lab[idx] = { mistakes: 0, solved: false, pts: 0 };
+      const rec = state.lab[idx];
+      const stepIndex = state.coupletTrail.length;
+      const expectedCode = cur.path[stepIndex];
+      const fb = document.getElementById('lab-feedback-box');
+
+      if (code === expectedCode) {
+        state.coupletTrail.push(code);
+        if (branch.next) {
+          state.currentCouplet = branch.next;
+          SoundFX.ping();
+          fb.className = 'feedback-callout show ok';
+          fb.textContent = `Correct observation (Step ${code})! Proceeding to Couplet ${branch.next}...`;
+          renderLabUI();
+        } else {
+          rec.solved = true;
+          rec.pts = Math.max(1, 4 - rec.mistakes);
+          SoundFX.correct();
+          fb.className = 'feedback-callout';
+          saveState();
+          renderLabUI();
+        }
+      } else {
+        rec.mistakes += 1;
+        SoundFX.wrong();
+        fb.className = 'feedback-callout show err';
+        fb.textContent = `Careful! Step ${code} contradicts ${cur.code}'s anatomy. ${cur.wrongTip}`;
+        saveState();
+      }
+    }
+
+    // ==================== 12. PHASE 3: MATRIX & CRISIS SIMULATOR ====================
+    function verifyMatrix3A() {
+      const vals = {
+        octoFeed: document.getElementById('q11-octo-feed').value,
+        octoDef: document.getElementById('q11-octo-def').value,
+        starFeed: document.getElementById('q11-star-feed').value,
+        starDef: document.getElementById('q11-star-def').value,
+        crabFeed: document.getElementById('q11-crab-feed').value,
+        crabDef: document.getElementById('q11-crab-def').value
+      };
+      state.matrixSelections = vals;
+
+      const key = {
+        octoFeed: 'beak', octoDef: 'ink',
+        starFeed: 'tube', starDef: 'ossicle',
+        crabFeed: 'cheliped', crabDef: 'molt'
+      };
+      let correctCells = 0;
+      Object.keys(key).forEach(k => {
+        if (vals[k] === key[k]) correctCells++;
+      });
+
+      // 6 cells -> up to 10 pts (0, 2, 3, 5, 7, 8, 10)
+      const mapPts = [0, 2, 3, 5, 7, 8, 10];
+      state.score3A = mapPts[correctCells];
+      const msgEl = document.getElementById('matrix-feedback');
+
+      if (correctCells === 6) {
+        SoundFX.correct();
+        msgEl.style.color = 'hsl(157, 74%, 66%)';
+        msgEl.textContent = '✓ All 6 biomechanical mechanisms verified! (10 / 10 pts)';
+      } else {
+        SoundFX.wrong();
+        msgEl.style.color = 'hsl(39, 93%, 68%)';
+        msgEl.textContent = `${correctCells} / 6 cells accurate (${state.score3A}/10 pts). Review phylum anatomy and re-verify to earn full 10/10!`;
+      }
+      saveState();
+    }
+
+    function renderCrisisStations() {
+      const box = document.getElementById('crisis-stations-container');
+      box.innerHTML = '';
+
+      CRISIS_STATIONS.forEach(st => {
+        const rec = state.crisisSolved[st.id] || { attempts: 0, pts: 0, solved: false };
+        const pct = rec.solved ? 96 : st.startVal;
+        const card = document.createElement('div');
+        card.className = `crisis-station ${rec.solved ? 'restored' : ''}`;
+        card.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
+            <strong style="font-size:13.5px; color:var(--text-main);">${st.title}</strong>
+            <span class="status-chip ${rec.solved ? 'done' : ''}">${rec.solved ? `${rec.pts}/5 pts` : 'CRITICAL'}</span>
+          </div>
+          <div class="gauge-row">
+            <div style="display:flex; justify-content:space-between;">
+              <span>${st.metricLabel}</span>
+              <span>${pct}%</span>
+            </div>
+            <div class="gauge-bar">
+              <div class="gauge-fill ${rec.solved ? 'healthy' : ''}" style="width:${pct}%;"></div>
+            </div>
+          </div>
+          <p style="margin:0; font-size:12.5px; color:var(--text-secondary); flex:1;">${st.scenario}</p>
+          <div style="display:flex; flex-direction:column; gap:6px;" id="crisis-opts-${st.id}"></div>
+          <div class="feedback-callout ${rec.solved ? 'show ok' : ''}" id="crisis-fb-${st.id}" style="font-size:12px; padding:8px 10px;">
+            ${rec.solved ? st.explain : ''}
+          </div>
+        `;
+        box.appendChild(card);
+
+        const optsEl = card.querySelector(`#crisis-opts-${st.id}`);
+        st.options.forEach((opt, idx) => {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = `mc-btn ${rec.solved && idx === st.correct ? 'correct' : ''}`;
+          b.style.fontSize = '12px';
+          b.style.padding = '8px 10px';
+          b.disabled = rec.solved;
+          b.textContent = opt;
+          b.addEventListener('click', () => {
+            if (!state.crisisSolved[st.id]) state.crisisSolved[st.id] = { attempts: 0, pts: 0, solved: false };
+            const r = state.crisisSolved[st.id];
+            r.attempts += 1;
+            const fb = card.querySelector(`#crisis-fb-${st.id}`);
+            if (idx === st.correct) {
+              r.solved = true;
+              r.pts = r.attempts === 1 ? 5 : (r.attempts === 2 ? 4 : 3);
+              SoundFX.correct();
+              saveState();
+              renderCrisisStations();
+            } else {
+              b.classList.add('wrong');
+              b.disabled = true;
+              SoundFX.wrong();
+              fb.className = 'feedback-callout show err';
+              fb.textContent = 'That intervention worsens or misses the ecological mechanism—re-examine the invertebrate role and select another strategy!';
+              saveState();
+            }
+          });
+          optsEl.appendChild(b);
+        });
+      });
+    }
+
+    // ==================== 13. PHASE 4: CER SCORER & SUBMISSION EXPORTS ====================
+    function evaluateCERLive(commitScore = false) {
+      state.cerPrompt = document.getElementById('cer-prompt-select').value;
+      state.cerClaim = document.getElementById('cer-claim').value;
+      state.cerEvidence = document.getElementById('cer-evidence').value;
+      state.cerReasoning = document.getElementById('cer-reasoning').value;
+
+      const combined = `${state.cerClaim} ${state.cerEvidence} ${state.cerReasoning}`.toLowerCase();
+      const words = combined.trim() ? combined.trim().split(/\s+/).length : 0;
+
+      const bankEl = document.getElementById('cer-vocab-bank');
+      bankEl.innerHTML = '';
+      const matchedTerms = [];
+      CER_VOCAB_TERMS.forEach(term => {
+        const used = combined.includes(term.toLowerCase());
+        if (used) matchedTerms.push(term);
+        const span = document.createElement('span');
+        span.className = `vocab-chip ${used ? 'used' : ''}`;
+        span.textContent = used ? `✓ ${term}` : term;
+        bankEl.appendChild(span);
+      });
+
+      document.getElementById('cer-live-stats').textContent =
+        `${words} words • ${matchedTerms.length} Unit 3 vocabulary terms used`;
+
+      if (commitScore) {
+        const cWords = state.cerClaim.trim() ? state.cerClaim.trim().split(/\s+/).length : 0;
+        const eWords = state.cerEvidence.trim() ? state.cerEvidence.trim().split(/\s+/).length : 0;
+        const rWords = state.cerReasoning.trim() ? state.cerReasoning.trim().split(/\s+/).length : 0;
+
+        let pts = 0;
+        if (cWords >= 7) pts += 4; else if (cWords >= 3) pts += 2;
+        if (eWords >= 18) pts += 6; else if (eWords >= 8) pts += 3;
+        if (rWords >= 12 && matchedTerms.length >= 4) pts += 5;
+        else if (rWords >= 6 && matchedTerms.length >= 2) pts += 3;
+        else if (rWords >= 3 || matchedTerms.length >= 1) pts += 1;
+
+        state.scoreCER = Math.min(15, pts);
+        const fb = document.getElementById('cer-feedback-box');
+        if (state.scoreCER >= 13) {
+          SoundFX.correct();
+          fb.className = 'feedback-callout show ok';
+          fb.textContent = `CER Logbook Saved (${state.scoreCER}/15 pts)! Strong scientific claim, organismal evidence, and ${matchedTerms.length} Unit 3 terms (${matchedTerms.join(', ')}). Ready to submit!`;
+        } else {
+          SoundFX.ping();
+          fb.className = 'feedback-callout show err';
+          fb.textContent = `Draft Saved (${state.scoreCER}/15 pts). Tip: For full 15/15 credit, write complete sentences in Claim (7+ words), Evidence (18+ words), and Reasoning (12+ words) incorporating at least 4 Unit 3 vocabulary terms!`;
+        }
+        saveState();
+      }
+      return { words, matchedTerms };
+    }
+
+    function renderFieldGuideModal() {
+      const box = document.getElementById('guide-cards-container');
+      box.innerHTML = '';
+      SPECIES_DATA.forEach(sp => {
+        const unlocked = !!(state.scans[sp.id] && state.scans[sp.id].solved);
+        const div = document.createElement('div');
+        div.className = 'guide-card';
+        div.innerHTML = unlocked
+          ? `<div style="font-family:var(--mono); font-size:11px; color:var(--emerald);">✓ UNLOCKED</div>
+             <strong style="font-size:13.5px; color:var(--text-main);">${sp.name}</strong>
+             <div style="font-size:11.5px; color:var(--cyan); margin:2px 0 6px;">${sp.taxonomy}</div>
+             <p style="margin:0; color:var(--text-secondary);">${sp.guideSummary}</p>`
+          : `<div style="font-family:var(--mono); font-size:11px; color:var(--text-muted);">LOCKED SPECIMEN</div>
+             <strong style="color:var(--text-muted);">Unscanned Marine Invertebrate (${ZONES[sp.zone].name.split(':')[0]})</strong>
+             <p style="margin:4px 0 0; color:var(--text-muted);">Bio-scan this organism during your ROV Ocean Dive to unlock anatomical &amp; ecological notes.</p>`;
+        box.appendChild(div);
+      });
+    }
+
+    function formatDuration(sec) {
+      const m = Math.floor(sec / 60);
+      const s = sec % 60;
+      return `${m}m ${String(s).padStart(2, '0')}s`;
+    }
+
+    function escapeHTML(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function buildOfficialReportHTML() {
+      const sc = getScores();
+      const vCode = generateVerificationCode();
+      const nowStr = new Date().toLocaleString();
+      const scannedCount = SPECIES_DATA.filter(s => state.scans[s.id] && state.scans[s.id].solved).length;
+      const labCount = LAB_SPECIMENS.filter((_, i) => state.lab[i] && state.lab[i].solved).length;
+      const { matchedTerms } = evaluateCERLive(false);
+
+      const missedItems = SPECIES_DATA.filter(s => state.scans[s.id] && state.scans[s.id].missedFirst);
+      const promptLabel = state.cerPrompt === 'B'
+        ? 'Prompt B: Ecosystem Engineers, Ocean Acidification & Conservation'
+        : 'Prompt A: Comparative Invertebrate Anatomy, Feeding & Defense';
+
+      return `
+        <div class="print-banner">
+          <div>
+            <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:#475569;">Grade 9 Marine Biology • Unit 3 Class Assignment Submission</div>
+            <h2>R/V Pelagia: Marine Organisms — Invertebrates Expedition Report</h2>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:22px; font-weight:bold;">${sc.total} / 100 pts</div>
+            <div style="font-size:12px; color:#334155;">${escapeHTML(getRankTitle(sc.total))}</div>
+          </div>
+        </div>
+
+        <div class="print-meta-grid">
+          <div><strong>Student Name:</strong> ${escapeHTML(state.studentName || 'Not Entered')}</div>
+          <div><strong>Class Period / Section:</strong> ${escapeHTML(state.studentPeriod || 'Not Entered')}</div>
+          <div><strong>Date Submitted:</strong> ${escapeHTML(nowStr)}</div>
+          <div><strong>Active Expedition Duration:</strong> ${formatDuration(state.elapsedSec)}</div>
+        </div>
+
+        <table class="print-table">
+          <thead>
+            <tr>
+              <th>Unit 3 Assessment Component</th>
+              <th>Completion Details</th>
+              <th>Points Earned</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Phase 1: ROV Ocean Bio-Scan Survey</strong> (Lessons 1–4)</td>
+              <td>${scannedCount} / 12 Marine Invertebrates Classified Across 3 Ocean Zones</td>
+              <td><strong>${sc.p1} / 36</strong></td>
+            </tr>
+            <tr>
+              <td><strong>Phase 2: Stereomicroscope Dichotomous Key</strong> (Lesson 5)</td>
+              <td>${labCount} / 6 Unknown Lab Specimens Keyed to Phylum &amp; Class</td>
+              <td><strong>${sc.p2} / 24</strong></td>
+            </tr>
+            <tr>
+              <td><strong>Phase 3: Bivalve Predation &amp; Ecosystem Crisis Lab</strong> (Q11 &amp; Q12)</td>
+              <td>Predator Matrix (${sc.p3a}/10) + Kelp/Oyster/Acidification Sim (${sc.p3b}/15)</td>
+              <td><strong>${sc.p3} / 25</strong></td>
+            </tr>
+            <tr>
+              <td><strong>Phase 4: CER Scientific Synthesis Report</strong> (NGSS HS-LS1-2 / LS2-7)</td>
+              <td>${matchedTerms.length} Unit 3 Scientific Vocabulary Terms Integrated</td>
+              <td><strong>${sc.p4} / 15</strong></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="print-box">
+          <div style="font-weight:bold; margin-bottom:6px;">Student Original CER Written Response (${escapeHTML(promptLabel)})</div>
+          <p style="margin:4px 0;"><strong>Claim:</strong> ${escapeHTML(state.cerClaim || '(No claim entered)')}</p>
+          <p style="margin:4px 0;"><strong>Evidence:</strong> ${escapeHTML(state.cerEvidence || '(No evidence entered)')}</p>
+          <p style="margin:4px 0;"><strong>Reasoning:</strong> ${escapeHTML(state.cerReasoning || '(No reasoning entered)')}</p>
+          <div style="margin-top:6px; font-size:11px; color:#334155;">
+            <strong>Unit 3 Terms Detected:</strong> ${matchedTerms.length ? escapeHTML(matchedTerms.join(', ')) : 'None detected'}
+          </div>
+        </div>
+
+        <div class="print-box">
+          <div style="font-weight:bold; margin-bottom:4px;">Personalized Jan 6 Unit 3 Test Review Notes (First-Try Review Items)</div>
+          ${missedItems.length === 0
+            ? '<div>Spotless first-attempt accuracy on all scanned specimens! Keep reviewing phylum body plans, dichotomous key rules, and CaCO3 acidification mechanisms.</div>'
+            : `<ul style="margin:4px 0; padding-left:18px;">${missedItems.map(m => `<li><strong>${escapeHTML(m.name)}:</strong> ${escapeHTML(m.guideSummary)}</li>`).join('')}</ul>`}
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
+          <div>
+            <div style="font-size:11px; color:#475569;">Teacher Cryptographic Verification Code:</div>
+            <div class="print-hash">${escapeHTML(vCode)}</div>
+          </div>
+          <div style="font-size:11px; color:#475569; text-align:right; max-width:260px;">
+            Verify code authenticity anytime using the "Teacher Verify" tool inside the Unit 3 Expedition game.
+          </div>
+        </div>
+      `;
+    }
+
+    function refreshAllScoreUI() {
+      const sc = getScores();
+      const scannedCount = SPECIES_DATA.filter(s => state.scans[s.id] && state.scans[s.id].solved).length;
+      const labCount = LAB_SPECIMENS.filter((_, i) => state.lab[i] && state.lab[i].solved).length;
+
+      document.getElementById('header-total-score').textContent = `${sc.total} / 100`;
+      document.getElementById('guide-count').textContent = String(scannedCount);
+      document.getElementById('header-pilot-badge').textContent = state.studentName
+        ? `${state.studentName}${state.studentPeriod ? ' • ' + state.studentPeriod : ''}`
+        : 'Pilot: Click Student Info';
+
+      const b1 = document.getElementById('pts-badge-1');
+      b1.textContent = `${sc.p1} / 36`;
+      b1.classList.toggle('done', scannedCount === 12);
+
+      const b2 = document.getElementById('pts-badge-2');
+      b2.textContent = `${sc.p2} / 24`;
+      b2.classList.toggle('done', labCount === 6);
+
+      const b3 = document.getElementById('pts-badge-3');
+      b3.textContent = `${sc.p3} / 25`;
+      b3.classList.toggle('done', sc.p3 >= 22);
+
+      const b4 = document.getElementById('pts-badge-4');
+      b4.textContent = `${sc.p4} / 15`;
+      b4.classList.toggle('done', sc.p4 >= 12);
+
+      document.getElementById('score-3a-badge').textContent = `${sc.p3a} / 10 pts`;
+      document.getElementById('score-3b-badge').textContent = `${sc.p3b} / 15 pts`;
+      document.getElementById('score-cer-badge').textContent = `${sc.p4} / 15 pts`;
+
+      // Certificate preview
+      document.getElementById('cert-big-score').textContent = `${sc.total} / 100`;
+      document.getElementById('cert-rank-title').textContent = getRankTitle(sc.total);
+      document.getElementById('cert-student-line').textContent = state.studentName
+        ? `${state.studentName} (${state.studentPeriod || 'No Period Listed'})`
+        : 'Missing Student Name — Click "Student Info" Top Right!';
+      document.getElementById('cert-p1').textContent = `${sc.p1} / 36 pts (${scannedCount}/12 species)`;
+      document.getElementById('cert-p2').textContent = `${sc.p2} / 24 pts (${labCount}/6 specimens)`;
+      document.getElementById('cert-p3').textContent = `${sc.p3} / 25 pts`;
+      document.getElementById('cert-p4').textContent = `${sc.p4} / 15 pts`;
+      document.getElementById('cert-time').textContent = formatDuration(state.elapsedSec);
+      document.getElementById('cert-verification-code').textContent = generateVerificationCode();
+
+      const readyEl = document.getElementById('submit-readiness-msg');
+      if (!state.studentName.trim()) {
+        readyEl.style.color = 'hsl(12, 80%, 68%)';
+        readyEl.textContent = '⚠ Enter your Student Name (click "Student Info" in top bar) before printing or downloading your assignment!';
+      } else if (sc.total < 70) {
+        readyEl.style.color = 'hsl(39, 93%, 68%)';
+        readyEl.textContent = 'Tip: You can complete any remaining phases above to boost your score closer to 100/100 before turning in!';
+      } else {
+        readyEl.style.color = 'hsl(157, 74%, 66%)';
+        readyEl.textContent = '✓ Assignment ready for submission! Save as PDF, download your HTML receipt, or copy your summary to Google Classroom.';
+      }
+    }
+
+    function ensureStudentName() {
+      if (!state.studentName.trim()) {
+        document.getElementById('modal-welcome').classList.add('open');
+        document.getElementById('input-student-name').focus();
+        return false;
+      }
+      return true;
+    }
+
+    // ==================== 14. UI WIRING & INITIALIZATION ====================
+    function switchPhase(targetId) {
+      state.activePhase = targetId;
+      document.querySelectorAll('.stage-panel').forEach(p => p.classList.toggle('active', p.id === targetId));
+      document.querySelectorAll('.phase-tab').forEach(t => t.classList.toggle('active', t.dataset.target === targetId));
+      if (targetId === 'view-lab') renderLabUI();
+      if (targetId === 'view-crisis') renderCrisisStations();
+      if (targetId === 'view-submit') evaluateCERLive(false);
+      refreshAllScoreUI();
+    }
+
+    document.querySelectorAll('.phase-tab').forEach(tab => {
+      tab.addEventListener('click', () => switchPhase(tab.dataset.target));
+    });
+
+    document.querySelectorAll('.zone-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        state.currentZone = Number(btn.dataset.zone);
+        rov.x = 180; rov.y = 260; rov.vx = 0; rov.vy = 0; rov.targetX = null;
+        inkClouds.length = 0;
+        spawnZoneMotes();
+        renderZoneSidebar();
+        setComms(ZONES[state.currentZone].briefing);
+        showDiveToast(`Entered ${ZONES[state.currentZone].name}`);
+        SoundFX.ping();
+      });
+    });
+
+    document.getElementById('btn-sonar-ping').addEventListener('click', () => {
+      SoundFX.ping();
+      rov.scanPulse = 1.0;
+      for (const ic of inkClouds) ic.alpha *= 0.35; // Sonar disperses ink faster!
+      const unscanned = getZoneOrganisms(state.currentZone).find(o => !(state.scans[o.id] && state.scans[o.id].solved));
+      if (unscanned) {
+        showDiveToast(`Sonar Echo: ${unscanned.name.split('(')[0].trim()} detected ahead!`);
+      } else {
+        showDiveToast('All 4 target invertebrates in this zone have been logged!');
+      }
+    });
+
+    document.getElementById('btn-scan-nearest').addEventListener('click', tryScanNearest);
+    document.getElementById('btn-close-scan').addEventListener('click', () => {
+      document.getElementById('modal-scan').classList.remove('open');
+    });
+
+    // Lab controls
+    document.getElementById('btn-flip-specimen').addEventListener('click', () => {
+      state.scopeFlipped = !state.scopeFlipped;
+      renderLabUI();
+    });
+    document.getElementById('btn-zoom-specimen').addEventListener('click', () => {
+      state.scopeZoomed = !state.scopeZoomed;
+      renderLabUI();
+    });
+    document.getElementById('btn-reset-couplet').addEventListener('click', () => {
+      state.currentCouplet = 1;
+      state.coupletTrail = [];
+      document.getElementById('lab-feedback-box').className = 'feedback-callout';
+      renderLabUI();
+    });
+
+    // Phase 3 Matrix
+    document.getElementById('btn-verify-matrix').addEventListener('click', verifyMatrix3A);
+
+    // Phase 4 CER & Exports
+    ['cer-prompt-select', 'cer-claim', 'cer-evidence', 'cer-reasoning'].forEach(id => {
+      document.getElementById(id).addEventListener('input', () => evaluateCERLive(false));
+    });
+    document.getElementById('btn-score-cer').addEventListener('click', () => evaluateCERLive(true));
+
+    document.getElementById('btn-print-pdf').addEventListener('click', () => {
+      if (!ensureStudentName()) return;
+      evaluateCERLive(false);
+      document.getElementById('print-report-sheet').innerHTML = buildOfficialReportHTML();
+      window.print();
+    });
+
+    document.getElementById('btn-download-receipt').addEventListener('click', () => {
+      if (!ensureStudentName()) return;
+      const reportBody = buildOfficialReportHTML();
+      const safeName = state.studentName.trim().replace(/[^a-zA-Z0-9_-]/g, '_');
+      const standaloneReceipt = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Marine Bio Unit 3 Assignment - ${escapeHTML(state.studentName)}</title>
+        <style>body{font-family:Georgia,serif;max-width:820px;margin:28px auto;padding:24px;color:#0f172a;background:#fff;border:2px solid #0f172a;border-radius:8px;}
+        .print-banner{border-bottom:2px solid #0f172a;padding-bottom:10px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:flex-end;}
+        .print-banner h2{margin:0;font-size:20px;}
+        .print-meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 18px;background:#f8fafc;border:1px solid #cbd5e1;padding:12px;margin-bottom:14px;font-family:sans-serif;font-size:13px;}
+        .print-table{width:100%;border-collapse:collapse;margin-bottom:14px;font-family:sans-serif;font-size:13px;}
+        .print-table th,.print-table td{border:1px solid #94a3b8;padding:8px 10px;text-align:left;}
+        .print-table th{background:#e2e8f0;}
+        .print-box{border:1px solid #94a3b8;padding:12px;margin-bottom:12px;background:#fcfdff;}
+        .print-hash{font-family:monospace;font-size:14px;font-weight:bold;padding:6px 10px;border:1.5px dashed #0f172a;display:inline-block;margin-top:4px;}</style>
+        </head><body>${reportBody}</body></html>`;
+      const blob = new Blob([standaloneReceipt], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `MarineBio_Unit3_Assignment_${safeName}.html`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      document.getElementById('copy-confirm-msg').textContent = `✓ Downloaded MarineBio_Unit3_Assignment_${safeName}.html — attach this file directly to Google Classroom!`;
+    });
+
+    document.getElementById('btn-copy-classroom').addEventListener('click', () => {
+      if (!ensureStudentName()) return;
+      const sc = getScores();
+      const vCode = generateVerificationCode();
+      const summary = [
+        `=== GRADE 9 MARINE BIOLOGY: UNIT 3 INVERTEBRATE EXPEDITION ===`,
+        `Student: ${state.studentName} | Period: ${state.studentPeriod || 'N/A'}`,
+        `Total Assignment Score: ${sc.total}/100 (${getRankTitle(sc.total)})`,
+        `Breakdown: Dive Survey ${sc.p1}/36 | Dichotomous Key Lab ${sc.p2}/24 | Predator & Crisis Sim ${sc.p3}/25 | CER Report ${sc.p4}/15`,
+        `Active Time: ${formatDuration(state.elapsedSec)}`,
+        `Verification Code: ${vCode}`,
+        `--- STUDENT CER SYNTHESIS (Prompt ${state.cerPrompt}) ---`,
+        `Claim: ${state.cerClaim || '(None)'}`,
+        `Evidence: ${state.cerEvidence || '(None)'}`,
+        `Reasoning: ${state.cerReasoning || '(None)'}`
+      ].join('\n');
+
+      navigator.clipboard.writeText(summary).then(() => {
+        document.getElementById('copy-confirm-msg').textContent = '✓ Copied complete Grade Summary + CER + Verification Code to clipboard!';
+      }).catch(() => {
+        document.getElementById('copy-confirm-msg').textContent = 'Use Print/Save PDF or Download HTML Receipt above.';
+      });
+    });
+
+    // Header Modals
+    document.getElementById('btn-open-guide').addEventListener('click', () => {
+      renderFieldGuideModal();
+      document.getElementById('modal-guide').classList.add('open');
+    });
+    document.getElementById('btn-close-guide').addEventListener('click', () => {
+      document.getElementById('modal-guide').classList.remove('open');
+    });
+
+    document.getElementById('btn-toggle-audio').addEventListener('click', (e) => {
+      SoundFX.enabled = !SoundFX.enabled;
+      e.currentTarget.textContent = `Audio: ${SoundFX.enabled ? 'ON' : 'OFF'}`;
+    });
+
+    document.getElementById('btn-open-profile').addEventListener('click', () => {
+      document.getElementById('input-student-name').value = state.studentName;
+      document.getElementById('input-student-period').value = state.studentPeriod;
+      document.getElementById('input-rov-color').value = state.rovColor;
+      document.getElementById('modal-welcome').classList.add('open');
+    });
+
+    document.getElementById('btn-launch-expedition').addEventListener('click', () => {
+      SoundFX.init();
+      SoundFX.ping();
+      state.studentName = document.getElementById('input-student-name').value.trim();
+      state.studentPeriod = document.getElementById('input-student-period').value.trim();
+      state.rovColor = document.getElementById('input-rov-color').value;
+      document.getElementById('modal-welcome').classList.remove('open');
+      saveState();
+    });
+
+    document.getElementById('btn-reset-all-data').addEventListener('click', () => {
+      localStorage.removeItem(STORAGE_KEY);
+      window.location.reload();
+    });
+
+    document.getElementById('btn-open-teacher').addEventListener('click', () => {
+      document.getElementById('modal-teacher').classList.add('open');
+    });
+    document.getElementById('btn-close-teacher').addEventListener('click', () => {
+      document.getElementById('modal-teacher').classList.remove('open');
+    });
+    document.getElementById('btn-run-verify').addEventListener('click', () => {
+      const res = verifyTeacherCode(document.getElementById('input-verify-code').value);
+      const out = document.getElementById('teacher-verify-output');
+      out.className = `feedback-callout show ${res.valid ? 'ok' : 'err'}`;
+      out.textContent = res.msg;
+    });
+
+    // Restore Saved Progress if Available
+    const hadSaved = loadState();
+    if (hadSaved) {
+      document.getElementById('input-student-name').value = state.studentName || '';
+      document.getElementById('input-student-period').value = state.studentPeriod || '';
+      document.getElementById('input-rov-color').value = state.rovColor || '#f5a623';
+      document.getElementById('q11-octo-feed').value = state.matrixSelections.octoFeed || '';
+      document.getElementById('q11-octo-def').value = state.matrixSelections.octoDef || '';
+      document.getElementById('q11-star-feed').value = state.matrixSelections.starFeed || '';
+      document.getElementById('q11-star-def').value = state.matrixSelections.starDef || '';
+      document.getElementById('q11-crab-feed').value = state.matrixSelections.crabFeed || '';
+      document.getElementById('q11-crab-def').value = state.matrixSelections.crabDef || '';
+      document.getElementById('cer-prompt-select').value = state.cerPrompt || 'A';
+      document.getElementById('cer-claim').value = state.cerClaim || '';
+      document.getElementById('cer-evidence').value = state.cerEvidence || '';
+      document.getElementById('cer-reasoning').value = state.cerReasoning || '';
+      if (getScores().total > 0 || state.studentName) {
+        document.getElementById('saved-progress-note').textContent = `Saved dive restored (${getScores().total}/100 pts)! Click Launch to resume.`;
+        document.getElementById('btn-launch-expedition').textContent = 'Resume Saved Dive';
+        document.getElementById('btn-reset-all-data').style.display = 'inline-flex';
+      }
+    }
+
+    renderZoneSidebar();
+    renderLabUI();
+    renderCrisisStations();
+    evaluateCERLive(false);
+    refreshAllScoreUI();
+
+    // Active play-time counter (every 1s when window focused)
+    setInterval(() => {
+      if (!document.hidden && !document.getElementById('modal-welcome').classList.contains('open')) {
+        state.elapsedSec += 1;
+        if (state.elapsedSec % 10 === 0) saveState();
+        else document.getElementById('cert-time').textContent = formatDuration(state.elapsedSec);
+      }
+    }, 1000);
+
+    // Main 60fps Animation Loop
+    let lastTime = performance.now();
+    function frame(now) {
+      const dt = Math.min(0.05, Math.max(0.001, (now - lastTime) / 1000));
+      lastTime = now;
+      const t = now / 1000;
+      updatePhysics(dt, t);
+      drawWorld(t);
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  })();
+  </script>
+</body>
+</html>
