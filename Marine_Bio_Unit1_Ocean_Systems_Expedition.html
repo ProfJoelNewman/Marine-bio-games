@@ -1,0 +1,4136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>E/V Nautilus: Global Ocean Systems &amp; Bathymetry Command — Grade 9 Marine Biology Unit 1</title>
+  <meta name="description" content="Interactive Grade 9 Marine Biology Unit 1 oceanographic expedition game, multibeam sonar &amp; pycnocline density wet-lab, research technology crisis triage, and 100-point CER virtual assessment." />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      background-color: hsl(214, 58%, 8%);
+      color: hsl(198, 34%, 95%);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body.nautilus-app {
+      --bg-abyss: hsl(214, 58%, 8%);
+      --bg-deep: hsl(213, 52%, 11%);
+      --bg-panel: hsl(212, 46%, 14%);
+      --bg-elevated: hsl(211, 40%, 18%);
+      --bg-hover: hsl(210, 36%, 22%);
+      --border-hairline: hsla(190, 48%, 74%, 0.15);
+      --border-strong: hsla(184, 62%, 66%, 0.32);
+      --text-main: hsl(198, 34%, 95%);
+      --text-secondary: hsl(202, 22%, 76%);
+      --text-muted: hsl(206, 16%, 58%);
+      --teal: hsl(176, 82%, 44%);
+      --teal-soft: hsla(176, 82%, 44%, 0.15);
+      --amber: hsl(38, 92%, 55%);
+      --amber-soft: hsla(38, 92%, 55%, 0.16);
+      --emerald: hsl(154, 68%, 45%);
+      --emerald-soft: hsla(154, 68%, 45%, 0.16);
+      --coral: hsl(14, 82%, 58%);
+      --coral-soft: hsla(14, 82%, 58%, 0.16);
+      --mono: 'SF Mono', 'Fira Code', Menlo, Consolas, 'Liberation Mono', monospace;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .top-header {
+      background: linear-gradient(180deg, hsl(213, 56%, 12%) 0%, hsl(214, 54%, 9%) 100%);
+      border-bottom: 1px solid var(--border-hairline);
+      padding: 10px 18px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      position: sticky;
+      top: 0;
+      z-index: 40;
+    }
+
+    .brand-cluster {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .vessel-emblem {
+      width: 40px;
+      height: 40px;
+      border-radius: 9px;
+      background: var(--teal-soft);
+      border: 1px solid hsla(176, 82%, 44%, 0.38);
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+
+    .brand-titles h1 {
+      margin: 0;
+      font-size: 15.5px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--text-main);
+    }
+
+    .brand-subtitle {
+      font-size: 12px;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .pilot-tag {
+      font-family: var(--mono);
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 5px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-hairline);
+      color: var(--amber);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .score-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      background: var(--bg-panel);
+      border: 1px solid var(--border-strong);
+      font-family: var(--mono);
+      font-size: 12px;
+    }
+
+    .score-pill strong {
+      color: var(--amber);
+      font-size: 14px;
+    }
+
+    button {
+      font-family: inherit;
+      font-size: 13px;
+      cursor: pointer;
+      transition: background-color 0.16s ease, border-color 0.16s ease, transform 0.1s ease;
+    }
+
+    button:active:not(:disabled) { transform: translateY(1px); }
+    button:disabled { opacity: 0.48; cursor: not-allowed; }
+
+    .btn-ghost {
+      background: var(--bg-panel);
+      color: var(--text-secondary);
+      border: 1px solid var(--border-hairline);
+      padding: 7px 12px;
+      border-radius: 7px;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-ghost:hover:not(:disabled) {
+      background: var(--bg-elevated);
+      color: var(--text-main);
+      border-color: var(--border-strong);
+    }
+
+    .btn-primary {
+      background: var(--amber);
+      color: hsl(214, 62%, 8%);
+      border: 1px solid hsla(40, 95%, 74%, 0.42);
+      padding: 8px 15px;
+      border-radius: 7px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .btn-primary:hover:not(:disabled) { background: hsl(39, 95%, 61%); }
+
+    .btn-teal {
+      background: var(--teal);
+      color: hsl(214, 62%, 7%);
+      border: 1px solid hsla(176, 88%, 74%, 0.42);
+      padding: 8px 14px;
+      border-radius: 7px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-teal:hover:not(:disabled) { background: hsl(176, 86%, 50%); }
+
+    .btn-emerald {
+      background: var(--emerald);
+      color: hsl(214, 62%, 7%);
+      border: 1px solid hsla(154, 78%, 72%, 0.42);
+      padding: 8px 14px;
+      border-radius: 7px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-emerald:hover:not(:disabled) { background: hsl(154, 72%, 51%); }
+
+    .phase-nav {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      padding: 10px 18px;
+      background: var(--bg-deep);
+      border-bottom: 1px solid var(--border-hairline);
+    }
+
+    .phase-tab {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-hairline);
+      border-radius: 8px;
+      padding: 9px 12px;
+      text-align: left;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .phase-tab:hover {
+      background: var(--bg-elevated);
+      color: var(--text-main);
+    }
+
+    .phase-tab.active {
+      background: var(--teal-soft);
+      border-color: var(--teal);
+      color: var(--text-main);
+    }
+
+    .phase-tab-label {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .phase-step {
+      font-family: var(--mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--teal);
+    }
+
+    .phase-name {
+      font-weight: 600;
+      font-size: 13px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .phase-pts {
+      font-family: var(--mono);
+      font-size: 12px;
+      padding: 3px 7px;
+      border-radius: 5px;
+      background: hsla(214, 60%, 7%, 0.65);
+      color: var(--text-secondary);
+      flex-shrink: 0;
+    }
+
+    .phase-pts.done {
+      background: var(--emerald-soft);
+      color: hsl(154, 76%, 65%);
+    }
+
+    .main-stage {
+      flex: 1;
+      padding: 14px 18px 24px;
+      max-width: 1440px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .stage-panel { display: none; }
+    .stage-panel.active { display: block; }
+
+    /* Phase 1: Expedition Canvas Layout */
+    .dive-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 330px;
+      gap: 14px;
+      align-items: start;
+    }
+
+    .canvas-shell {
+      position: relative;
+      background: hsl(214, 65%, 6%);
+      border: 1px solid var(--border-strong);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45);
+    }
+
+    .zone-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 9px 12px;
+      background: var(--bg-deep);
+      border-bottom: 1px solid var(--border-hairline);
+      flex-wrap: wrap;
+    }
+
+    .zone-buttons {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .zone-btn {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-hairline);
+      color: var(--text-secondary);
+      padding: 6px 11px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .zone-btn.active {
+      background: var(--amber-soft);
+      border-color: var(--amber);
+      color: hsl(40, 96%, 72%);
+    }
+
+    .telemetry-strip {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text-secondary);
+      flex-wrap: wrap;
+    }
+
+    .telemetry-strip span strong { color: var(--text-main); }
+
+    .canvas-wrap {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9.2;
+      min-height: 430px;
+      background: #04101f;
+    }
+
+    #ocean-canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      cursor: crosshair;
+      touch-action: none;
+    }
+
+    .canvas-hud-bottom {
+      position: absolute;
+      left: 12px;
+      right: 12px;
+      bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      pointer-events: none;
+      flex-wrap: wrap;
+    }
+
+    .controls-hint {
+      pointer-events: auto;
+      background: hsla(214, 62%, 8%, 0.86);
+      backdrop-filter: blur(6px);
+      border: 1px solid var(--border-hairline);
+      border-radius: 8px;
+      padding: 6px 11px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    kbd {
+      font-family: var(--mono);
+      font-size: 11px;
+      padding: 1px 5px;
+      border-radius: 4px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-strong);
+      color: var(--text-main);
+    }
+
+    .action-cluster {
+      pointer-events: auto;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .toast-banner {
+      position: absolute;
+      top: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: hsla(214, 64%, 9%, 0.92);
+      border: 1px solid var(--teal);
+      color: var(--text-main);
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 12.5px;
+      font-weight: 600;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+      text-align: center;
+      max-width: 85%;
+      z-index: 10;
+    }
+
+    .toast-banner.visible { opacity: 1; }
+
+    .dive-sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .panel-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-hairline);
+      border-radius: 11px;
+      padding: 14px;
+    }
+
+    .panel-card h2, .panel-card h3 {
+      margin: 0 0 8px 0;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .hull-meter-track {
+      width: 100%;
+      height: 9px;
+      background: hsla(214, 64%, 6%, 0.85);
+      border-radius: 99px;
+      overflow: hidden;
+      border: 1px solid var(--border-hairline);
+      margin-bottom: 8px;
+    }
+
+    .hull-meter-fill {
+      height: 100%;
+      background: var(--emerald);
+      transition: width 0.25s ease, background-color 0.25s ease;
+    }
+
+    .station-list {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      margin-top: 8px;
+    }
+
+    .station-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      background: var(--bg-deep);
+      border: 1px solid var(--border-hairline);
+      font-size: 12.5px;
+      cursor: pointer;
+    }
+
+    .station-row:hover {
+      border-color: var(--border-strong);
+      background: var(--bg-elevated);
+    }
+
+    .station-row.scanned {
+      border-color: hsla(154, 68%, 45%, 0.44);
+      background: hsla(154, 68%, 45%, 0.08);
+    }
+
+    .station-meta {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-family: var(--mono);
+    }
+
+    .status-chip {
+      font-family: var(--mono);
+      font-size: 11px;
+      padding: 2px 7px;
+      border-radius: 5px;
+      background: var(--bg-elevated);
+      color: var(--text-secondary);
+      flex-shrink: 0;
+    }
+
+    .status-chip.done {
+      background: var(--emerald-soft);
+      color: hsl(154, 76%, 65%);
+    }
+
+    /* Phase 2: Sonar & Pycnocline Wet-Lab */
+    .lab-grid {
+      display: grid;
+      grid-template-columns: 430px minmax(0, 1fr);
+      gap: 16px;
+      align-items: start;
+    }
+
+    .tray-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+
+    .tray-btn {
+      padding: 8px 8px;
+      border-radius: 7px;
+      background: var(--bg-deep);
+      border: 1px solid var(--border-hairline);
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .tray-btn.active {
+      background: var(--teal-soft);
+      border-color: var(--teal);
+      color: var(--text-main);
+    }
+
+    .tray-btn.solved {
+      border-color: hsla(154, 68%, 45%, 0.5);
+      color: hsl(154, 74%, 66%);
+    }
+
+    .scope-stage {
+      background: radial-gradient(circle at 50% 45%, hsl(210, 48%, 16%) 0%, hsl(214, 62%, 7%) 82%);
+      border: 1px solid var(--border-strong);
+      border-radius: 10px;
+      padding: 14px;
+      min-height: 270px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .scope-svg-holder {
+      width: 100%;
+      max-width: 380px;
+      min-height: 210px;
+      display: grid;
+      place-items: center;
+    }
+
+    .scope-controls {
+      display: flex;
+      gap: 6px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .morph-notes {
+      margin-top: 12px;
+      padding: 10px 12px;
+      background: var(--bg-deep);
+      border-radius: 8px;
+      border: 1px solid var(--border-hairline);
+      font-size: 12.5px;
+      color: var(--text-secondary);
+    }
+
+    .morph-notes li { margin-bottom: 4px; }
+
+    .lab-form-block {
+      background: var(--bg-deep);
+      border: 1px solid var(--border-hairline);
+      border-radius: 9px;
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+
+    .formula-banner {
+      font-family: var(--mono);
+      font-size: 12.5px;
+      padding: 9px 12px;
+      border-radius: 7px;
+      background: hsla(214, 62%, 7%, 0.85);
+      border: 1px solid var(--border-strong);
+      color: var(--teal);
+      margin-bottom: 12px;
+    }
+
+    .feedback-callout {
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      line-height: 1.5;
+      display: none;
+    }
+
+    .feedback-callout.show { display: block; }
+
+    .feedback-callout.ok {
+      background: var(--emerald-soft);
+      border: 1px solid hsla(154, 68%, 45%, 0.45);
+      color: hsl(154, 65%, 86%);
+    }
+
+    .feedback-callout.err {
+      background: var(--coral-soft);
+      border: 1px solid hsla(14, 82%, 58%, 0.45);
+      color: hsl(16, 80%, 88%);
+    }
+
+    /* Phase 3: Tech Matrix & Crisis Triage */
+    .crisis-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .matrix-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    .matrix-table th, .matrix-table td {
+      padding: 10px 12px;
+      border: 1px solid var(--border-hairline);
+      text-align: left;
+      vertical-align: middle;
+      font-size: 13px;
+    }
+
+    .matrix-table th {
+      background: var(--bg-deep);
+      color: var(--text-secondary);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    select.marine-select, input.marine-input, textarea.marine-textarea {
+      width: 100%;
+      background: var(--bg-abyss);
+      color: var(--text-main);
+      border: 1px solid var(--border-strong);
+      border-radius: 7px;
+      padding: 8px 10px;
+      font-family: inherit;
+      font-size: 13px;
+    }
+
+    select.marine-select:focus, input.marine-input:focus, textarea.marine-textarea:focus {
+      outline: 2px solid var(--teal);
+      outline-offset: 1px;
+    }
+
+    .crisis-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .crisis-station {
+      background: var(--bg-deep);
+      border: 1px solid var(--border-hairline);
+      border-radius: 10px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .crisis-station.restored {
+      border-color: hsla(154, 68%, 45%, 0.55);
+    }
+
+    .gauge-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-family: var(--mono);
+      font-size: 11.5px;
+    }
+
+    .gauge-bar {
+      height: 8px;
+      border-radius: 99px;
+      background: var(--bg-abyss);
+      overflow: hidden;
+      border: 1px solid var(--border-hairline);
+    }
+
+    .gauge-fill {
+      height: 100%;
+      background: var(--coral);
+      transition: width 0.45s ease, background-color 0.45s ease;
+    }
+
+    .gauge-fill.healthy { background: var(--emerald); }
+
+    /* Phase 4: CER & Submission Certificate */
+    .submit-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+      gap: 16px;
+      align-items: start;
+    }
+
+    .vocab-bank {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 8px 0 12px;
+    }
+
+    .vocab-chip {
+      font-family: var(--mono);
+      font-size: 11.5px;
+      padding: 3px 8px;
+      border-radius: 5px;
+      background: var(--bg-deep);
+      border: 1px solid var(--border-hairline);
+      color: var(--text-muted);
+    }
+
+    .vocab-chip.used {
+      background: var(--emerald-soft);
+      border-color: var(--emerald);
+      color: hsl(154, 78%, 68%);
+    }
+
+    .cer-field-group { margin-bottom: 12px; }
+
+    .cer-field-group label {
+      display: block;
+      font-weight: 600;
+      font-size: 13px;
+      margin-bottom: 5px;
+      color: var(--text-main);
+    }
+
+    .cert-preview {
+      background: linear-gradient(180deg, hsl(212, 48%, 15%) 0%, hsl(214, 56%, 10%) 100%);
+      border: 1px solid var(--border-strong);
+      border-radius: 12px;
+      padding: 18px;
+    }
+
+    .hash-box {
+      font-family: var(--mono);
+      font-size: 13px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      background: var(--bg-abyss);
+      border: 1px dashed var(--amber);
+      color: var(--amber);
+      word-break: break-all;
+      margin: 10px 0;
+    }
+
+    .breakdown-list {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      margin: 12px 0;
+    }
+
+    .breakdown-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 7px 10px;
+      border-radius: 7px;
+      background: var(--bg-deep);
+      font-size: 13px;
+      gap: 8px;
+    }
+
+    /* Modals */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(3, 10, 20, 0.82);
+      backdrop-filter: blur(5px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 90;
+    }
+
+    .modal-backdrop.open { display: flex; }
+
+    .modal-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-strong);
+      border-radius: 14px;
+      max-width: 740px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 20px 22px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65);
+    }
+
+    .scan-header-grid {
+      display: grid;
+      grid-template-columns: 220px minmax(0, 1fr);
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 14px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border-hairline);
+    }
+
+    .scan-art-frame {
+      background: radial-gradient(circle, hsl(210, 50%, 17%) 0%, hsl(214, 62%, 8%) 82%);
+      border: 1px solid var(--border-strong);
+      border-radius: 10px;
+      height: 165px;
+      display: grid;
+      place-items: center;
+      padding: 8px;
+    }
+
+    .sensor-readout-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .sensor-badge {
+      font-family: var(--mono);
+      font-size: 11px;
+      padding: 2px 7px;
+      border-radius: 4px;
+      background: var(--bg-abyss);
+      border: 1px solid var(--border-hairline);
+      color: var(--teal);
+    }
+
+    .mc-options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .mc-btn {
+      background: var(--bg-deep);
+      border: 1px solid var(--border-hairline);
+      border-radius: 8px;
+      padding: 11px 14px;
+      text-align: left;
+      color: var(--text-main);
+      font-size: 13.5px;
+      line-height: 1.45;
+    }
+
+    .mc-btn:hover:not(:disabled) {
+      background: var(--bg-elevated);
+      border-color: var(--teal);
+    }
+
+    .mc-btn.correct {
+      background: var(--emerald-soft);
+      border-color: var(--emerald);
+    }
+
+    .mc-btn.wrong {
+      background: var(--coral-soft);
+      border-color: var(--coral);
+      opacity: 0.8;
+    }
+
+    .guide-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .guide-card {
+      background: var(--bg-deep);
+      border: 1px solid var(--border-hairline);
+      border-radius: 9px;
+      padding: 12px;
+      font-size: 12.5px;
+    }
+
+    #print-report-sheet { display: none; }
+
+    @media (max-width: 1024px) {
+      .dive-layout, .lab-grid, .submit-grid { grid-template-columns: 1fr; }
+      .crisis-cards-grid { grid-template-columns: 1fr; }
+      .phase-nav { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 620px) {
+      .scan-header-grid { grid-template-columns: 1fr; }
+      .phase-nav { grid-template-columns: 1fr; }
+    }
+
+    @media print {
+      body.nautilus-app {
+        background: #ffffff !important;
+        color: #111827 !important;
+      }
+      .top-header, .phase-nav, .main-stage, .modal-backdrop {
+        display: none !important;
+      }
+      #print-report-sheet {
+        display: block !important;
+        padding: 18px 24px;
+        font-family: Georgia, 'Times New Roman', serif;
+        color: #111827;
+        font-size: 12.5px;
+        line-height: 1.45;
+      }
+      .print-banner {
+        border-bottom: 2px solid #0f172a;
+        padding-bottom: 10px;
+        margin-bottom: 14px;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+      }
+      .print-banner h2 { margin: 0; font-size: 19px; }
+      .print-meta-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 6px 18px;
+        background: #f8fafc;
+        border: 1px solid #cbd5e1;
+        padding: 10px 14px;
+        margin-bottom: 14px;
+        font-family: sans-serif;
+        font-size: 12px;
+      }
+      .print-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 14px;
+        font-family: sans-serif;
+        font-size: 12px;
+      }
+      .print-table th, .print-table td {
+        border: 1px solid #94a3b8;
+        padding: 6px 9px;
+        text-align: left;
+      }
+      .print-table th { background: #e2e8f0; }
+      .print-box {
+        border: 1px solid #94a3b8;
+        padding: 10px 12px;
+        margin-bottom: 12px;
+        page-break-inside: avoid;
+      }
+      .print-hash {
+        font-family: monospace;
+        font-size: 13px;
+        font-weight: bold;
+        padding: 6px 10px;
+        border: 1.5px dashed #0f172a;
+        display: inline-block;
+      }
+    }
+  </style>
+</head>
+<body class="nautilus-app">
+  <!-- TOP TELEMETRY HEADER -->
+  <header class="top-header">
+    <div class="brand-cluster">
+      <div class="vessel-emblem" aria-hidden="true">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M2.5 14.5h19l-2.4 4H5l-2.5-4Z" stroke="#14ccb9" stroke-width="1.8" stroke-linejoin="round"/>
+          <path d="M7 14.5V9.5h7l2.5 5" stroke="#f5a524" stroke-width="1.7" stroke-linejoin="round"/>
+          <path d="M10.5 9.5V5.5M8.5 7h4" stroke="#14ccb9" stroke-width="1.7" stroke-linecap="round"/>
+          <path d="M6 20.5c2 1 4-1 6 0s4-1 6 0" stroke="#14ccb9" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="brand-titles">
+        <h1>E/V Nautilus: Global Ocean Systems &amp; Bathymetry Command</h1>
+        <div class="brand-subtitle">
+          <span>Grade 9 Marine Biology • Unit 1 Virtual Assessment (NGSS HS-ESS2-5, HS-LS2-2, HS-ETS1-3)</span>
+          <span class="pilot-tag" id="header-pilot-badge">Scientist: Unregistered</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <div class="score-pill" title="Current Unit 1 Assignment Score">
+        <span>EXPEDITION SCORE</span>
+        <strong id="header-total-score">0 / 100</strong>
+      </div>
+      <button type="button" class="btn-ghost" id="btn-open-guide">
+        Field Guide (<span id="guide-count">0</span>/12)
+      </button>
+      <button type="button" class="btn-ghost" id="btn-toggle-audio">
+        Audio: ON
+      </button>
+      <button type="button" class="btn-ghost" id="btn-open-profile">
+        Student Info
+      </button>
+      <button type="button" class="btn-ghost" id="btn-open-teacher">
+        Teacher Verify
+      </button>
+    </div>
+  </header>
+
+  <!-- 4-PHASE MISSION NAVIGATION -->
+  <nav class="phase-nav" aria-label="Unit 1 Expedition Phases">
+    <button type="button" class="phase-tab active" id="tab-phase-1" data-target="view-dive">
+      <div class="phase-tab-label">
+        <span class="phase-step">Phase 1 • Acoustic &amp; ROV Survey</span>
+        <span class="phase-name">3 Ocean Sectors (12 Stations)</span>
+      </div>
+      <span class="phase-pts" id="pts-badge-1">0 / 36</span>
+    </button>
+    <button type="button" class="phase-tab" id="tab-phase-2" data-target="view-lab">
+      <div class="phase-tab-label">
+        <span class="phase-step">Phase 2 • Quantitative Wet-Lab</span>
+        <span class="phase-name">Sonar Echo &amp; Pycnocline Tank</span>
+      </div>
+      <span class="phase-pts" id="pts-badge-2">0 / 24</span>
+    </button>
+    <button type="button" class="phase-tab" id="tab-phase-3" data-target="view-crisis">
+      <div class="phase-tab-label">
+        <span class="phase-step">Phase 3 • Ocean Systems Triage</span>
+        <span class="phase-name">Tech Matrix &amp; Climate/Vent Crises</span>
+      </div>
+      <span class="phase-pts" id="pts-badge-3">0 / 25</span>
+    </button>
+    <button type="button" class="phase-tab" id="tab-phase-4" data-target="view-cer">
+      <div class="phase-tab-label">
+        <span class="phase-step">Phase 4 • Turn In Assignment</span>
+        <span class="phase-name">CER Synthesis &amp; Official Report</span>
+      </div>
+      <span class="phase-pts" id="pts-badge-4">0 / 15</span>
+    </button>
+  </nav>
+
+  <!-- MAIN WORKSPACE -->
+  <main class="main-stage">
+    <!-- ==================== PHASE 1: OCEAN SECTORS SURVEY ==================== -->
+    <section class="stage-panel active" id="view-dive" aria-labelledby="tab-phase-1">
+      <div class="dive-layout">
+        <div class="canvas-shell">
+          <div class="zone-bar">
+            <div class="zone-buttons" role="group" aria-label="Ocean Expedition Sectors">
+              <button type="button" class="zone-btn active" id="btn-zone-0" data-zone="0">
+                Sector 1: E. Pacific Shelf &amp; Upwelling (0/4)
+              </button>
+              <button type="button" class="zone-btn" id="btn-zone-1" data-zone="1">
+                Sector 2: Mid-Atlantic Ridge (0/4)
+              </button>
+              <button type="button" class="zone-btn" id="btn-zone-2" data-zone="2">
+                Sector 3: Mariana Trench &amp; Conveyor (0/4)
+              </button>
+            </div>
+            <div class="telemetry-strip">
+              <span>DEPTH <strong id="hud-depth">25 m</strong></span>
+              <span>PRESSURE <strong id="hud-pressure">3.5 atm</strong></span>
+              <span>TEMP <strong id="hud-temp">14.2°C</strong></span>
+              <span>STREAK <strong id="hud-streak">x1</strong></span>
+            </div>
+          </div>
+
+          <div class="canvas-wrap">
+            <canvas id="ocean-canvas" width="1040" height="598"></canvas>
+            <div class="toast-banner" id="dive-toast">Multibeam Sonar Online</div>
+
+            <div class="canvas-hud-bottom">
+              <div class="controls-hint">
+                <span>Pilot: <kbd>WASD</kbd> / <kbd>Arrows</kbd> or <strong>Click Ocean</strong></span>
+                <span>Telemetry Scan: <kbd>SPACE</kbd> or <strong>Click Station</strong></span>
+                <span>Sonar Cone: <kbd>F</kbd></span>
+              </div>
+              <div class="action-cluster">
+                <button type="button" class="btn-ghost" id="btn-sonar-ping">Acoustic Ping</button>
+                <button type="button" class="btn-teal" id="btn-scan-nearest" disabled>Deploy Sensor [SPACE]</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <aside class="dive-sidebar">
+          <div class="panel-card">
+            <h2>
+              <span>ROV Hercules-IX Telemetry</span>
+              <span id="hud-hull-pct" style="font-family: var(--mono); color: var(--emerald);">100%</span>
+            </h2>
+            <div class="hull-meter-track">
+              <div class="hull-meter-fill" id="hud-hull-bar" style="width: 100%;"></div>
+            </div>
+            <div style="font-size: 12px; color: var(--text-secondary);">
+              Navigate turbulent shear currents and superheated <strong>310°C hydrothermal plumes</strong>! Retrieve glowing <strong>Acoustic Data Buoys</strong> to recalibrate titanium hull sensors (+8%).
+            </div>
+          </div>
+
+          <div class="panel-card">
+            <h3 id="zone-checklist-title">Sector 1 Survey Benchmarks</h3>
+            <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 6px;">
+              Click any oceanographic station below to engage autopilot toward its coordinates:
+            </div>
+            <div class="station-list" id="zone-station-list"></div>
+          </div>
+
+          <div class="panel-card" style="background: hsla(176, 82%, 44%, 0.07); border-color: var(--border-strong);">
+            <h3 style="margin-bottom: 4px;">Expedition Leader Dr. Ballard-Chen</h3>
+            <p id="chief-comms" style="margin: 0; font-size: 12.5px; color: var(--text-secondary);">
+              "Welcome aboard E/V Nautilus! Pilot our tethered ROV probe across all three ocean sectors to map bathymetry, profile thermoclines, and verify 12 foundational ocean systems stations."
+            </p>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ==================== PHASE 2: SONAR & PYCNOCLINE WET-LAB ==================== -->
+    <section class="stage-panel" id="view-lab" aria-labelledby="tab-phase-2">
+      <div class="lab-grid">
+        <div class="panel-card">
+          <h2>
+            <span>Acoustic &amp; Stratification Apparatus</span>
+            <span style="font-family: var(--mono); font-size: 12px; color: var(--teal);" id="lab-progress-label">0 / 6 Completed</span>
+          </h2>
+          <p style="margin: 0 0 10px; font-size: 12.5px; color: var(--text-secondary);">
+            Complete 4 Multibeam Sonar Sounding Stations (<strong>v = 1,500 m/s</strong>; divide round-trip echo time by 2!) and 2 Pycnocline Seawater Density Tank Experiments.
+          </p>
+
+          <div class="tray-tabs" id="lab-tray-tabs"></div>
+
+          <div class="scope-stage">
+            <div style="position: absolute; top: 8px; left: 10px; font-family: var(--mono); font-size: 11px; color: var(--text-muted);" id="lab-stage-tag">
+              APPARATUS: MULTIBEAM ECHOSOUNDER
+            </div>
+            <div class="scope-svg-holder" id="lab-svg-holder"></div>
+            <div class="scope-controls">
+              <button type="button" class="btn-ghost" id="btn-toggle-ray-overlay">Toggle Formula / Density Overlay</button>
+              <button type="button" class="btn-ghost" id="btn-ping-lab">Test Acoustic Pulse / Pour</button>
+            </div>
+          </div>
+
+          <div class="morph-notes" id="lab-sensor-notes"></div>
+        </div>
+
+        <div class="panel-card">
+          <h2>
+            <span id="lab-station-heading">Station 1: Site X Continental Shelf Sounding</span>
+            <button type="button" class="btn-ghost" id="btn-reset-lab-inputs" style="padding: 4px 10px; font-size: 12px;">Clear Inputs</button>
+          </h2>
+          <div class="formula-banner" id="lab-formula-banner">
+            Multibeam Depth Formula: d = (v × t) / 2 &nbsp;|&nbsp; Speed of Sound in Seawater (v) = 1,500 m/s
+          </div>
+          <div id="lab-work-container"></div>
+          <div class="feedback-callout" id="lab-feedback-box"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== PHASE 3: RESEARCH TECH MATRIX & CRISIS TRIAGE ==================== -->
+    <section class="stage-panel" id="view-crisis" aria-labelledby="tab-phase-3">
+      <div class="crisis-stack">
+        <!-- Part 3A: 5-Dropdown Oceanographic Engineering & Site Matrix (10 pts) -->
+        <div class="panel-card">
+          <h2>
+            <span>Part 3A: Oceanographic Engineering &amp; Primary Production Matrix</span>
+            <span class="phase-pts" id="score-3a-badge">0 / 10 pts</span>
+          </h2>
+          <p style="margin: 0 0 8px; font-size: 13px; color: var(--text-secondary);">
+            Match each E/V Nautilus mission requirement and Eastern Pacific survey site (Assessment Q6, Q7 &amp; Q11) to the exact oceanographic technology or primary production energy pathway (2 pts each).
+          </p>
+
+          <div style="overflow-x: auto;">
+            <table class="matrix-table">
+              <thead>
+                <tr>
+                  <th style="width: 52%;">Mission Requirement / Survey Site Parameter</th>
+                  <th style="width: 48%;">Selected Instrument or Energy Pathway</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <strong>1. Discrete Water + eDNA Sampling (50 m, 200 m, 800 m)</strong><br/>
+                    <span style="font-size: 12px; color: var(--text-secondary);">Collect intact 10-liter seawater samples for environmental DNA &amp; dissolved nitrate while logging continuous conductivity, temperature, and depth.</span>
+                  </td>
+                  <td>
+                    <select class="marine-select" id="mat-edna" aria-label="Discrete water and eDNA sampling instrument">
+                      <option value="">-- Select Oceanographic Instrument --</option>
+                      <option value="lead">Single-Beam Lead Sounding Line</option>
+                      <option value="ctd">CTD Rosette with Niskin Bottles</option>
+                      <option value="bongo">Surface Bongo Plankton Net (2 m Tow)</option>
+                      <option value="sat">Orbiting Radar Satellite Altimeter</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>2. Real-Time HD Video &amp; Physical Vent Sampling</strong><br/>
+                    <span style="font-size: 12px; color: var(--text-secondary);">Supply continuous shipboard power, high-lumen lighting, live telepresence video, and precision manipulator control via fiber-optic cable.</span>
+                  </td>
+                  <td>
+                    <select class="marine-select" id="mat-rov" aria-label="Real-time HD video and vent sampling vehicle">
+                      <option value="">-- Select Submersible Platform --</option>
+                      <option value="rov">Tethered ROV</option>
+                      <option value="auv">Autonomous Underwater Vehicle (AUV)</option>
+                      <option value="argo">Untethered Profiling ARGO Float</option>
+                      <option value="secchi">Weighted Secchi Turbidity Disk</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>3. Untethered Pre-Programmed Wide-Swath Sonar Survey</strong><br/>
+                    <span style="font-size: 12px; color: var(--text-secondary);">Fly automated lawnmower bathymetric tracks across rugged canyon terrain without any physical cable linking to the ship.</span>
+                  </td>
+                  <td>
+                    <select class="marine-select" id="mat-auv" aria-label="Untethered wide-swath sonar survey vehicle">
+                      <option value="">-- Select Submersible Platform --</option>
+                      <option value="rov">Tethered ROV</option>
+                      <option value="auv">Autonomous Underwater Vehicle (AUV)</option>
+                      <option value="hov">Three-Person Titanium HOV Sphere</option>
+                      <option value="niskin">Static Mooring Niskin Bottle</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>4. Primary Production Energy Source at Sunlit Site X (150 m)</strong><br/>
+                    <span style="font-size: 12px; color: var(--text-secondary);">Continental shelf neritic/photic ecosystem (14°C surface, 11°C bottom, high chlorophyll-a and nitrate).</span>
+                  </td>
+                  <td>
+                    <select class="marine-select" id="mat-sitex" aria-label="Primary production energy source at sunlit 150 m Site X">
+                      <option value="">-- Select Primary Energy Pathway --</option>
+                      <option value="photo">Photosynthesis (Sunlight + Upwelled Nitrates)</option>
+                      <option value="chemo">Chemosynthesis (Bacteria Oxidizing H2S)</option>
+                      <option value="detritus">Abyssal Marine Snow Scavenging Only</option>
+                      <option value="geothermal">Direct Absorption of 310°C Magma Heat</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>5. Primary Production Energy Source at Pitch-Black Site Y (2,700 m)</strong><br/>
+                    <span style="font-size: 12px; color: var(--text-secondary);">Bathypelagic divergent mid-ocean ridge ecosystem surrounding a 310°C chemical hydrothermal plume in total darkness.</span>
+                  </td>
+                  <td>
+                    <select class="marine-select" id="mat-sitey" aria-label="Primary production energy source at pitch-black 2700 m Site Y">
+                      <option value="">-- Select Primary Energy Pathway --</option>
+                      <option value="photo">Photosynthesis (Sunlight + Upwelled Nitrates)</option>
+                      <option value="chemo">Chemosynthesis (Bacteria Oxidizing H2S)</option>
+                      <option value="lunar">Tidal Gravitational Kinetic Synthesis</option>
+                      <option value="uv">Ultraviolet Bioluminescent Autotrophy</option>
+                    </select>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div style="margin-top: 12px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+            <button type="button" class="btn-primary" id="btn-verify-matrix">Verify Engineering &amp; Energy Matrix</button>
+            <span id="matrix-feedback" style="font-size: 13px; color: var(--text-secondary);"></span>
+          </div>
+        </div>
+
+        <!-- Part 3B: Ocean Systems & Conservation Crisis Triage (15 pts) -->
+        <div class="panel-card">
+          <h2>
+            <span>Part 3B: Ocean Systems &amp; Conservation Crisis Triage</span>
+            <span class="phase-pts" id="score-3b-badge">0 / 15 pts</span>
+          </h2>
+          <p style="margin: 0 0 12px; font-size: 13px; color: var(--text-secondary);">
+            Diagnose three urgent oceanographic alerts (aligned to NGSS HS-ESS2-5, HS-LS2-2 &amp; HS-LS2-7) and deploy the scientifically sound diagnosis or conservation policy!
+          </p>
+
+          <div class="crisis-cards-grid" id="crisis-stations-container"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== PHASE 4: CER SYNTHESIS & SUBMISSION ==================== -->
+    <section class="stage-panel" id="view-cer" aria-labelledby="tab-phase-4">
+      <div class="submit-grid">
+        <div class="panel-card">
+          <h2>
+            <span>Chief Oceanographer's CER Synthesis Report</span>
+            <span class="phase-pts" id="score-cer-badge">0 / 15 pts</span>
+          </h2>
+          <p style="margin: 0 0 10px; font-size: 13px; color: var(--text-secondary);">
+            Construct a rigorous <strong>Claim – Evidence – Reasoning (CER)</strong> scientific argument addressing one of our authentic Unit 1 Summative Assessment prompts. Your response embeds directly into your printable PDF &amp; HTML receipt!
+          </p>
+
+          <div class="cer-field-group">
+            <label for="cer-prompt-select">Choose Your Unit 1 Summative CER Investigation Prompt:</label>
+            <select class="marine-select" id="cer-prompt-select">
+              <option value="A">Prompt A (Site X 150 m Shelf vs. Site Y 2,700 m Ridge Vent — Q11): Cite sonar depth data, compare photosynthetic vs. chemosynthetic energy, and justify a tethered ROV + MPA conservation plan for Site Y.</option>
+              <option value="B">Prompt B (Climate Warming &amp; Polar Ice Melt — Q12): Explain using lab density evidence how warming &amp; freshwater glacial melt strengthen the pycnocline, block photic nutrients, and slow North Atlantic thermohaline O2 delivery.</option>
+            </select>
+          </div>
+
+          <div style="font-size: 12px; color: var(--text-secondary); margin-top: 8px;">
+            <strong>Live Unit 1 Scientific Vocabulary Detector</strong> (aim to naturally integrate <strong>at least 4 terms</strong> — chips illuminate emerald as you type!):
+          </div>
+          <div class="vocab-bank" id="cer-vocab-bank"></div>
+
+          <div class="cer-field-group">
+            <label for="cer-claim">1. Scientific Claim (4 pts — Direct 1–2 sentence thesis answering all parts of the prompt):</label>
+            <textarea class="marine-textarea" id="cer-claim" rows="2" placeholder="State a clear, specific scientific claim addressing Site X vs. Site Y (Prompt A) or surface warming/glacial melt effects on stratification &amp; circulation (Prompt B)..."></textarea>
+          </div>
+
+          <div class="cer-field-group">
+            <label for="cer-evidence">2. Quantitative &amp; Laboratory Evidence (6 pts — Cite specific depths, temperatures, salinities, densities, or instruments):</label>
+            <textarea class="marine-textarea" id="cer-evidence" rows="4" placeholder="Cite concrete measurements from the expedition &amp; wet-lab (e.g., d = 150 m at t = 0.20 s vs. d = 2,700 m at t = 3.60 s; 310°C H2S plume; or carboy densities 0.996 to 1.033 g/cm³ governed by temperature &amp; salinity)..."></textarea>
+          </div>
+
+          <div class="cer-field-group">
+            <label for="cer-reasoning">3. Scientific Reasoning &amp; Conservation / Ecosystem Impact (5 pts — Connect physical oceanography to marine life):</label>
+            <textarea class="marine-textarea" id="cer-reasoning" rows="3" placeholder="Explain HOW these physical variables govern primary production, why a tethered ROV + MPA protects Site Y vents, or why a stronger pycnocline and slower thermohaline conveyor reduce phytoplankton blooms and deep-sea dissolved oxygen..."></textarea>
+          </div>
+
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;">
+            <button type="button" class="btn-primary" id="btn-score-cer">Save &amp; Score CER Entry</button>
+            <span id="cer-live-stats" style="font-family: var(--mono); font-size: 12px; color: var(--text-secondary);">0 words • 0/4 target terms</span>
+          </div>
+          <div class="feedback-callout" id="cer-feedback-box"></div>
+        </div>
+
+        <!-- OFFICIAL SUBMISSION CERTIFICATE PANEL -->
+        <div class="cert-preview">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px;">
+            <div>
+              <div style="font-family: var(--mono); font-size: 11px; color: var(--teal); text-transform: uppercase;">
+                Official Unit 1 Class Assignment Record
+              </div>
+              <h2 style="margin: 3px 0 0; font-size: 18px;">Expedition Completion Certificate</h2>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-family: var(--mono); font-size: 24px; font-weight: 800; color: var(--amber);" id="cert-big-score">0 / 100</div>
+              <div style="font-size: 12px; color: var(--emerald); font-weight: 600;" id="cert-rank-title">Deck Cadet</div>
+            </div>
+          </div>
+
+          <div class="breakdown-list">
+            <div class="breakdown-item">
+              <span>Student Name &amp; Period</span>
+              <strong id="cert-student-line">Not Entered — Click "Student Info"</strong>
+            </div>
+            <div class="breakdown-item">
+              <span>Phase 1: Acoustic &amp; Submersible Survey (12 Stations)</span>
+              <strong id="cert-p1">0 / 36 pts (0/12)</strong>
+            </div>
+            <div class="breakdown-item">
+              <span>Phase 2: Sonar Bathymetry &amp; Pycnocline Wet-Lab</span>
+              <strong id="cert-p2">0 / 24 pts (0/6)</strong>
+            </div>
+            <div class="breakdown-item">
+              <span>Phase 3: Tech Matrix &amp; Ocean Systems Crisis Triage</span>
+              <strong id="cert-p3">0 / 25 pts</strong>
+            </div>
+            <div class="breakdown-item">
+              <span>Phase 4: CER Scientific Synthesis Report</span>
+              <strong id="cert-p4">0 / 15 pts</strong>
+            </div>
+            <div class="breakdown-item">
+              <span>Active Expedition Time Logged</span>
+              <strong id="cert-time" style="font-family: var(--mono);">0m 00s</strong>
+            </div>
+          </div>
+
+          <div style="font-size: 12px; color: var(--text-secondary);">
+            Tamper-Evident Teacher Verification Code:
+          </div>
+          <div class="hash-box" id="cert-verification-code">COMPLETE STUDENT NAME TO GENERATE CODE</div>
+
+          <div id="submit-readiness-msg" style="font-size: 12.5px; color: var(--text-secondary); margin-bottom: 12px;"></div>
+
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <button type="button" class="btn-primary" id="btn-print-pdf" style="justify-content: center; width: 100%;">
+              Print / Save Official PDF Assignment Report (Recommended for Google Classroom)
+            </button>
+            <button type="button" class="btn-teal" id="btn-download-receipt" style="justify-content: center; width: 100%;">
+              Download HTML Receipt (.html)
+            </button>
+            <button type="button" class="btn-emerald" id="btn-copy-classroom" style="justify-content: center; width: 100%;">
+              Copy Submission Summary + CER for Google Classroom
+            </button>
+          </div>
+          <div id="copy-confirm-msg" style="margin-top: 8px; font-size: 12px; color: var(--emerald); text-align: center; min-height: 18px;"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ==================== MODALS ==================== -->
+  <!-- 1. Student Welcome & Registration Modal -->
+  <div class="modal-backdrop open" id="modal-welcome" role="dialog" aria-modal="true" aria-labelledby="welcome-title">
+    <div class="modal-card" style="max-width: 590px;">
+      <div style="font-family: var(--mono); font-size: 11.5px; color: var(--teal); text-transform: uppercase;">
+        Grade 9 Marine Biology • Unit 1: Introduction to Marine Biology &amp; Ocean Systems
+      </div>
+      <h2 id="welcome-title" style="margin: 4px 0 8px; font-size: 21px;">
+        Mission Briefing: E/V Nautilus Ocean Systems Command
+      </h2>
+      <p style="margin: 0 0 14px; color: var(--text-secondary); font-size: 13.5px;">
+        Take command of <strong>ROV Hercules-IX</strong> aboard <em>E/V Nautilus</em>! Survey 12 oceanographic stations from sunlit kelp shelves to the 8,250 m Mariana Subduction Trench, run multibeam sonar &amp; pycnocline density tank experiments, resolve deep-sea mining &amp; climate stratification crises, and generate your <strong>100-Point Official Assignment Report</strong>.
+      </p>
+
+      <div style="display: grid; grid-template-columns: 1.3fr 0.7fr; gap: 10px; margin-bottom: 12px;">
+        <div>
+          <label for="input-student-name" style="display:block; font-size:12.5px; font-weight:600; margin-bottom:4px;">Student Full Name (Required for Credit)</label>
+          <input type="text" class="marine-input" id="input-student-name" placeholder="e.g., Jordan Rivera" maxlength="60" />
+        </div>
+        <div>
+          <label for="input-student-period" style="display:block; font-size:12.5px; font-weight:600; margin-bottom:4px;">Class Period / Section</label>
+          <input type="text" class="marine-input" id="input-student-period" placeholder="e.g., Period 2" maxlength="30" />
+        </div>
+      </div>
+
+      <div style="margin-bottom: 16px;">
+        <label for="input-rov-color" style="display:block; font-size:12.5px; font-weight:600; margin-bottom:4px;">ROV Submersible Chassis Trim</label>
+        <select class="marine-select" id="input-rov-color">
+          <option value="#f5a524">Chronometer Brass Amber (Hercules Standard)</option>
+          <option value="#14ccb9">Acoustic Sonar Teal</option>
+          <option value="#eb6540">Hydrothermal Survey Coral</option>
+        </select>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;">
+        <span style="font-size: 12px; color: var(--text-muted);" id="saved-progress-note">Progress auto-saves in your browser.</span>
+        <div style="display: flex; gap: 8px;">
+          <button type="button" class="btn-ghost" id="btn-reset-all-data" style="display: none;">Start Fresh</button>
+          <button type="button" class="btn-primary" id="btn-launch-expedition">Launch Expedition</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Telemetry Station Scan Modal -->
+  <div class="modal-backdrop" id="modal-scan" role="dialog" aria-modal="true" aria-labelledby="scan-modal-title">
+    <div class="modal-card">
+      <div class="scan-header-grid">
+        <div class="scan-art-frame" id="scan-svg-box"></div>
+        <div>
+          <div style="font-family: var(--mono); font-size: 11.5px; color: var(--teal);" id="scan-sector-line"></div>
+          <h2 id="scan-modal-title" style="margin: 3px 0 6px; font-size: 19px;"></h2>
+          <p id="scan-obs-desc" style="margin: 0; font-size: 13px; color: var(--text-secondary);"></p>
+          <div class="sensor-readout-row" id="scan-sensor-badges"></div>
+        </div>
+      </div>
+
+      <div style="font-weight: 600; font-size: 14px; color: var(--text-main);" id="scan-question-text"></div>
+      <div class="mc-options" id="scan-options-box"></div>
+      <div class="feedback-callout" id="scan-feedback-box"></div>
+
+      <div style="margin-top: 14px; display: flex; justify-content: flex-end; gap: 8px;">
+        <button type="button" class="btn-ghost" id="btn-close-scan">Return to Expedition</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Oceanographic Reference Field Guide Modal -->
+  <div class="modal-backdrop" id="modal-guide" role="dialog" aria-modal="true" aria-labelledby="guide-modal-title">
+    <div class="modal-card" style="max-width: 880px;">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h2 id="guide-modal-title" style="margin: 0; font-size: 18px;">E/V Nautilus Digital Oceanographic Field Guide</h2>
+        <button type="button" class="btn-ghost" id="btn-close-guide">Close</button>
+      </div>
+      <p style="margin: 6px 0 0; font-size: 12.5px; color: var(--text-secondary);">
+        Every benchmark station you survey unlocks verified bathymetric, physical, and technological notes here — keep this open as reference for Phase 2–4!
+      </p>
+      <div class="guide-grid" id="guide-cards-container"></div>
+    </div>
+  </div>
+
+  <!-- 4. Teacher Verification & Rubric Modal -->
+  <div class="modal-backdrop" id="modal-teacher" role="dialog" aria-modal="true" aria-labelledby="teacher-modal-title">
+    <div class="modal-card" style="max-width: 600px;">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h2 id="teacher-modal-title" style="margin: 0; font-size: 18px;">Teacher Assignment Verification &amp; Rubric Tool</h2>
+        <button type="button" class="btn-ghost" id="btn-close-teacher">Close</button>
+      </div>
+      <p style="margin: 8px 0 12px; font-size: 13px; color: var(--text-secondary);">
+        Paste a student's <code>MB1-...</code> Verification Code from their PDF, HTML receipt, or Google Classroom submission below to verify cryptographic checksum authenticity and decode exact phase sub-scores and active time:
+      </p>
+      <div style="display: flex; gap: 8px;">
+        <input type="text" class="marine-input" id="input-verify-code" placeholder="Paste code e.g. MB1-JRIV-P2-96-36.24.23.13-14M-..." />
+        <button type="button" class="btn-teal" id="btn-run-verify" style="flex-shrink: 0;">Verify Code</button>
+      </div>
+      <div class="feedback-callout" id="teacher-verify-output"></div>
+      <div style="margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border-hairline); font-size: 12px; color: var(--text-muted);">
+        <strong>Unit 1 Alignment (100 Points Total):</strong> Phase 1 Acoustic &amp; Submersible Survey across 3 Ocean Sectors (36 pts) • Phase 2 Multibeam Sonar &amp; Pycnocline Density Wet-Lab (24 pts) • Phase 3 Research Tech Matrix &amp; Ocean Systems Crisis Triage (25 pts) • Phase 4 NGSS CER Written Synthesis (15 pts).
+      </div>
+    </div>
+  </div>
+
+  <!-- PRINT-ONLY ACADEMIC GRADE REPORT -->
+  <div id="print-report-sheet" aria-hidden="true"></div>
+  <script>
+  (function () {
+    'use strict';
+
+    // ==================== 1. PROCEDURAL WEB AUDIO SYNTH ====================
+    const SoundFX = {
+      ctx: null,
+      enabled: true,
+      init() {
+        if (!this.ctx && (window.AudioContext || window.webkitAudioContext)) {
+          try {
+            this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+          } catch (e) { this.ctx = null; }
+        }
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume().catch(() => {});
+        }
+      },
+      tone(freq, dur, type = 'sine', vol = 0.085, slideTo = null, delay = 0) {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+        try {
+          const t0 = this.ctx.currentTime + delay;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq, t0);
+          if (slideTo) osc.frequency.exponentialRampToValueAtTime(slideTo, t0 + dur);
+          gain.gain.setValueAtTime(0.0001, t0);
+          gain.gain.linearRampToValueAtTime(vol, t0 + 0.015);
+          gain.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(t0);
+          osc.stop(t0 + dur + 0.02);
+        } catch (e) {}
+      },
+      ping() {
+        this.tone(1320, 0.36, 'sine', 0.08, 1040, 0);
+        this.tone(1980, 0.24, 'sine', 0.03, 1560, 0.08);
+      },
+      scanOpen() {
+        this.tone(480, 0.14, 'triangle', 0.08, 740, 0);
+        this.tone(740, 0.18, 'sine', 0.08, 990, 0.09);
+      },
+      correct() {
+        this.tone(523.25, 0.13, 'triangle', 0.09, null, 0);
+        this.tone(659.25, 0.13, 'triangle', 0.09, null, 0.09);
+        this.tone(783.99, 0.20, 'sine', 0.10, null, 0.18);
+        this.tone(1046.5, 0.28, 'sine', 0.08, null, 0.27);
+      },
+      wrong() {
+        this.tone(235, 0.18, 'sawtooth', 0.06, 170, 0);
+        this.tone(180, 0.22, 'sawtooth', 0.06, 135, 0.12);
+      },
+      hazard() {
+        this.tone(360, 0.24, 'sawtooth', 0.085, 92, 0);
+      },
+      buoy() {
+        this.tone(880, 0.12, 'sine', 0.065, 1320, 0);
+      }
+    };
+
+    // ==================== 2. CUSTOM INLINE SVG DIAGRAMS ====================
+    function getStationSVG(artKey) {
+      const svgs = {
+        kelp: `<svg viewBox="0 0 210 148" width="204" height="144">
+          <rect x="4" y="6" width="202" height="136" rx="8" fill="#072238"/>
+          <polygon points="36,6 68,6 95,126 52,126" fill="rgba(250,204,21,0.16)"/>
+          <polygon points="108,6 142,6 168,126 120,126" fill="rgba(250,204,21,0.14)"/>
+          <path d="M4,116 Q80,112 206,130 L206,142 L4,142 Z" fill="#2c4c5e"/>
+          <path d="M58,120 Q48,88 60,58 Q70,34 56,14" stroke="#249e6b" stroke-width="4" fill="none"/>
+          <path d="M104,122 Q116,86 102,54 Q92,32 106,14" stroke="#249e6b" stroke-width="4" fill="none"/>
+          <ellipse cx="68" cy="48" rx="11" ry="4" fill="#34d399"/><circle cx="58" cy="48" r="2.5" fill="#f59e0b"/>
+          <ellipse cx="94" cy="64" rx="11" ry="4" fill="#34d399"/><circle cx="104" cy="64" r="2.5" fill="#f59e0b"/>
+          <ellipse cx="148" cy="52" rx="10" ry="5" fill="#f5a524"/><polygon points="136,52 130,47 130,57" fill="#f5a524"/>
+          <text x="105" y="21" fill="#fde68a" font-size="9.5" text-anchor="middle" font-family="monospace">0-200 m Photic • 25 m Shelf</text>
+          <text x="105" y="137" fill="#9bd6e8" font-size="9" text-anchor="middle">Neritic Continental Shelf</text>
+        </svg>`,
+
+        upwell: `<svg viewBox="0 0 210 148" width="204" height="144">
+          <rect x="4" y="6" width="202" height="136" rx="8" fill="#061c30"/>
+          <path d="M148,26 L206,26 L206,142 L112,142 Q132,85 148,26 Z" fill="#334155"/>
+          <path d="M118,24 L38,24" stroke="#f5a524" stroke-width="2.6"/>
+          <polygon points="38,24 47,19 47,29" fill="#f5a524"/>
+          <text x="78" y="17" fill="#fcd34d" font-size="8.5" text-anchor="middle" font-family="monospace">Offshore Ekman Transport</text>
+          <path d="M68,132 Q96,120 118,86 Q128,62 126,38" stroke="#14ccb9" stroke-width="3.2" fill="none" stroke-dasharray="4 3"/>
+          <polygon points="126,35 121,44 131,44" fill="#14ccb9"/>
+          <circle cx="86" cy="42" r="3" fill="#34d399"/><circle cx="102" cy="36" r="3.5" fill="#34d399"/><circle cx="114" cy="45" r="2.8" fill="#34d399"/>
+          <text x="68" y="108" fill="#5eead4" font-size="8.5" text-anchor="middle">Cold NO3- / PO4-3</text>
+          <text x="105" y="138" fill="#cbd5e1" font-size="8.5" text-anchor="middle">Deep Nutrient Plume → Diatom Bloom</text>
+        </svg>`,
+
+        tides: `<svg viewBox="0 0 210 148" width="204" height="144">
+          <rect x="4" y="6" width="202" height="136" rx="8" fill="#061729"/>
+          <circle cx="30" cy="74" r="16" fill="#f59e0b"/>
+          <text x="30" y="102" fill="#fcd34d" font-size="8.5" text-anchor="middle">SUN</text>
+          <ellipse cx="114" cy="74" rx="36" ry="20" fill="rgba(20,204,185,0.28)" stroke="#14ccb9" stroke-width="1.8"/>
+          <circle cx="114" cy="74" r="15" fill="#1d4ed8" stroke="#93c5fd" stroke-width="1.2"/>
+          <circle cx="174" cy="74" r="8" fill="#e2e8f0"/>
+          <text x="174" y="96" fill="#cbd5e1" font-size="8" text-anchor="middle">Full Moon</text>
+          <circle cx="72" cy="74" r="7" fill="#1e293b" stroke="#cbd5e1" stroke-width="1.2"/>
+          <text x="72" y="59" fill="#cbd5e1" font-size="8" text-anchor="middle">New</text>
+          <line x1="48" y1="74" x2="164" y2="74" stroke="#f5a524" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="105" y="21" fill="#5eead4" font-size="9.5" text-anchor="middle" font-family="monospace">Syzygy Alignment (180° / 0°)</text>
+          <text x="105" y="135" fill="#fde68a" font-size="8.8" text-anchor="middle">Constructive Pull = Spring Tide Bulge</text>
+        </svg>`,
+
+        challenger: `<svg viewBox="0 0 210 148" width="204" height="144">
+          <rect x="4" y="6" width="202" height="136" rx="8" fill="#071d31"/>
+          <path d="M4,46 Q55,42 105,46 T206,46 L206,142 L4,142 Z" fill="#041221"/>
+          <path d="M58,36 L142,36 L132,47 L68,47 Z" fill="#b45309" stroke="#fde68a" stroke-width="1.3"/>
+          <line x1="84" y1="36" x2="84" y2="14" stroke="#fde68a" stroke-width="2"/>
+          <line x1="114" y1="36" x2="114" y2="12" stroke="#fde68a" stroke-width="2"/>
+          <path d="M86,16 Q98,22 86,29 Z M116,14 Q130,22 116,30 Z" fill="#e2e8f0"/>
+          <line x1="126" y1="45" x2="146" y2="120" stroke="#f5a524" stroke-width="1.8" stroke-dasharray="3 2"/>
+          <polygon points="138,118 154,118 150,128 142,128" fill="none" stroke="#14ccb9" stroke-width="1.8"/>
+          <circle cx="146" cy="123" r="2.5" fill="#34d399"/>
+          <text x="72" y="88" fill="#9bd6e8" font-size="8.5" font-family="monospace">HMS Challenger</text>
+          <text x="72" y="100" fill="#fde68a" font-size="8.5" font-family="monospace">4,700+ Species</text>
+          <text x="105" y="137" fill="#cbd5e1" font-size="8.5" text-anchor="middle">1872-1876 Dredge Disproved Azoic Myth</text>
+        </svg>`,
+
+        thermo: `<svg viewBox="0 0 210 148" width="204" height="144">
+          <rect x="4" y="6" width="202" height="136" rx="8" fill="#051628"/>
+          <line x1="42" y1="24" x2="42" y2="124" stroke="#64748b" stroke-width="1.4"/>
+          <line x1="42" y1="24" x2="188" y2="24" stroke="#64748b" stroke-width="1.4"/>
+          <rect x="43" y="44" width="144" height="32" fill="rgba(245,165,36,0.13)"/>
+          <path d="M172,26 C170,42 152,48 96,62 C68,70 64,95 62,122" stroke="#eb6540" stroke-width="3" fill="none"/>
+          <path d="M52,26 L180,122" stroke="#14ccb9" stroke-width="2.2" stroke-dasharray="4 3" fill="none"/>
+          <text x="115" y="18" fill="#fde68a" font-size="8.5" text-anchor="middle" font-family="monospace">Temp (°C) vs Pressure (atm)</text>
+          <text x="140" y="58" fill="#f5a524" font-size="8.5">Thermocline</text>
+          <text x="136" y="114" fill="#5eead4" font-size="8.5">+1 atm / 10 m</text>
+          <text x="22" y="32" fill="#94a3b8" font-size="8">0m</text>
+          <text x="22" y="64" fill="#94a3b8" font-size="8">1km</text>
+          <text x="22" y="120" fill="#94a3b8" font-size="8">2.5k</text>
+          <text x="105" y="137" fill="#cbd5e1" font-size="8.5" text-anchor="middle">2,500 m = 0 Light • ~2°C • ~251 atm</text>
+        </svg>`,
+
+        ctd: `<svg viewBox="0 0 210 148" width="204" height="144">
+          <rect x="4" y="6" width="202" height="136" rx="8" fill="#061b2e"/>
+          <line x1="105" y1="6" x2="105" y2="38" stroke="#cbd5e1" stroke-width="2"/>
+          <ellipse cx="105" cy="44" rx="34" ry="8" fill="none" stroke="#f5a524" stroke-width="2"/>
+          <ellipse cx="105" cy="96" rx="34" ry="8" fill="none" stroke="#f5a524" stroke-width="2"/>
+          <line x1="71" y1="44" x2="71" y2="96" stroke="#f5a524" stroke-width="2"/>
+          <line x1="139" y1="44" x2="139" y2="96" stroke="#f5a524" stroke-width="2"/>
+          <rect x="78" y="50" width="9" height="38" rx="3" fill="#64748b" stroke="#e2e8f0" stroke-width="1"/>
+          <rect x="92" y="50" width="9" height="38" rx="3" fill="#64748b" stroke="#e2e8f0" stroke-width="1"/>
+          <rect x="109" y="50" width="9" height="38" rx="3" fill="#64748b" stroke="#e2e8f0" stroke-width="1"/>
+          <rect x="123" y="50" width="9" height="38" rx="3" fill="#64748b" stroke="#e2e8f0" stroke-width="1"/>
+          <rect x="96" y="88" width="18" height="14" rx="2" fill="#14ccb9"/>
+          <text x="105" y="22" fill="#5eead4" font-size="9" text-anchor="middle" font-family="monospace">CTD + 10L Niskin Array</text>
+          <text x="105" y="120" fill="#fde68a" font-size="8.5" text-anchor="middle">50 m • 200 m • 800 m eDNA + NO3-</text>
+          <text x="105" y="135" fill="#cbd5e1" font-size="8.5" text-anchor="middle">Conductivity • Temp • Depth Profile</text>
+        </svg>`,
+
+        argo: `<svg viewBox="0 0 210 148" width="204" height="144">
+          <rect x="4" y="6" width="202" height="136" rx="8" fill="#061b2e"/>
+          <path d="M4,42 L82,42 L88,49 L4,49 Z" fill="#cbd5e1"/>
+          <text x="44" y="36" fill="#e2e8f0" font-size="8" text-anchor="middle">Winter Sea Ice</text>
+          <rect x="156" y="14" width="20" height="8" rx="2" fill="#f5a524"/>
+          <line x1="146" y1="18" x2="186" y2="18" stroke="#93c5fd" stroke-width="2"/>
+          <path d="M132,42 Q145,26 158,24" stroke="#14ccb9" stroke-width="1.5" stroke-dasharray="3 2" fill="none"/>
+          <rect x="124" y="44" width="12" height="34" rx="5" fill="#f5a524" stroke="#fef3c7" stroke-width="1.2"/>
+          <line x1="130" y1="44" x2="130" y2="33" stroke="#e2e8f0" stroke-width="1.8"/>
+          <rect x="58" y="88" width="12" height="34" rx="5" fill="#f5a524" opacity="0.65"/>
+          <path d="M64,122 Q98,132 130,82" stroke="#34d399" stroke-width="2" stroke-dasharray="4 3" fill="none"/>
+          <text x="105" y="137" fill="#9bd6e8" font-size="8.5" text-anchor="middle">Untethered 0-2,000 m ARGO Cycle</text>
+        </svg>`,
+
+        ridge: `<svg viewBox="0 0 210 148" width="204" height="144">
+          <rect x="4" y="6" width="202" height="136" rx="8" fill="#040d1a"/>
+          <path d="M4,128 L76,108 L92,72 L105,112 L118,76 L134,108 L206,128 L206,142 L4,142 Z" fill="#1e293b"/>
+          <path d="M98,142 L105,108 L112,142 Z" fill="#eb6540"/>
+          <circle cx="92" cy="56" r="12" fill="rgba(30,41,59,0.85)"/><circle cx="98" cy="38" r="16" fill="rgba(51,65,85,0.7)"/>
+          <path d="M52,120 L24,120 M158,120 L186,120" stroke="#f5a524" stroke-width="2.2"/>
+          <polygon points="24,120 31,116 31,124" fill="#f5a524"/><polygon points="186,120 179,116 179,124" fill="#f5a524"/>
+          <path d="M148,6 L148,54 Q148,68 132,68" stroke="#14ccb9" stroke-width="1.8" fill="none"/>
+          <rect x="118" y="62" width="22" height="12" rx="4" fill="#f5a524"/>
+          <text x="54" y="24" fill="#eb6540" font-size="8.5" font-family="monospace">310°C H2S Plume</text>
+          <text x="54" y="36" fill="#34d399" font-size="8.5" font-family="monospace">Chemosynthesis</text>
+          <text x="105" y="138" fill="#fde68a" font-size="8.5" text-anchor="middle">Divergent Mid-Ocean Ridge (2,700 m)</text>
+        </svg>`,
+
+        seamount: `<svg viewBox="0 0 210 148" width="204" height="144">
+          <rect x="4" y="6" width="202" height="136" rx="8" fill="#06192c"/>
+          <path d="M84,22 L126,22 L120,30 L90,30 Z" fill="#14ccb9"/>
+          <polygon points="102,30 76,94 134,94" fill="rgba(20,204,185,0.18)"/>
+          <line x1="100" y1="30" x2="100" y2="92" stroke="#f5a524" stroke-width="2" stroke-dasharray="4 2"/>
+          <line x1="110" y1="92" x2="110" y2="30" stroke="#34d399" stroke-width="2" stroke-dasharray="4 2"/>
+          <path d="M4,132 L58,128 L92,92 L118,92 L152,128 L206,132 L206,142 L4,142 Z" fill="#334155"/>
+          <text x="52" y="60" fill="#fde68a" font-size="8.5" font-family="monospace">t = 2.40 s</text>
+          <text x="154" y="60" fill="#5eead4" font-size="8.5" font-family="monospace">v = 1,500</text>
+          <text x="105" y="114" fill="#ffffff" font-size="9" text-anchor="middle" font-family="monospace">d = 1,800 m</text>
+          <text x="105" y="138" fill="#cbd5e1" font-size="8.5" text-anchor="middle">d = (1,500 × 2.4) / 2 Seamount Echo</text>
+        </svg>`,
+
+        auv_rov: `<svg viewBox="0 0 210 148" width="204" height="144">
+          <rect x="4" y="6" width="202" height="136" rx="8" fill="#061a2d"/>
+          <line x1="105" y1="12" x2="105" y2="126" stroke="rgba(148,163,184,0.3)" stroke-width="1.2"/>
+          <path d="M48,14 L48,68" stroke="#14ccb9" stroke-width="2.2"/>
+          <rect x="32" y="68" width="32" height="18" rx="5" fill="#f5a524"/>
+          <text x="52" y="24" fill="#5eead4" font-size="8" text-anchor="middle">Fiber Tether</text>
+          <text x="52" y="102" fill="#fde68a" font-size="8.5" text-anchor="middle" font-weight="bold">ROV</text>
+          <text x="52" y="114" fill="#cbd5e1" font-size="7.8" text-anchor="middle">Live Video &amp; Arm</text>
+          <ellipse cx="156" cy="64" rx="26" ry="8" fill="#14ccb9"/>
+          <polygon points="180,64 188,58 188,70" fill="#f5a524"/>
+          <path d="M132,86 L180,86 L180,96 L132,96 L132,106 L180,106" stroke="#34d399" stroke-width="1.5" fill="none" stroke-dasharray="3 2"/>
+          <text x="156" y="42" fill="#34d399" font-size="8.5" text-anchor="middle" font-weight="bold">Untethered AUV</text>
+          <text x="156" y="121" fill="#cbd5e1" font-size="7.8" text-anchor="middle">Pre-Programmed Grid</text>
+        </svg>`,
+
+        trench: `<svg viewBox="0 0 210 148" width="204" height="144">
+          <rect x="4" y="6" width="202" height="136" rx="8" fill="#030b17"/>
+          <path d="M4,68 L74,74 L112,130 L146,66 L206,62 L206,142 L4,142 Z" fill="#1e293b"/>
+          <path d="M22,84 L88,98 L116,136" stroke="#f5a524" stroke-width="2.4" fill="none"/>
+          <polygon points="116,136 107,132 113,126" fill="#f5a524"/>
+          <line x1="112" y1="16" x2="112" y2="126" stroke="#14ccb9" stroke-width="1.6" stroke-dasharray="3 3"/>
+          <text x="105" y="22" fill="#5eead4" font-size="9" text-anchor="middle" font-family="monospace">Hadal Trench • 8,250 m</text>
+          <text x="52" y="58" fill="#fde68a" font-size="8">Subducting Plate</text>
+          <text x="164" y="54" fill="#cbd5e1" font-size="8" text-anchor="middle">Overriding</text>
+          <text x="105" y="139" fill="#eb6540" font-size="8.5" text-anchor="middle">Convergent Subduction Zone (~826 atm)</text>
+        </svg>`,
+
+        conveyor: `<svg viewBox="0 0 210 148" width="204" height="144">
+          <rect x="4" y="6" width="202" height="136" rx="8" fill="#051629"/>
+          <rect x="18" y="24" width="46" height="9" rx="2" fill="#e2e8f0"/>
+          <text x="42" y="20" fill="#cbd5e1" font-size="8" text-anchor="middle">Polar Brine Ice</text>
+          <path d="M168,36 L68,36" stroke="#eb6540" stroke-width="3" fill="none"/>
+          <polygon points="66,36 75,31 75,41" fill="#eb6540"/>
+          <path d="M54,40 Q42,68 48,108 L174,108" stroke="#38bdf8" stroke-width="3.2" fill="none"/>
+          <polygon points="176,108 167,103 167,113" fill="#38bdf8"/>
+          <text x="126" y="30" fill="#fca5a5" font-size="8">Warm Surface Flow</text>
+          <text x="116" y="101" fill="#7dd3fc" font-size="8" font-family="monospace">Cold Salty O2-Rich Deep Flow</text>
+          <text x="105" y="136" fill="#5eead4" font-size="8.5" text-anchor="middle">Thermohaline Global Conveyor Belt</text>
+        </svg>`
+      };
+      return svgs[artKey] || svgs.kelp;
+    }
+
+    function getLabApparatusSVG(labItem, showOverlay, draftState, pulseAnim) {
+      if (labItem.type === 'sonar') {
+        const floorProfiles = {
+          1: { path: 'M14,96 L150,98 L240,126 L346,138 L346,192 L14,192 Z', shipX: 98, hitY: 97, label: 'Site X Continental Shelf (Neritic / Photic)' },
+          2: { path: 'M14,174 L112,170 L166,112 L198,112 L252,170 L346,174 L346,192 L14,192 Z', shipX: 182, hitY: 112, label: 'Submerged Basalt Seamount Summit' },
+          3: { path: 'M14,178 L118,162 L162,126 L180,148 L198,124 L244,162 L346,178 L346,192 L14,192 Z', shipX: 180, hitY: 136, label: 'Site Y Divergent Ridge + 310°C Vent Plume', vent: true },
+          4: { path: 'M14,104 L118,110 L182,182 L238,106 L346,102 L346,192 L14,192 Z', shipX: 182, hitY: 180, label: 'Mariana Convergent Subduction Trench' }
+        };
+        const prof = floorProfiles[labItem.id] || floorProfiles[1];
+        const sx = prof.shipX;
+        const hy = prof.hitY;
+        const ringY = 34 + ((pulseAnim % 1) * (hy - 34));
+
+        return `<svg viewBox="0 0 360 202" width="356" height="200">
+          <defs>
+            <linearGradient id="labSea" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#0b3b59"/>
+              <stop offset="35%" stop-color="#07223b"/>
+              <stop offset="100%" stop-color="#030d1a"/>
+            </linearGradient>
+          </defs>
+          <rect x="14" y="28" width="332" height="164" rx="8" fill="url(#labSea)" stroke="rgba(20,204,185,0.35)"/>
+          <polygon points="${sx},32 ${sx - 44},${hy} ${sx + 44},${hy}" fill="rgba(20,204,185,0.14)"/>
+          ${prof.vent ? `<circle cx="180" cy="116" r="11" fill="rgba(235,101,64,0.28)"/><circle cx="180" cy="98" r="15" fill="rgba(71,85,105,0.45)"/>` : ''}
+          <path d="${prof.path}" fill="#24384d" stroke="#5eead4" stroke-width="1.2"/>
+          <path d="M${sx - 24},22 L${sx + 24},22 L${sx + 18},31 L${sx - 18},31 Z" fill="#f5a524"/>
+          <rect x="${sx - 9}" y="14" width="14" height="8" rx="2" fill="#e2e8f0"/>
+          <line x1="${sx - 5}" y1="32" x2="${sx - 5}" y2="${hy}" stroke="#f5a524" stroke-width="2" stroke-dasharray="5 3"/>
+          <polygon points="${sx - 5},${hy} ${sx - 9},${hy - 8} ${sx - 1},${hy - 8}" fill="#f5a524"/>
+          <line x1="${sx + 6}" y1="${hy}" x2="${sx + 6}" y2="32" stroke="#34d399" stroke-width="2" stroke-dasharray="5 3"/>
+          <polygon points="${sx + 6},32 ${sx + 2},40 ${sx + 10},40" fill="#34d399"/>
+          <ellipse cx="${sx}" cy="${ringY.toFixed(1)}" rx="18" ry="4" fill="none" stroke="#5eead4" stroke-width="1.6"/>
+          <rect x="22" y="36" width="128" height="44" rx="5" fill="rgba(4,14,26,0.84)" stroke="rgba(20,204,185,0.35)"/>
+          <text x="30" y="51" fill="#5eead4" font-size="9.5" font-family="monospace">v = 1,500 m/s</text>
+          <text x="30" y="64" fill="#fde68a" font-size="9.5" font-family="monospace">2-Way t = ${labItem.timeStr}</text>
+          <text x="30" y="75" fill="#94a3b8" font-size="8.5" font-family="monospace">Temp: ${labItem.tempStr}</text>
+          ${showOverlay ? `
+            <rect x="212" y="36" width="126" height="48" rx="5" fill="rgba(4,14,26,0.9)" stroke="#f5a524"/>
+            <text x="275" y="50" fill="#fde68a" font-size="9" text-anchor="middle" font-family="monospace">WORKED FORMULA</text>
+            <text x="275" y="63" fill="#ffffff" font-size="9" text-anchor="middle" font-family="monospace">1-Way = t / 2 = ${(labItem.tSec / 2).toFixed(2)} s</text>
+            <text x="275" y="76" fill="#34d399" font-size="9" text-anchor="middle" font-family="monospace">d = 1,500 × (t / 2)</text>
+          ` : ''}
+          <text x="180" y="187" fill="#e2e8f0" font-size="9.5" text-anchor="middle" font-family="monospace">${prof.label}</text>
+        </svg>`;
+      }
+
+      if (labItem.id === 5) {
+        const colorMap = {
+          red: { fill: 'rgba(225, 65, 55, 0.78)', label: 'Sample A Red: 28°C, 0 ppt (0.996 g/cm³)' },
+          yellow: { fill: 'rgba(238, 186, 38, 0.78)', label: 'Sample B Yellow: 26°C, 20 ppt (1.012 g/cm³)' },
+          green: { fill: 'rgba(34, 178, 108, 0.78)', label: 'Sample C Green: 18°C, 35 ppt (1.025 g/cm³)' },
+          blue: { fill: 'rgba(32, 118, 224, 0.84)', label: 'Sample D Blue: 2°C, 42 ppt (1.033 g/cm³)' }
+        };
+        const slots = [draftState.l1, draftState.l2, draftState.l3, draftState.l4];
+        return `<svg viewBox="0 0 360 202" width="356" height="200">
+          <rect x="64" y="18" width="232" height="164" rx="6" fill="#071525" stroke="#94a3b8" stroke-width="2"/>
+          <rect x="92" y="24" width="38" height="8" rx="3" fill="#eab308"/>
+          <text x="111" y="15" fill="#fde68a" font-size="8.5" text-anchor="middle">Floating Sponge Diffuser</text>
+          ${[0, 1, 2, 3].map(idx => {
+            const y = 34 + idx * 36;
+            const pick = colorMap[slots[idx]];
+            return `<g>
+              <rect x="66" y="${y}" width="228" height="35" fill="${pick ? pick.fill : 'rgba(30,41,59,0.45)'}"/>
+              ${idx > 0 ? `<line x1="66" y1="${y}" x2="294" y2="${y}" stroke="rgba(255,255,255,0.45)" stroke-dasharray="4 2"/>` : ''}
+              <text x="180" y="${y + 21}" fill="#ffffff" font-size="9.2" text-anchor="middle" font-family="monospace">
+                ${pick ? pick.label : `Layer ${idx + 1} (${idx === 0 ? 'Top / Least Dense' : idx === 3 ? 'Bottom Gravity Current' : 'Pycnocline Layer'})`}
+              </text>
+            </g>`;
+          }).join('')}
+          ${showOverlay ? `<text x="180" y="195" fill="#5eead4" font-size="9" text-anchor="middle" font-family="monospace">Rule: Lower Density Floats • Higher Density Sinks</text>` : `<text x="180" y="195" fill="#94a3b8" font-size="9" text-anchor="middle">Session 6 Ocean Systems Pycnocline Stratification Tank</text>`}
+        </svg>`;
+      }
+
+      return `<svg viewBox="0 0 360 202" width="356" height="200">
+        <rect x="16" y="16" width="328" height="170" rx="8" fill="#07182b" stroke="rgba(20,204,185,0.35)"/>
+        <text x="180" y="34" fill="#fde68a" font-size="10" text-anchor="middle" font-family="monospace">1 atm Seawater Mass Sink-Test Comparison (Q10)</text>
+        ${[
+          { n: 'Sample 1', t: '26°C', s: '0 ppt', col: '#ef4444', y: 58, note: 'Warm Fresh' },
+          { n: 'Sample 2', t: '24°C', s: '34 ppt', col: '#f59e0b', y: 78, note: 'Warm Tropical' },
+          { n: 'Sample 3', t: '12°C', s: '35 ppt', col: '#10b981', y: 108, note: 'Cool Temperate' },
+          { n: 'Sample 4', t: '1°C', s: '38 ppt', col: '#3b82f6', y: 146, note: 'Cold Polar Brine' }
+        ].map((c, i) => {
+          const x = 36 + i * 76;
+          return `<g>
+            <rect x="${x}" y="46" width="62" height="118" rx="5" fill="#04101e" stroke="#475569"/>
+            <circle cx="${x + 31}" cy="${showOverlay ? c.y : 96}" r="13" fill="${c.col}"/>
+            <text x="${x + 31}" y="100" fill="#fff" font-size="8.5" text-anchor="middle" font-weight="bold">${i + 1}</text>
+            <text x="${x + 31}" y="175" fill="#e2e8f0" font-size="8.5" text-anchor="middle" font-family="monospace">${c.t} | ${c.s}</text>
+          </g>`;
+        }).join('')}
+      </svg>`;
+    }
+
+    // ==================== 3. CURRICULUM SECTORS & 12 SURVEY STATIONS ====================
+    const SECTORS = [
+      {
+        id: 0,
+        name: 'Sector 1: Eastern Pacific Continental Shelf & Upwelling Coast',
+        shortLabel: 'E. Pacific Shelf & Upwelling',
+        depthMin: 5,
+        depthMax: 220,
+        tempTop: 15.6,
+        tempBot: 10.4,
+        bgTop: '#0b4466',
+        bgMid: '#072b47',
+        bgBottom: '#041729',
+        briefing: 'Sector 1 (Eastern Pacific): Survey the sunlit 25 m Neritic Kelp Shelf, offshore Ekman upwelling plume, coastal spring/neap tidal benchmark, and HMS Challenger historic dredge mooring!'
+      },
+      {
+        id: 1,
+        name: 'Sector 2: Mid-Atlantic Water Column & Divergent Ridge',
+        shortLabel: 'Mid-Atlantic Ridge',
+        depthMin: 120,
+        depthMax: 2800,
+        tempTop: 18.0,
+        tempBot: 2.1,
+        bgTop: '#072c4a',
+        bgMid: '#04182e',
+        bgBottom: '#020b18',
+        briefing: 'Sector 2 (Mid-Atlantic): Profile the sharp mesopelagic thermocline, trigger the CTD Niskin rosette, inspect an autonomous ARGO float, and pilot to the 2,700 m divergent hydrothermal ridge!'
+      },
+      {
+        id: 2,
+        name: 'Sector 3: Mariana Subduction Trench & Global Conveyor',
+        shortLabel: 'Mariana Trench & Conveyor',
+        depthMin: 800,
+        depthMax: 8400,
+        tempTop: 8.5,
+        tempBot: 1.2,
+        bgTop: '#051f38',
+        bgMid: '#031122',
+        bgBottom: '#010711',
+        briefing: 'Sector 3 (Western Pacific & Polar Conveyor): Sound the 1,800 m seamount summit, compare untethered AUV vs. tethered ROV ops, descend into the 8,250 m subduction trench, and log thermohaline sinking!'
+      }
+    ];
+
+    const STATIONS_DATA = [
+      // SECTOR 0: Eastern Pacific Continental Shelf & Upwelling Coast
+      {
+        id: 's1_kelp',
+        sector: 0,
+        x: 270, y: 275,
+        art: 'kelp',
+        name: 'Sunlit Giant Kelp Canopy Benchmark (25 m)',
+        sectorTag: 'Sector 1 • Ocean Zonation (NGSS HS-LS2-2 • Assessment Q1)',
+        sensors: ['Depth: 25 m', 'Light: High PAR', 'Temp: 14.4°C', 'Floor: Gently Sloping Shelf'],
+        obs: 'ROV cameras record dense Macrocystis giant kelp anchored in 25 meters of sunlit coastal water directly above the gently sloping continental shelf.',
+        question: 'In which exact combination of marine pelagic and coastal ocean zones is this 25 m continental-shelf kelp forest located?',
+        options: [
+          'Oceanic zone and aphotic zone',
+          'Neritic zone and photic (epipelagic) zone',
+          'Intertidal zone and bathypelagic zone',
+          'Abyssal zone and mesopelagic zone'
+        ],
+        correct: 1,
+        hint: 'Water over the continental shelf is the neritic zone, and the sunlit upper 0–200 m supporting photosynthesis is the photic (epipelagic) zone.',
+        explain: 'Water above the continental shelf is classified as the neritic zone, while the sunlit upper 0–200 m supporting photosynthesis is the photic (epipelagic) zone.',
+        guideSummary: 'Neritic + Photic (Epipelagic) Zone (0–200 m over continental shelf): High sunlight and coastal nutrients fuel kelp forests and phytoplankton.'
+      },
+      {
+        id: 's1_upwell',
+        sector: 0,
+        x: 680, y: 465,
+        art: 'upwell',
+        name: 'Peru/California Ekman Upwelling Plume',
+        sectorTag: 'Sector 1 • Physical Processes (NGSS HS-ESS2-5 • Assessment Q9)',
+        sensors: ['Depth: 85 m', 'Temp: 10.8°C Cold Plume', 'NO3-: 28 µM High', 'Chl-a: Dense Bloom'],
+        obs: 'Prevailing equatorward coastal winds combine with Earth’s Coriolis effect to push surface water 90° offshore (Ekman transport), drawing deep water upward.',
+        question: 'What is the primary ecological result of coastal upwelling along the Eastern Pacific margins of California and Peru?',
+        options: [
+          'Warm, nutrient-poor surface water sinks to the seafloor and triggers coral bleaching.',
+          'Cold, deep water rich in nitrates and phosphates rises into the sunlit photic zone, fueling dense phytoplankton blooms and productive fisheries.',
+          'Surface salinity drops to 0 ppt, converting the continental shelf into a freshwater lake.',
+          'Gravitational lunar tides stop occurring along the continental margin.'
+        ],
+        correct: 1,
+        hint: 'Decomposers regenerate nitrates and phosphates in deep dark water; upwelling lifts those nutrients back into sunlit surface waters.',
+        explain: 'Coastal upwelling lifts cold, nitrate- and phosphate-rich water from below the pycnocline into the sunlit photic zone, fertilizing diatoms/phytoplankton that support krill, anchovies, and whales.',
+        guideSummary: 'Coastal Upwelling (Ekman Transport): Wind + Coriolis push surface water offshore; deep cold nitrate/phosphate water rises into the photic zone.'
+      },
+      {
+        id: 's1_tides',
+        sector: 0,
+        x: 1050, y: 175,
+        art: 'tides',
+        name: 'Coastal Spring vs. Neap Tide Syzygy Buoy',
+        sectorTag: 'Sector 1 • Gravitational Tides (Lesson 5 • Assessment Q8)',
+        sensors: ['Depth: 12 m', 'Tidal Range: 2.9 m Max', 'Alignment: 180° Syzygy', 'Regime: Semidiurnal'],
+        obs: 'Coastal pressure gauges log extreme high tides and extreme low tides (maximum tidal range) twice each lunar month.',
+        question: 'During which lunar phases do coastal ecosystems experience spring tides (the largest tidal range), and why?',
+        options: [
+          'First and Third Quarter Moons, because the Sun and Moon pull at a 90° right angle.',
+          'New Moon and Full Moon, because the Sun, Earth, and Moon are aligned (syzygy), combining their gravitational pulls.',
+          'Only during total solar eclipses on the summer solstice.',
+          'During neap tides whenever offshore wind speeds exceed 50 knots.'
+        ],
+        correct: 1,
+        hint: 'Spring tides happen when solar gravity reinforces lunar gravity along a straight Sun–Earth–Moon line.',
+        explain: 'During New and Full Moons, the Sun, Earth, and Moon align (syzygy), constructively combining solar and lunar gravity to produce the highest high tides and lowest low tides.',
+        guideSummary: 'Spring vs. Neap Tides: New/Full Moon alignment (syzygy) creates constructive spring tides; First/Third Quarter 90° alignment creates smaller neap tides.'
+      },
+      {
+        id: 's1_challenger',
+        sector: 0,
+        x: 1390, y: 585,
+        art: 'challenger',
+        name: 'HMS Challenger (1872–1876) Historic Benchmark',
+        sectorTag: 'Sector 1 • Exploration History (Lesson 3 • Assessment Q4)',
+        sensors: ['Depth: 195 m', 'Historic Sounding: Hemp Line', 'Catalog: 4,700+ Species', '360+ Global Stations'],
+        obs: 'Sonar locates a commemorative brass seafloor benchmark honoring the 68,890-nautical-mile global voyage of HMS Challenger (1872–1876).',
+        question: 'Why is the 1872–1876 global expedition of HMS Challenger considered a watershed moment in the history of marine science?',
+        options: [
+          'It used orbiting radar satellites and autonomous ARGO floats to map the Arctic Basin.',
+          'It disproved the "azoic hypothesis" by dredging over 4,700 new species from deep ocean basins and establishing global baseline temperature and sounding records.',
+          'It completed the first human-occupied titanium sphere dive to the Challenger Deep.',
+          'It proved that kelp photosynthesis occurs at the bottom of deep-sea trenches.'
+        ],
+        correct: 1,
+        hint: 'Before 1872, Edward Forbes’s "azoic hypothesis" claimed no life could survive below ~550 meters.',
+        explain: 'HMS Challenger systematically dredged deep basins worldwide, discovering >4,700 new species, refuting the azoic hypothesis, and recording 19th-century temperature baselines still used in climate studies.',
+        guideSummary: 'HMS Challenger (1872–1876): Disproved the "azoic" (lifeless deep sea) hypothesis, cataloged >4,700 new species, and founded modern oceanography.'
+      },
+
+      // SECTOR 1: Mid-Atlantic Water Column & Divergent Ridge
+      {
+        id: 's2_thermo',
+        sector: 1,
+        x: 310, y: 430,
+        art: 'thermo',
+        name: 'Mesopelagic Thermocline & Hydrostatic Profile',
+        sectorTag: 'Sector 2 • Abiotic Gradients (Lessons 1–2 • Assessment Q2)',
+        sensors: ['Depth: 2,500 m Equiv.', 'Light: 0.00% Aphotic', 'Temp: 18°C → 2.4°C', 'Pressure: ~251 atm'],
+        obs: 'Vertical profiling sensors track rapid abiotic shifts as the submersible descends from 0 m through the twilight mesopelagic zone into the bathypelagic zone (2,500 m).',
+        question: 'As a submersible descends from the ocean surface (0 m) into the bathypelagic zone (2,500 m) at mid-latitudes, how do light, temperature, and hydrostatic pressure change?',
+        options: [
+          'Light increases, temperature increases, and hydrostatic pressure decreases.',
+          'Light decreases to zero, temperature decreases sharply across the thermocline, and pressure increases by 1 atm per 10 m (~250 atm plus 1 atm air).',
+          'Light remains constant, temperature increases due to compression, and salinity drops to 0 ppt.',
+          'Light fades, temperature rises steadily to 25°C, and pressure stays fixed at 1 atm.'
+        ],
+        correct: 1,
+        hint: 'Sunlight is absorbed in the top 200 m, heat drops rapidly across the permanent thermocline, and every 10 m of water adds 1 atmosphere of pressure.',
+        explain: 'All sunlight is absorbed above ~1,000 m (zero photosynthesis below 200 m), temperature drops steeply across the mesopelagic thermocline to ~2–4°C, and hydrostatic pressure adds 1 atm every 10 m.',
+        guideSummary: 'Vertical Depth Gradients: Light hits zero in the aphotic zone, temperature plunges across the thermocline, and pressure adds +1 atm per 10 m.'
+      },
+      {
+        id: 's2_ctd',
+        sector: 1,
+        x: 690, y: 280,
+        art: 'ctd',
+        name: 'CTD Rosette & 10-Liter Niskin Bottle Array',
+        sectorTag: 'Sector 2 • Research Instrumentation (Lesson 3 • Assessment Q6)',
+        sensors: ['Target Depths: 50/200/800 m', 'Salinity: 35.1 ppt', 'Samples: Intact eDNA + NO3-', 'Live Wire Winch'],
+        obs: 'E/V Nautilus lowers a circular steel frame ringed with 12 gray PVC cylinders that snap shut via electronic shipboard trigger at 50 m, 200 m, and 800 m.',
+        question: 'Which instrument allows scientists to trap intact 10-L seawater samples at 50 m, 200 m, and 800 m for eDNA and nitrate analysis while logging continuous conductivity, temperature, and depth?',
+        options: [
+          'A single-beam hemp lead sounding line',
+          'A CTD rosette equipped with remotely triggered Niskin bottles',
+          'A surface Bongo plankton net towed at 2 m depth',
+          'A radar altimeter satellite orbiting at 800 km altitude'
+        ],
+        correct: 1,
+        hint: 'CTD stands for Conductivity (salinity), Temperature, and Depth, paired with remotely closed water-sampling bottles.',
+        explain: 'A CTD rosette continuously logs Conductivity (salinity), Temperature, and Depth (pressure) while remotely triggered Niskin bottles seal uncontaminated water samples for eDNA and nutrient chemistry.',
+        guideSummary: 'CTD Rosette + Niskin Bottles: Continuous vertical Salinity/Temp/Depth sensor paired with discrete water traps for eDNA and dissolved nutrients.'
+      },
+      {
+        id: 's2_argo',
+        sector: 1,
+        x: 1060, y: 235,
+        art: 'argo',
+        name: 'Autonomous Profiling ARGO Float #49032',
+        sectorTag: 'Sector 2 • Global Monitoring Fleet (Lesson 3 & Assessment Q12)',
+        sensors: ['Cycle: 0–2,000 m / 10 Days', 'Buoyancy Bladder', 'Telemetry: Iridium Sat', 'Fleet: ~4,000 Global'],
+        obs: 'An untethered yellow cylinder adjusts its internal oil bladder to rise from 2,000 m to the surface, beam temperature-salinity profiles to a satellite, and sink again.',
+        question: 'What operational advantage makes autonomous ARGO floats indispensable compared to ship-lowered winches for global climate monitoring?',
+        options: [
+          'They carry three human pilots to collect heavy basalt boulders from trenches.',
+          'They operate untethered year-round—including beneath harsh winter storms and polar sea ice cycles—collecting thousands of low-cost temperature and salinity profiles down to 2,000 m.',
+          'They use giant floodlights to grow kelp in the abyssal zone.',
+          'They require a 5-kilometer copper power cable attached to a coastal dock.'
+        ],
+        correct: 1,
+        hint: 'Research vessels are expensive ($40,000+/day) and avoid winter hurricanes/ice; buoyancy-driven floats profile autonomously.',
+        explain: 'Over 4,000 untethered ARGO floats continuously profile upper-2,000 m ocean heat content and salinity across every ocean basin in all seasons at a fraction of ship time cost.',
+        guideSummary: 'Autonomous ARGO Floats: Untethered buoyancy profilers logging 0–2,000 m temperature & salinity year-round (even in remote stormy/polar seas).'
+      },
+      {
+        id: 's2_ridge',
+        sector: 1,
+        x: 1345, y: 615,
+        art: 'ridge',
+        name: 'Divergent Mid-Ocean Ridge Black Smoker (2,700 m)',
+        sectorTag: 'Sector 2 • Plate Tectonics & Chemosynthesis (Q3 & Q11)',
+        sensors: ['Depth: 2,700 m', 'Vent Fluid: 310°C H2S', 'Ambient: 2.1°C', 'Boundary: Divergent'],
+        hazard: 'vent',
+        obs: 'Along an axial volcanic rift valley at 2,700 m in pitch darkness, polymetallic sulfide chimneys belch 310°C hydrogen-sulfide plumes colonized by giant Riftia tubeworms.',
+        question: 'Which plate tectonic boundary forms this mid-ocean ridge, and how do primary producers sustain its food web without sunlight?',
+        options: [
+          'Transform boundary; kelp uses geothermal infrared glow for photosynthesis.',
+          'Divergent boundary where plates pull apart and magma rises; chemosynthetic bacteria oxidize hydrogen sulfide (H2S) to fix carbon.',
+          'Convergent subduction zone where continental crust folds into mountain glaciers.',
+          'Passive continental shelf margin fueled exclusively by tidal friction.'
+        ],
+        correct: 1,
+        hint: 'Seafloor spreading occurs where two tectonic plates diverge, and pitch-black vent food webs rely on chemical oxidation of H2S.',
+        explain: 'Mid-ocean ridges form at divergent boundaries via seafloor spreading; in total darkness at 2,700 m, chemosynthetic bacteria oxidize toxic hydrogen sulfide (H2S) to synthesize organic matter.',
+        guideSummary: 'Mid-Ocean Ridge Hydrothermal Vents: Divergent tectonic boundary (seafloor spreading); primary production powered by bacterial H2S chemosynthesis.'
+      },
+
+      // SECTOR 2: Mariana Subduction Trench & Global Conveyor
+      {
+        id: 's3_seamount',
+        sector: 2,
+        x: 310, y: 455,
+        art: 'seamount',
+        name: 'Multibeam Seamount Summit Benchmark',
+        sectorTag: 'Sector 3 • Acoustic Bathymetry (Lesson 4 • Assessment Q5)',
+        sensors: ['Sound Speed v: 1,500 m/s', '2-Way Echo t: 2.40 s', 'Substrate: Hard Basalt', 'Fauna: Deep Corals'],
+        obs: 'E/V Nautilus hull transducers ping a submerged volcanic seamount; the acoustic pulse takes 2.40 seconds round-trip (ship → summit → ship) at v = 1,500 m/s.',
+        question: 'Using the multibeam sonar equation d = (v × t) / 2 with v = 1,500 m/s and round-trip time t = 2.4 seconds, what is the exact depth of the seamount summit?',
+        options: [
+          '625 meters',
+          '1,200 meters',
+          '1,800 meters',
+          '3,600 meters'
+        ],
+        correct: 2,
+        hint: 'Multiply 1,500 m/s by 2.4 s (= 3,600 m total round-trip travel), then divide by 2 for one-way water depth!',
+        explain: 'd = (1,500 m/s × 2.4 s) / 2 = 3,600 m / 2 = 1,800 meters! Forgetting to divide by 2 gives the 3,600 m round-trip distance error.',
+        guideSummary: 'Multibeam Sonar Formula: d = (v × t) / 2 where v = 1,500 m/s. Always divide two-way echo time by 2 (e.g., t = 2.4 s → d = 1,800 m).'
+      },
+      {
+        id: 's3_auv_rov',
+        sector: 2,
+        x: 685, y: 265,
+        art: 'auv_rov',
+        name: 'Deep Robotics Rendezvous: Tethered ROV vs. AUV',
+        sectorTag: 'Sector 3 • Ocean Engineering (Lesson 4 • Assessment Q7)',
+        sensors: ['ROV: Fiber-Optic Tether', 'AUV: Pre-Programmed Grid', 'Telepresence: Live 4K', 'Manipulator: 7-Function'],
+        obs: 'Two robotic vehicles operate side by side: torpedo-shaped Sentry flies untethered sonar lines while tethered Hercules hovers at a cliff face streaming live HD video.',
+        question: 'How does a Remotely Operated Vehicle (ROV) fundamentally differ from an Autonomous Underwater Vehicle (AUV) in deep-sea science?',
+        options: [
+          'An ROV carries three human scientists inside a sphere, whereas an AUV is dragged on a steel tow chain.',
+          'An ROV is linked to the ship by a fiber-optic tether providing continuous power, live video, and real-time manipulator control, whereas an AUV operates untethered along pre-programmed survey tracks.',
+          'An ROV can only dive to 50 m in sunlit water, whereas an AUV only drifts on the surface.',
+          'An AUV requires a heavy umbilical cable to transmit live classroom audio.'
+        ],
+        correct: 1,
+        hint: 'Compare "Remotely Operated" (tethered live human telepresence + claws) vs. "Autonomous" (untethered pre-programmed mapping).',
+        explain: 'Tethered ROVs deliver unlimited ship power, live HD telepresence, and delicate sample collection, while untethered AUVs excel at wide-area bathymetric sonar grids.',
+        guideSummary: 'ROV vs. AUV: ROV = fiber-optic tether, live video, real-time pilot + claws; AUV = untethered robot flying pre-programmed sonar survey lines.'
+      },
+      {
+        id: 's3_trench',
+        sector: 2,
+        x: 1060, y: 635,
+        art: 'trench',
+        name: 'Mariana Convergent Subduction Trench (8,250 m)',
+        sectorTag: 'Sector 3 • Hadal Tectonics (Lessons 2 & 4 • Assessment Q3)',
+        sensors: ['Depth: 8,250 m Hadal', '2-Way Echo: 11.0 s', 'Pressure: ~826 atm', 'Zone: Subduction'],
+        hazard: 'shear',
+        obs: 'Multibeam echosounders record an 11.0-second round-trip echo (8,250 m depth) inside a V-shaped hadal trench where dense Pacific oceanic crust bends downward.',
+        question: 'Which plate tectonic process carves V-shaped deep-sea trenches exceeding 6,000–11,000 meters in the hadalpelagic zone?',
+        options: [
+          'Divergent seafloor spreading pushing continental shelves wider apart',
+          'Convergent subduction, where a denser oceanic plate sinks beneath another tectonic plate into the mantle',
+          'Wind-driven Ekman transport eroding coastal sandbars',
+          'Coral reef calcium carbonate accretion during spring tides'
+        ],
+        correct: 1,
+        hint: 'Deep ocean trenches form where two plates collide (converge) and the denser oceanic lithosphere subducts.',
+        explain: 'Deep-sea hadal trenches form at convergent plate boundaries via subduction of dense oceanic crust, creating Earth’s deepest, highest-pressure (>600–1,100 atm) marine habitats.',
+        guideSummary: 'Deep-Sea Trenches (Hadal Zone >6,000 m): Formed at convergent subduction boundaries where dense oceanic crust plunges into the mantle.'
+      },
+      {
+        id: 's3_conveyor',
+        sector: 2,
+        x: 1390, y: 390,
+        art: 'conveyor',
+        name: 'Deep Thermohaline Brine Conveyor Mooring',
+        sectorTag: 'Sector 3 • Global Circulation (Lessons 5–6 • Assessment Q10 & Q12)',
+        sensors: ['Temp: 1.1°C Cold', 'Salinity: 38–42 ppt Brine', 'Density: >1.030 g/cm³', 'Dissolved O2: High'],
+        obs: 'Deep current meters detect a dense, icy, oxygen-rich abyssal current originating in polar latitudes where sea-ice formation leaves salt behind (brine rejection).',
+        question: 'Which physical combination gives high-latitude surface seawater the maximum density needed to sink and drive the global thermohaline conveyor belt—and what vital gas does it carry to the deep sea?',
+        options: [
+          'High temperature (26°C) and zero salinity (0 ppt), carrying methane gas upward',
+          'Very cold temperature (~1–2°C) and high salinity (≥35–38 ppt), carrying dissolved oxygen (O2) down to bathypelagic and abyssal organisms',
+          'Warm brackish river water (24°C, 15 ppt), blocking all deep currents',
+          'Constant temperature and zero pressure, producing sunlight at 4,000 m'
+        ],
+        correct: 1,
+        hint: 'Seawater density increases as water gets colder AND saltier; sinking polar surface water ventilates the deep ocean with dissolved O2.',
+        explain: 'Cold temperatures and high salinity (from evaporation and sea-ice brine rejection) maximize seawater density, causing surface water saturated with dissolved oxygen to sink and ventilate the deep ocean.',
+        guideSummary: 'Thermohaline Circulation: Cold + salty polar water reaches peak density and sinks, driving the global conveyor belt and supplying deep-sea dissolved O2.'
+      }
+    ];
+
+    // ==================== 4. PHASE 2 WET-LAB & PHASE 3 CRISIS DATA ====================
+    const LAB_STATIONS = [
+      {
+        id: 1,
+        code: 'Lab 1: Site X',
+        heading: 'Lab 1: Site X Continental Shelf Sonar Sounding (Q11a/b)',
+        type: 'sonar',
+        tSec: 0.20,
+        timeStr: '0.20 s',
+        tempStr: '14°C Surf / 11°C Bot',
+        expectedDepth: 150,
+        expectedZone: 'neritic_photic',
+        zoneOptions: [
+          { val: '', text: '-- Classify Ocean Zone & Seafloor Feature --' },
+          { val: 'neritic_photic', text: 'Neritic & Photic (Epipelagic) Zone on Continental Shelf (Coastal Upwelling)' },
+          { val: 'bathypelagic_ridge', text: 'Bathypelagic Aphotic Zone on Divergent Mid-Ocean Ridge' },
+          { val: 'hadal_trench', text: 'Hadalpelagic Zone in Convergent Subduction Trench' },
+          { val: 'abyssal_plain', text: 'Abyssopelagic Pitch-Black Basin at 4,500 m' }
+        ],
+        notes: [
+          'Two-way multibeam travel time (ship → seafloor → ship): t = 0.20 seconds.',
+          'Speed of sound in seawater: v = 1,500 m/s.',
+          'CTD sensors detect cool 14°C surface water, 11°C bottom water, high dissolved nitrate, and dense chlorophyll-a.'
+        ],
+        wrongTip: 'Remember d = (1,500 × 0.20) / 2! Half of 0.20 s is 0.10 s; 1,500 × 0.10 = 150 m (within the sunlit 0–200 m Neritic/Photic shelf).'
+      },
+      {
+        id: 2,
+        code: 'Lab 2: Seamount',
+        heading: 'Lab 2: Newly Discovered Seamount Summit Sounding (Q5 & L4)',
+        type: 'sonar',
+        tSec: 2.40,
+        timeStr: '2.40 s',
+        tempStr: '19°C Surf / 3.4°C Summit',
+        expectedDepth: 1800,
+        expectedZone: 'bathy_seamount',
+        zoneOptions: [
+          { val: '', text: '-- Classify Ocean Zone & Seafloor Feature --' },
+          { val: 'neritic_kelp', text: 'Sunlit Epipelagic Intertidal Tidepool (0–10 m)' },
+          { val: 'bathy_seamount', text: 'Bathypelagic (Aphotic) Volcanic Seamount Summit — Hard Basalt Coral/Sponge Habitat' },
+          { val: 'hadal_subduct', text: 'Hadalpelagic Subduction Trench Floor (>8,000 m)' },
+          { val: 'estuary_fresh', text: 'Freshwater River Delta Plume (0 ppt Salinity)' }
+        ],
+        notes: [
+          'Two-way multibeam echo time to the submerged volcanic peak: t = 2.40 seconds.',
+          'Speed of sound in seawater: v = 1,500 m/s.',
+          'Strong acoustic backscatter indicates exposed hard basalt rock swept by deep currents—ideal for suspension-feeding deep-sea corals.'
+        ],
+        wrongTip: 'Compute d = (1,500 × 2.40) / 2: 3,600 m is the round-trip distance, so divide by 2 for exact summit depth in the aphotic bathypelagic zone!'
+      },
+      {
+        id: 3,
+        code: 'Lab 3: Site Y',
+        heading: 'Lab 3: Site Y Volcanic Ridge & Hydrothermal Plume (Q11a/b)',
+        type: 'sonar',
+        tSec: 3.60,
+        timeStr: '3.60 s',
+        tempStr: '24°C Surf / 2.1°C Bot (310°C Vent)',
+        expectedDepth: 2700,
+        expectedZone: 'bathy_ridge',
+        zoneOptions: [
+          { val: '', text: '-- Classify Ocean Zone & Seafloor Feature --' },
+          { val: 'neritic_shelf', text: 'Sunlit Neritic Continental Shelf with Kelp Photosynthesis' },
+          { val: 'bathy_ridge', text: 'Bathypelagic / Benthic Aphotic Zone on Divergent Mid-Ocean Ridge with Hydrothermal Vent' },
+          { val: 'intertidal_sand', text: 'Littoral Sandy Beach Exposed During Neap Low Tide' },
+          { val: 'epipelagic_gyre', text: 'Surface Epipelagic Subtropical Gyre (50 m)' }
+        ],
+        notes: [
+          'Two-way multibeam travel time at Eastern Pacific Site Y: t = 3.60 seconds.',
+          'Speed of sound in seawater: v = 1,500 m/s.',
+          'Ambient bottom water is 2.1°C in total darkness, with a superheated 310°C hydrogen sulfide (H2S) plume rising from an axial rift.'
+        ],
+        wrongTip: 'Compute d = (1,500 × 3.60) / 2 = 5,400 / 2 = 2,700 m! At 2,700 m along a volcanic rift, this is a Bathypelagic Divergent Mid-Ocean Ridge.'
+      },
+      {
+        id: 4,
+        code: 'Lab 4: Trench',
+        heading: 'Lab 4: Hadal Trench Deep Sounding (Lesson 4 Stn 5 & Q3)',
+        type: 'sonar',
+        tSec: 11.0,
+        timeStr: '11.00 s',
+        tempStr: '26°C Surf / 1.2°C Trench',
+        expectedDepth: 8250,
+        expectedZone: 'hadal_trench',
+        zoneOptions: [
+          { val: '', text: '-- Classify Ocean Zone & Seafloor Feature --' },
+          { val: 'meso_slope', text: 'Mesopelagic Twilight Continental Slope (400 m)' },
+          { val: 'divergent_crest', text: 'Divergent Seafloor-Spreading Ridge Crest (2,200 m)' },
+          { val: 'hadal_trench', text: 'Hadalpelagic (>6,000 m) Deep-Sea Trench at Convergent Subduction Boundary' },
+          { val: 'photic_lagoon', text: 'Photic Coastal Barrier Lagoon (15 m)' }
+        ],
+        notes: [
+          'Two-way multibeam travel time to the V-shaped trench axis: t = 11.0 seconds.',
+          'Speed of sound in seawater: v = 1,500 m/s.',
+          'Hydrostatic pressure exceeds 825 atmospheres where the dense oceanic plate bends into the mantle.'
+        ],
+        wrongTip: 'Compute d = (1,500 × 11.0) / 2 = 16,500 / 2 = 8,250 m! Depths beyond 6,000 m in V-shaped subduction zones belong to the Hadalpelagic zone.'
+      },
+      {
+        id: 5,
+        code: 'Lab 5: Pycnocline',
+        heading: 'Lab 5: Session 6 Pycnocline Tank Stratification Order',
+        type: 'tank_order',
+        notes: [
+          'Stock Carboy Red (Sample A): Warm freshwater, 28°C, 0 ppt salinity → Density = 0.996 g/cm³.',
+          'Stock Carboy Yellow (Sample B): Warm brackish water, 26°C, 20 ppt salinity → Density = 1.012 g/cm³.',
+          'Stock Carboy Green (Sample C): Cool ocean water, 18°C, 35 ppt salinity → Density = 1.025 g/cm³.',
+          'Stock Carboy Blue (Sample D): Ice-chilled polar brine, 2°C, 42 ppt salinity → Density = 1.033 g/cm³.'
+        ],
+        wrongTip: 'Stratify from LEAST dense at Top Layer 1 (0.996 g/cm³ warm fresh Red) down to MOST dense at Bottom Layer 4 (1.033 g/cm³ cold salty Blue gravity current)!'
+      },
+      {
+        id: 6,
+        code: 'Lab 6: Sink-Test',
+        heading: 'Lab 6: Water Mass Sink-Test Comparison (Assessment Q10)',
+        type: 'sink_test',
+        notes: [
+          'Sample 1: 26°C, 0 ppt (Warm river plume)',
+          'Sample 2: 24°C, 34 ppt (Warm tropical surface seawater)',
+          'Sample 3: 12°C, 35 ppt (Cool temperate mesopelagic water)',
+          'Sample 4: 1°C, 38 ppt (Ice-margin polar brine water)'
+        ],
+        wrongTip: 'Compare both temperature and salinity: cooling contracts seawater volume (higher density) and dissolved salt adds mass (higher density), making Sample 4 (1°C, 38 ppt) densest!'
+      }
+    ];
+
+    const CRISIS_STATIONS = [
+      {
+        id: 'crisis_mining',
+        title: 'Crisis 1: Site Y (2,700 m) Polymetallic Sulfide Mining Proposal',
+        metricLabel: 'Vent Community Protection Index',
+        startVal: 18,
+        scenario: 'A commercial consortium requests a permit to strip-mine copper/zinc sulfide chimneys at Site Y (2,700 m Mid-Ocean Ridge) before any biological survey is conducted. Select the scientifically defensible action plan (Assessment Q11c / NGSS HS-ETS1-3):',
+        options: [
+          'Approve immediate seafloor dredging because the 19th-century azoic hypothesis proved no organisms live below 550 m.',
+          'Deploy a fiber-optic tethered ROV (live HD video, manipulator arms & Niskin eDNA samplers) to document endemic chemosynthetic species, and establish a deep-sea Marine Protected Area (MPA) prohibiting sulfide mining.',
+          'Tow a 2-meter surface plankton net over the ship and dump agricultural fertilizer onto the ridge.',
+          'Send unshielded scuba divers down to 2,700 m with hand nets to relocate all tubeworms to sunlit kelp forests.'
+        ],
+        correct: 1,
+        explain: 'Deep-Sea MPA & ROV Baseline Protocol Enacted! Tethered ROV telepresence + eDNA characterization documents fragile H2S-chemosynthetic vent fauna, justifying a Marine Protected Area off-limits to destructive sulfide dredging.'
+      },
+      {
+        id: 'crisis_upwelling',
+        title: 'Crisis 2: Eastern Pacific Upwelling Shutdown & Fisheries Alert',
+        metricLabel: 'Photic Nitrate & Diatom Productivity',
+        startVal: 22,
+        scenario: 'Coastal buoys off Peru and California report a sudden 6°C spike in surface water temperature, near-zero surface nitrates, and collapsing anchovy & krill shoals. Diagnose the physical oceanography mechanism (Assessment Q9 / Lesson 5):',
+        options: [
+          'Weakened alongshore winds stalled offshore Ekman transport, stopping cold nitrate- and phosphate-rich deep water from upwelling across the pycnocline into the sunlit photic zone.',
+          'Full Moon syzygy permanently stopped Earth’s rotation and eliminated surface salinity.',
+          'Hydrothermal black smokers at 2,700 m consumed all sunlight in the neritic kelp canopy.',
+          'Autonomous ARGO floats absorbed too much conductivity from coastal seawater.'
+        ],
+        correct: 0,
+        explain: 'Upwelling Diagnosis Verified! When trade/coastal winds weaken, offshore Ekman transport stalls—trapping cold nitrate/phosphate water below the thermocline/pycnocline and starving photic-zone phytoplankton at the base of the fishery food web.'
+      },
+      {
+        id: 'crisis_climate',
+        title: 'Crisis 3: Greenland Glacial Melt & Surface Warming Alert',
+        metricLabel: 'Thermohaline O2 Ventilation & Mixing',
+        startVal: 24,
+        scenario: 'Global ARGO profiles reveal rapid upper-200 m ocean warming plus accelerating freshwater meltwater runoff from Greenland land ice. Predict the dual impact on ocean stratification and deep circulation (Assessment Q12 / NGSS HS-ESS2-5):',
+        options: [
+          'Warmer, fresher water becomes heavier than 1.033 g/cm³ brine, accelerating deep oxygen delivery.',
+          'Warmer temperature and lower salinity reduce surface seawater density—strengthening the pycnocline barrier (blocking upward nutrients to phytoplankton) and slowing North Atlantic thermohaline sinking (reducing deep-sea dissolved O2).',
+          'Freshwater melt increases salinity to 50 ppt and turns abyssal plains into sunlit photic zones.',
+          'Surface warming eliminates the thermocline so abyssal water boils to 100°C.'
+        ],
+        correct: 1,
+        explain: 'Climate Stratification Model Verified! Both heating and freshwater dilution lower surface density (g/cm³), creating a steeper pycnocline that starves surface phytoplankton of deep nutrients while slowing high-latitude deep-water sinking and deep O2 supply.'
+      }
+    ];
+
+    const CER_VOCAB_TERMS = [
+      'pycnocline', 'thermocline', 'thermohaline', 'salinity', 'density',
+      'upwelling', 'photic', 'aphotic', 'neritic', 'bathypelagic',
+      'chemosynthesis', 'photosynthesis', 'sonar', 'niskin', 'rov', 'mpa'
+    ];
+
+    // ==================== 5. PERSISTENT STATE & STORAGE ====================
+    const STORAGE_KEY = 'pelagia_u1_ocean_systems_v1';
+    const state = {
+      studentName: '',
+      studentPeriod: '',
+      rovColor: '#f5a524',
+      activePhase: 'view-dive',
+      currentSector: 0,
+      hull: 100,
+      streak: 1,
+      sonarCone: true,
+      elapsedSec: 0,
+      scans: {},
+      lab: {},
+      activeLabIdx: 0,
+      labShowOverlay: false,
+      labDrafts: {
+        1: { depth: '', zone: '' },
+        2: { depth: '', zone: '' },
+        3: { depth: '', zone: '' },
+        4: { depth: '', zone: '' },
+        5: { l1: '', l2: '', l3: '', l4: '' },
+        6: { sample: '', rule: '' }
+      },
+      matrixSelections: { edna: '', rov: '', auv: '', sitex: '', sitey: '' },
+      score3A: 0,
+      crisisSolved: {},
+      cerPrompt: 'A',
+      cerClaim: '',
+      cerEvidence: '',
+      cerReasoning: '',
+      scoreCER: 0
+    };
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (e) {}
+      refreshAllScoreUI();
+    }
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return false;
+        const parsed = JSON.parse(raw);
+        if (parsed && typeof parsed === 'object') {
+          const savedDrafts = parsed.labDrafts || {};
+          Object.assign(state, parsed);
+          state.labDrafts = Object.assign({
+            1: { depth: '', zone: '' },
+            2: { depth: '', zone: '' },
+            3: { depth: '', zone: '' },
+            4: { depth: '', zone: '' },
+            5: { l1: '', l2: '', l3: '', l4: '' },
+            6: { sample: '', rule: '' }
+          }, savedDrafts);
+        }
+        return true;
+      } catch (e) { return false; }
+    }
+
+    // ==================== 6. SCORE & CRYPTOGRAPHIC VERIFICATION ENGINE ====================
+    function getScores() {
+      const p1 = Object.values(state.scans).reduce((s, v) => s + (v.pts || 0), 0);
+      const p2 = Object.values(state.lab).reduce((s, v) => s + (v.pts || 0), 0);
+      const p3b = Object.values(state.crisisSolved).reduce((s, v) => s + (v.pts || 0), 0);
+      const p3 = (state.score3A || 0) + p3b;
+      const p4 = state.scoreCER || 0;
+      const total = p1 + p2 + p3 + p4;
+      return { p1, p2, p3a: state.score3A || 0, p3b, p3, p4, total };
+    }
+
+    function getRankTitle(total) {
+      if (total >= 93) return 'Chief Expedition Oceanographer (Mastery A)';
+      if (total >= 85) return 'Senior Bathymetry & ROV Scientist (Proficient B+)';
+      if (total >= 75) return 'Acoustic Hydrography Specialist (Developing C+)';
+      if (total >= 60) return 'Nautilus Survey Intern';
+      return 'Deck Cadet (Expedition In Progress)';
+    }
+
+    function computeChecksum(payload) {
+      let h = 0x811c9dc5;
+      const salted = payload + '|SCA-MARINE-BIO-U1-2026';
+      for (let i = 0; i < salted.length; i++) {
+        h ^= salted.charCodeAt(i);
+        h = Math.imul(h, 0x01000193);
+      }
+      return (h >>> 0).toString(36).toUpperCase().padStart(7, '0').slice(0, 6);
+    }
+
+    function generateVerificationCode() {
+      const cleanName = (state.studentName || '').trim();
+      if (!cleanName) return 'ENTER STUDENT NAME TO GENERATE VERIFICATION CODE';
+      const initials = cleanName.replace(/[^a-zA-Z]/g, '').toUpperCase().slice(0, 4).padEnd(4, 'X');
+      const per = (state.studentPeriod || 'P0').replace(/[^a-zA-Z0-9]/g, '').toUpperCase().slice(0, 4) || 'P0';
+      const sc = getScores();
+      const mins = Math.max(1, Math.floor(state.elapsedSec / 60));
+      const core = `MB1-${initials}-${per}-${sc.total}-${sc.p1}.${sc.p2}.${sc.p3}.${sc.p4}-${mins}M`;
+      const sig = computeChecksum(core);
+      return `${core}-${sig}`;
+    }
+
+    function verifyTeacherCode(codeStr) {
+      const trimmed = (codeStr || '').trim().toUpperCase();
+      const lastDash = trimmed.lastIndexOf('-');
+      if (!trimmed.startsWith('MB1-') || lastDash < 10) {
+        return { valid: false, msg: 'Invalid code format. Expected Unit 1 code starting with MB1-... followed by a 6-character checksum.' };
+      }
+      const core = trimmed.slice(0, lastDash);
+      const sig = trimmed.slice(lastDash + 1);
+      const expected = computeChecksum(core);
+      if (sig !== expected) {
+        return { valid: false, msg: `CHECKSUM MISMATCH! Provided signature (${sig}) does not match cryptographic calculation. Score or text may have been altered.` };
+      }
+      const parts = core.split('-');
+      const [, initTag, perTag, totalStr, subStr, minTag] = parts;
+      const subs = (subStr || '').split('.');
+      return {
+        valid: true,
+        msg: `AUTHENTIC VERIFIED UNIT 1 SUBMISSION! Student Tag: ${initTag} | Period: ${perTag} | Total Score: ${totalStr}/100 (Phase 1 Survey: ${subs[0]}/36, Phase 2 Sonar/Density Lab: ${subs[1]}/24, Phase 3 Matrix/Crisis: ${subs[2]}/25, Phase 4 CER: ${subs[3]}/15) | Active Time: ${minTag}.`
+      };
+    }
+
+    // ==================== 7. CANVAS 2D OCEAN EXPEDITION ENGINE (1600 x 760) ====================
+    const canvas = document.getElementById('ocean-canvas');
+    const ctx = canvas.getContext('2d');
+    const WORLD_W = 1600;
+    const WORLD_H = 760;
+
+    const rov = {
+      x: 185, y: 215, vx: 0, vy: 0,
+      facing: 1, tilt: 0, propAngle: 0,
+      targetX: null, targetY: null, autoScanId: null,
+      scanPulse: 0, invuln: 0
+    };
+
+    const keys = {};
+    const bubbles = [];
+    const dataBuoys = [];
+    const marineSnow = Array.from({ length: 70 }, () => ({
+      x: Math.random() * WORLD_W,
+      y: 70 + Math.random() * (WORLD_H - 130),
+      r: 1 + Math.random() * 2.1,
+      sp: 10 + Math.random() * 18
+    }));
+    const ambientFish = Array.from({ length: 10 }, (_, i) => ({
+      x: 140 + i * 145,
+      y: 130 + (i % 4) * 95,
+      dir: i % 2 === 0 ? 1 : -1,
+      speed: 26 + (i % 3) * 14,
+      phase: i * 0.9
+    }));
+
+    function spawnSectorBuoys() {
+      dataBuoys.length = 0;
+      for (let i = 0; i < 7; i++) {
+        dataBuoys.push({
+          x: 210 + i * 205 + (Math.random() * 50 - 25),
+          y: 135 + Math.random() * 440,
+          collected: false,
+          phase: Math.random() * Math.PI * 2
+        });
+      }
+    }
+    spawnSectorBuoys();
+
+    function showDiveToast(msg) {
+      const el = document.getElementById('dive-toast');
+      el.textContent = msg;
+      el.classList.add('visible');
+      clearTimeout(showDiveToast._t);
+      showDiveToast._t = setTimeout(() => el.classList.remove('visible'), 3000);
+    }
+
+    function setComms(text) {
+      document.getElementById('chief-comms').textContent = `"${text}"`;
+    }
+
+    function isAnyModalOpen() {
+      return document.querySelectorAll('.modal-backdrop.open').length > 0;
+    }
+
+    window.addEventListener('keydown', (e) => {
+      const tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : '';
+      if (tag === 'input' || tag === 'textarea' || tag === 'select') return;
+      keys[e.code] = true;
+      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(e.code) && state.activePhase === 'view-dive' && !isAnyModalOpen()) {
+        e.preventDefault();
+      }
+      if (e.code === 'Space' && state.activePhase === 'view-dive' && !isAnyModalOpen()) {
+        tryScanNearest();
+      }
+      if (e.code === 'KeyF' && state.activePhase === 'view-dive' && !isAnyModalOpen()) {
+        state.sonarCone = !state.sonarCone;
+        showDiveToast(`Multibeam Sonar Cone: ${state.sonarCone ? 'ACTIVE' : 'STANDBY'}`);
+      }
+    });
+
+    window.addEventListener('keyup', (e) => {
+      keys[e.code] = false;
+    });
+
+    function getCamera() {
+      const cw = canvas.width;
+      const ch = canvas.height;
+      const camX = Math.max(0, Math.min(WORLD_W - cw, rov.x - cw / 2));
+      const camY = Math.max(0, Math.min(WORLD_H - ch, rov.y - ch / 2));
+      return { camX, camY };
+    }
+
+    function getSectorStations(secIdx) {
+      return STATIONS_DATA.filter(s => s.sector === secIdx);
+    }
+
+    function getAnimatedStationPos(st, t) {
+      let x = st.x;
+      let y = st.y;
+      if (st.id === 's1_tides' || st.id === 's2_argo') {
+        y = st.y + Math.sin(t * 1.6) * 16;
+      } else if (st.id === 's2_ctd' || st.id === 's3_auv_rov') {
+        x = st.x + Math.cos(t * 0.9) * 22;
+        y = st.y + Math.sin(t * 1.2) * 12;
+      }
+      return { x, y };
+    }
+
+    function findNearestScannable(t) {
+      const list = getSectorStations(state.currentSector);
+      let best = null;
+      let bestDist = 142;
+      for (const st of list) {
+        const p = getAnimatedStationPos(st, t);
+        const d = Math.hypot(rov.x - p.x, rov.y - p.y);
+        if (d < bestDist) {
+          bestDist = d;
+          best = { st, x: p.x, y: p.y, dist: d };
+        }
+      }
+      return best;
+    }
+
+    canvas.addEventListener('pointerdown', (e) => {
+      SoundFX.init();
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+      const { camX, camY } = getCamera();
+      const wx = (e.clientX - rect.left) * scaleX + camX;
+      const wy = (e.clientY - rect.top) * scaleY + camY;
+
+      let clickedSt = null;
+      const nowT = performance.now() / 1000;
+      for (const st of getSectorStations(state.currentSector)) {
+        const pos = getAnimatedStationPos(st, nowT);
+        if (Math.hypot(wx - pos.x, wy - pos.y) < 58) {
+          clickedSt = st;
+          break;
+        }
+      }
+
+      if (clickedSt) {
+        const pos = getAnimatedStationPos(clickedSt, nowT);
+        if (Math.hypot(rov.x - pos.x, rov.y - pos.y) <= 140) {
+          openStationScanModal(clickedSt);
+        } else {
+          rov.targetX = Math.max(60, pos.x - 62);
+          rov.targetY = Math.max(95, pos.y - 18);
+          rov.autoScanId = clickedSt.id;
+          showDiveToast(`Autopilot locked onto ${clickedSt.name}...`);
+        }
+      } else {
+        rov.targetX = Math.max(55, Math.min(WORLD_W - 55, wx));
+        rov.targetY = Math.max(90, Math.min(WORLD_H - 75, wy));
+        rov.autoScanId = null;
+      }
+    });
+
+    function tryScanNearest() {
+      const near = findNearestScannable(performance.now() / 1000);
+      if (near) {
+        rov.scanPulse = 1.0;
+        openStationScanModal(near.st);
+      } else {
+        SoundFX.ping();
+        rov.scanPulse = 1.0;
+        showDiveToast('Pilot closer to an oceanographic station beacon (within teal sonar ring) to deploy sensors!');
+      }
+    }
+
+    function damageHull(amount, reason) {
+      if (rov.invuln > 0) return;
+      rov.invuln = 1.8;
+      SoundFX.hazard();
+      state.hull = Math.max(0, state.hull - amount);
+      if (state.hull <= 0) {
+        state.hull = 100;
+        state.streak = 1;
+        showDiveToast('E/V Nautilus Winch Crew recalibrated ROV titanium housing to 100%!');
+        setComms('Sensors recalibrated! Approach 310°C black smoker plumes and trench shear currents from the outer telemetry ring.');
+      } else {
+        showDiveToast(`${reason} (-${amount}% Sensor Integrity)`);
+      }
+      updateDiveHUD();
+    }
+
+    function updateDiveHUD() {
+      const pct = Math.round(state.hull);
+      const bar = document.getElementById('hud-hull-bar');
+      const lbl = document.getElementById('hud-hull-pct');
+      bar.style.width = `${pct}%`;
+      const col = pct > 60 ? 'hsl(154, 68%, 45%)' : (pct > 30 ? 'hsl(38, 92%, 55%)' : 'hsl(14, 82%, 58%)');
+      bar.style.backgroundColor = col;
+      lbl.style.color = col;
+      lbl.textContent = `${pct}%`;
+
+      const sec = SECTORS[state.currentSector];
+      const frac = Math.max(0, Math.min(1, (rov.y - 80) / (WORLD_H - 150)));
+      const depthM = Math.round(sec.depthMin + frac * (sec.depthMax - sec.depthMin));
+      const pressAtm = (1 + depthM / 10).toFixed(1);
+      const tempC = (sec.tempTop - Math.pow(frac, 0.65) * (sec.tempTop - sec.tempBot)).toFixed(1);
+
+      document.getElementById('hud-depth').textContent = `${depthM.toLocaleString()} m`;
+      document.getElementById('hud-pressure').textContent = `${pressAtm} atm`;
+      document.getElementById('hud-temp').textContent = `${tempC}°C`;
+      document.getElementById('hud-streak').textContent = `x${state.streak}`;
+    }
+
+    function updatePhysics(dt, t) {
+      if (state.activePhase !== 'view-dive' || isAnyModalOpen()) return;
+
+      const accel = 660;
+      let ax = 0, ay = 0;
+      if (keys['KeyW'] || keys['ArrowUp']) { ay -= accel; rov.targetX = null; rov.autoScanId = null; }
+      if (keys['KeyS'] || keys['ArrowDown']) { ay += accel; rov.targetX = null; rov.autoScanId = null; }
+      if (keys['KeyA'] || keys['ArrowLeft']) { ax -= accel; rov.facing = -1; rov.targetX = null; rov.autoScanId = null; }
+      if (keys['KeyD'] || keys['ArrowRight']) { ax += accel; rov.facing = 1; rov.targetX = null; rov.autoScanId = null; }
+
+      if (rov.targetX !== null && rov.targetY !== null) {
+        const dx = rov.targetX - rov.x;
+        const dy = rov.targetY - rov.y;
+        const dist = Math.hypot(dx, dy);
+        let openedAuto = false;
+        if (rov.autoScanId) {
+          const stObj = STATIONS_DATA.find(s => s.id === rov.autoScanId);
+          if (stObj) {
+            const p = getAnimatedStationPos(stObj, t);
+            if (Math.hypot(rov.x - p.x, rov.y - p.y) <= 116) {
+              rov.targetX = null; rov.targetY = null; rov.autoScanId = null;
+              rov.scanPulse = 1.0;
+              openStationScanModal(stObj);
+              openedAuto = true;
+            }
+          }
+        }
+        if (!openedAuto) {
+          if (dist < 18) {
+            rov.targetX = null; rov.targetY = null; rov.autoScanId = null;
+          } else {
+            ax = (dx / dist) * accel * 0.96;
+            ay = (dy / dist) * accel * 0.96;
+            if (Math.abs(dx) > 4) rov.facing = dx >= 0 ? 1 : -1;
+          }
+        }
+      }
+
+      // Mild Ekman / Thermohaline current drift
+      if (state.currentSector === 0 && rov.x > 560 && rov.x < 800) {
+        ay -= 38;
+      } else if (state.currentSector === 2 && rov.x > 1280) {
+        ay += 36;
+      }
+
+      rov.vx = (rov.vx + ax * dt) * Math.pow(0.14, dt);
+      rov.vy = (rov.vy + ay * dt) * Math.pow(0.14, dt);
+      rov.x = Math.max(52, Math.min(WORLD_W - 52, rov.x + rov.vx * dt));
+      rov.y = Math.max(88, Math.min(WORLD_H - 72, rov.y + rov.vy * dt));
+
+      rov.tilt = Math.max(-0.22, Math.min(0.22, (rov.vy / 340) * 0.18));
+      const speed = Math.hypot(rov.vx, rov.vy);
+      rov.propAngle += dt * (6 + speed * 0.06);
+      if (rov.scanPulse > 0) rov.scanPulse = Math.max(0, rov.scanPulse - dt * 1.5);
+      if (rov.invuln > 0) rov.invuln = Math.max(0, rov.invuln - dt);
+
+      if (speed > 25 && Math.random() < 0.35) {
+        bubbles.push({
+          x: rov.x - rov.facing * 30,
+          y: rov.y + 4 + (Math.random() * 8 - 4),
+          r: 1.8 + Math.random() * 2.8,
+          vy: -28 - Math.random() * 24,
+          alpha: 0.72
+        });
+      }
+      for (let i = bubbles.length - 1; i >= 0; i--) {
+        bubbles[i].y += bubbles[i].vy * dt;
+        bubbles[i].alpha -= dt * 0.45;
+        if (bubbles[i].alpha <= 0) bubbles.splice(i, 1);
+      }
+
+      for (const p of marineSnow) {
+        p.y += p.sp * dt * 0.36;
+        p.x += Math.sin(t + p.y * 0.02) * 7 * dt;
+        if (p.y > WORLD_H - 60) { p.y = 75; p.x = Math.random() * WORLD_W; }
+      }
+
+      for (const f of ambientFish) {
+        f.x += f.dir * f.speed * dt;
+        if (f.x > WORLD_W - 80) f.dir = -1;
+        if (f.x < 80) f.dir = 1;
+      }
+
+      for (const b of dataBuoys) {
+        if (!b.collected && Math.hypot(rov.x - b.x, rov.y - b.y) < 36) {
+          b.collected = true;
+          SoundFX.buoy();
+          state.hull = Math.min(100, state.hull + 8);
+          showDiveToast('Retrieved Acoustic Telemetry Buoy! (+8% Sensor Integrity)');
+        }
+      }
+
+      for (const st of getSectorStations(state.currentSector)) {
+        const p = getAnimatedStationPos(st, t);
+        const d = Math.hypot(rov.x - p.x, rov.y - p.y);
+        if (st.hazard === 'vent' && d < 42) {
+          rov.vy = -230;
+          damageHull(10, '310°C Black Smoker Thermal Scald!');
+        } else if (st.hazard === 'shear' && d < 38) {
+          rov.vy = -190;
+          damageHull(8, 'Subduction Trench Turbidity Shear!');
+        }
+      }
+
+      const near = findNearestScannable(t);
+      const scanBtn = document.getElementById('btn-scan-nearest');
+      if (near) {
+        scanBtn.disabled = false;
+        scanBtn.textContent = `Scan: ${near.st.name.slice(0, 24)}… [SPACE]`;
+      } else {
+        scanBtn.disabled = true;
+        scanBtn.textContent = 'Move Near Station [SPACE]';
+      }
+
+      updateDiveHUD();
+    }
+
+    // ==================== 8. PROCEDURAL OCEAN CROSS-SECTION RENDERING ====================
+    function drawWorld(t) {
+      const cw = canvas.width;
+      const ch = canvas.height;
+      const { camX, camY } = getCamera();
+      const sec = SECTORS[state.currentSector];
+
+      const grad = ctx.createLinearGradient(0, 0, 0, ch);
+      grad.addColorStop(0, sec.bgTop);
+      grad.addColorStop(0.45, sec.bgMid);
+      grad.addColorStop(1, sec.bgBottom);
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, cw, ch);
+
+      ctx.save();
+      ctx.translate(-camX, -camY);
+
+      // Sunlit photic rays (strongest in Sector 1, subtle near top in Sector 2/3)
+      const rayAlpha = state.currentSector === 0 ? 0.095 : (state.currentSector === 1 ? 0.045 : 0.025);
+      ctx.fillStyle = `rgba(165, 243, 252, ${rayAlpha})`;
+      for (let i = 0; i < 8; i++) {
+        const rx = 110 + i * 195 + Math.sin(t * 0.55 + i) * 24;
+        ctx.beginPath();
+        ctx.moveTo(rx, 54);
+        ctx.lineTo(rx + 62, 54);
+        ctx.lineTo(rx + 150, state.currentSector === 0 ? 520 : 290);
+        ctx.lineTo(rx + 36, state.currentSector === 0 ? 520 : 290);
+        ctx.closePath();
+        ctx.fill();
+      }
+
+      // Sky & animated ocean surface wave band + E/V Nautilus mothership silhouette
+      ctx.fillStyle = '#071b2e';
+      ctx.fillRect(0, 0, WORLD_W, 52);
+      const shipX = 210 + Math.sin(t * 0.4) * 18;
+      ctx.fillStyle = '#cbd5e1';
+      ctx.beginPath();
+      ctx.moveTo(shipX - 52, 46); ctx.lineTo(shipX + 58, 46);
+      ctx.lineTo(shipX + 46, 56); ctx.lineTo(shipX - 44, 56);
+      ctx.closePath(); ctx.fill();
+      ctx.fillStyle = '#f5a524';
+      ctx.fillRect(shipX - 24, 32, 34, 14);
+      ctx.strokeStyle = '#14ccb9';
+      ctx.lineWidth = 1.8;
+      ctx.beginPath();
+      ctx.moveTo(shipX - 6, 32); ctx.lineTo(shipX - 6, 18);
+      ctx.stroke();
+
+      // Fiber-optic tether from E/V Nautilus to ROV
+      ctx.strokeStyle = 'rgba(20, 204, 185, 0.34)';
+      ctx.lineWidth = 1.4;
+      ctx.beginPath();
+      ctx.moveTo(shipX + 12, 55);
+      ctx.quadraticCurveTo((shipX + rov.x) * 0.5, Math.min(rov.y, 240), rov.x, rov.y - 12);
+      ctx.stroke();
+
+      // Animated surface waves
+      ctx.fillStyle = 'rgba(20, 204, 185, 0.28)';
+      ctx.beginPath();
+      ctx.moveTo(0, 46);
+      for (let x = 0; x <= WORLD_W; x += 32) {
+        ctx.lineTo(x, 54 + Math.sin(x * 0.02 + t * 2.2) * 5.5);
+      }
+      ctx.lineTo(WORLD_W, 72);
+      ctx.lineTo(0, 72);
+      ctx.closePath();
+      ctx.fill();
+
+      drawSectorBathymetry(state.currentSector, t);
+
+      // Marine snow & current streamlines
+      ctx.fillStyle = 'rgba(205, 244, 255, 0.32)';
+      for (const p of marineSnow) {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // Ambient schooling fish in photic/mesopelagic layer
+      for (const f of ambientFish) {
+        if (state.currentSector === 2 && f.y > 260) continue;
+        ctx.save();
+        ctx.translate(f.x, f.y + Math.sin(t * 2 + f.phase) * 8);
+        ctx.scale(f.dir, 1);
+        ctx.fillStyle = state.currentSector === 0 ? 'rgba(245, 165, 36, 0.65)' : 'rgba(94, 234, 212, 0.45)';
+        ctx.beginPath();
+        ctx.ellipse(0, 0, 9, 4, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.moveTo(-8, 0); ctx.lineTo(-14, -4); ctx.lineTo(-14, 4); ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+      }
+
+      // Collectible Acoustic Data Buoys
+      for (const b of dataBuoys) {
+        if (b.collected) continue;
+        const bob = Math.sin(t * 2.7 + b.phase) * 5;
+        ctx.fillStyle = 'rgba(20, 204, 185, 0.22)';
+        ctx.beginPath();
+        ctx.arc(b.x, b.y + bob, 12, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#f5a524';
+        ctx.beginPath();
+        ctx.roundRect(b.x - 4, b.y + bob - 6, 8, 12, 3);
+        ctx.fill();
+      }
+
+      // Survey Stations
+      const near = findNearestScannable(t);
+      for (const st of getSectorStations(state.currentSector)) {
+        const pos = getAnimatedStationPos(st, t);
+        const isScanned = !!(state.scans[st.id] && state.scans[st.id].solved);
+        const isTarget = near && near.st.id === st.id;
+        drawStationOnCanvas(st, pos.x, pos.y, t, isScanned, isTarget);
+      }
+
+      // Autopilot course line
+      if (rov.targetX !== null && rov.targetY !== null) {
+        ctx.strokeStyle = 'rgba(20, 204, 185, 0.75)';
+        ctx.lineWidth = 1.6;
+        ctx.setLineDash([5, 4]);
+        ctx.beginPath();
+        ctx.moveTo(rov.x, rov.y);
+        ctx.lineTo(rov.targetX, rov.targetY);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.beginPath();
+        ctx.arc(rov.targetX, rov.targetY, 10 + Math.sin(t * 6) * 3, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      for (const b of bubbles) {
+        ctx.strokeStyle = `rgba(186, 240, 255, ${b.alpha})`;
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      drawROV(t);
+      ctx.restore();
+      drawMinimap(cw, ch, t);
+    }
+
+    function drawSectorBathymetry(secIdx, t) {
+      if (secIdx === 0) {
+        // Sloping Continental Shelf -> Shelf Break -> Upwelling arrows -> Kelp forest
+        ctx.fillStyle = '#16354d';
+        ctx.beginPath();
+        ctx.moveTo(0, 365);
+        ctx.lineTo(440, 385);
+        ctx.lineTo(940, 565);
+        ctx.lineTo(1600, 655);
+        ctx.lineTo(1600, WORLD_H);
+        ctx.lineTo(0, WORLD_H);
+        ctx.closePath();
+        ctx.fill();
+
+        // Kelp fronds on shallow neritic shelf
+        for (let x = 130; x <= 410; x += 56) {
+          ctx.strokeStyle = '#249e6b';
+          ctx.lineWidth = 4.5;
+          ctx.beginPath();
+          ctx.moveTo(x, 375);
+          for (let y = 375; y >= 115; y -= 52) {
+            ctx.lineTo(x + Math.sin(t * 1.5 + y * 0.02 + x) * 14, y);
+          }
+          ctx.stroke();
+        }
+
+        // Upwelling cold nutrient arrows along slope
+        ctx.strokeStyle = 'rgba(20, 204, 185, 0.42)';
+        ctx.lineWidth = 2.4;
+        for (let i = 0; i < 4; i++) {
+          const off = ((t * 42 + i * 55) % 210);
+          const ax = 760 - off * 0.65;
+          const ay = 525 - off;
+          ctx.beginPath();
+          ctx.moveTo(ax + 18, ay + 26);
+          ctx.lineTo(ax, ay);
+          ctx.stroke();
+        }
+      } else if (secIdx === 1) {
+        // Thermocline dashed band + Divergent Mid-Ocean Ridge + 310°C black smoker plume
+        ctx.strokeStyle = 'rgba(245, 165, 36, 0.25)';
+        ctx.setLineDash([8, 6]);
+        ctx.beginPath();
+        ctx.moveTo(0, 320); ctx.lineTo(WORLD_W, 320);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        ctx.fillStyle = '#13263b';
+        ctx.beginPath();
+        ctx.moveTo(0, 675);
+        ctx.lineTo(960, 655);
+        ctx.lineTo(1265, 540);
+        ctx.lineTo(1345, 625);
+        ctx.lineTo(1425, 535);
+        ctx.lineTo(1600, 665);
+        ctx.lineTo(1600, WORLD_H);
+        ctx.lineTo(0, WORLD_H);
+        ctx.closePath();
+        ctx.fill();
+
+        // Glowing axial magma crack & rising hydrothermal smoke plume at x=1345
+        ctx.fillStyle = '#eb6540';
+        ctx.beginPath();
+        ctx.moveTo(1332, 635); ctx.lineTo(1345, 595); ctx.lineTo(1358, 635);
+        ctx.closePath(); ctx.fill();
+
+        for (let p = 0; p < 6; p++) {
+          const rise = ((t * 48 + p * 34) % 190);
+          const pr = 10 + rise * 0.16;
+          ctx.fillStyle = `rgba(51, 65, 85, ${Math.max(0, 0.65 - rise / 220)})`;
+          ctx.beginPath();
+          ctx.arc(1345 + Math.sin(t * 2 + p) * 10, 590 - rise, pr, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      } else {
+        // Seamount at x=310 + Deep V-shaped Subduction Trench at x=1060 + Cold Conveyor current
+        ctx.fillStyle = '#102033';
+        ctx.beginPath();
+        ctx.moveTo(0, 630);
+        ctx.lineTo(180, 620);
+        ctx.lineTo(285, 465);
+        ctx.lineTo(340, 465);
+        ctx.lineTo(465, 620);
+        ctx.lineTo(860, 590);
+        ctx.lineTo(1060, 738);
+        ctx.lineTo(1235, 575);
+        ctx.lineTo(1600, 585);
+        ctx.lineTo(1600, WORLD_H);
+        ctx.lineTo(0, WORLD_H);
+        ctx.closePath();
+        ctx.fill();
+
+        // Cold brine sinking ribbon on right
+        ctx.strokeStyle = 'rgba(56, 189, 248, 0.36)';
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.moveTo(1360, 140);
+        ctx.bezierCurveTo(1395, 290, 1370, 430, 1460, 555);
+        ctx.stroke();
+      }
+    }
+
+    function drawStationOnCanvas(st, x, y, t, isScanned, isTarget) {
+      ctx.save();
+      ctx.translate(x, y);
+
+      ctx.strokeStyle = isScanned ? 'rgba(45, 212, 191, 0.65)' : (isTarget ? '#14ccb9' : 'rgba(148, 226, 242, 0.30)');
+      ctx.lineWidth = isTarget ? 2.5 : 1.4;
+      ctx.beginPath();
+      ctx.arc(0, 0, isTarget ? 46 + Math.sin(t * 6) * 4 : 40, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Custom station icon marker
+      ctx.fillStyle = isScanned ? '#10b981' : '#f5a524';
+      ctx.beginPath();
+      ctx.arc(0, 0, 11, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#041221';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      ctx.fillStyle = '#041221';
+      ctx.font = 'bold 10px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(isScanned ? '✓' : 'S', 0, 3.5);
+
+      ctx.font = '600 11.5px -apple-system, BlinkMacSystemFont, sans-serif';
+      const shortTitle = st.name.split('(')[0].trim();
+      const label = isScanned ? `✓ ${shortTitle}` : (isTarget ? `[SPACE / CLICK] ${shortTitle}` : shortTitle);
+      const tw = ctx.measureText(label).width + 14;
+      ctx.fillStyle = 'rgba(4, 15, 28, 0.86)';
+      ctx.beginPath();
+      ctx.roundRect(-tw / 2, -52, tw, 20, 5);
+      ctx.fill();
+      ctx.fillStyle = isScanned ? '#5eead4' : (isTarget ? '#fde68a' : '#e2f1f8');
+      ctx.fillText(label, 0, -38);
+
+      ctx.restore();
+    }
+
+    function drawROV(t) {
+      ctx.save();
+      ctx.translate(rov.x, rov.y);
+
+      if (rov.scanPulse > 0) {
+        const r = (1 - rov.scanPulse) * 175 + 24;
+        ctx.strokeStyle = `rgba(20, 204, 185, ${rov.scanPulse * 0.85})`;
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.arc(0, 0, r, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      // Downward Multibeam Bathymetric Sonar Cone (Toggled with F)
+      if (state.sonarCone) {
+        const coneGrad = ctx.createLinearGradient(0, 14, 0, 195);
+        coneGrad.addColorStop(0, 'rgba(20, 204, 185, 0.26)');
+        coneGrad.addColorStop(1, 'rgba(20, 204, 185, 0)');
+        ctx.fillStyle = coneGrad;
+        ctx.beginPath();
+        ctx.moveTo(-8, 14);
+        ctx.lineTo(-95, 195);
+        ctx.lineTo(95, 195);
+        ctx.lineTo(8, 14);
+        ctx.closePath();
+        ctx.fill();
+      }
+
+      ctx.scale(rov.facing, 1);
+      ctx.rotate(rov.tilt);
+
+      // Forward LED spotlight
+      const beam = ctx.createLinearGradient(22, 0, 210, 0);
+      beam.addColorStop(0, 'rgba(254, 243, 199, 0.22)');
+      beam.addColorStop(1, 'rgba(254, 243, 199, 0)');
+      ctx.fillStyle = beam;
+      ctx.beginPath();
+      ctx.moveTo(24, -4); ctx.lineTo(215, -52); ctx.lineTo(215, 52); ctx.lineTo(24, 6);
+      ctx.closePath(); ctx.fill();
+
+      // Skids & manipulator arm
+      ctx.strokeStyle = '#94a3b8';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(-24, 19); ctx.lineTo(24, 19);
+      ctx.moveTo(-14, 12); ctx.lineTo(-14, 19);
+      ctx.moveTo(14, 12); ctx.lineTo(14, 19);
+      ctx.moveTo(18, 10); ctx.lineTo(31, 15); ctx.lineTo(36, 12);
+      ctx.stroke();
+
+      // Thruster prop
+      ctx.strokeStyle = '#e2e8f0';
+      ctx.lineWidth = 2.4;
+      const bladeH = Math.sin(rov.propAngle) * 10;
+      ctx.beginPath();
+      ctx.moveTo(-31, -bladeH); ctx.lineTo(-31, bladeH);
+      ctx.stroke();
+
+      //Syntactic foam top pack & chassis
+      ctx.fillStyle = rov.invuln > 0 && Math.floor(t * 14) % 2 === 0 ? '#eb6540' : state.rovColor;
+      ctx.strokeStyle = '#091526';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.roundRect(-28, -15, 52, 28, 9);
+      ctx.fill();
+      ctx.stroke();
+
+      // HD Camera viewport dome
+      ctx.fillStyle = '#5eead4';
+      ctx.beginPath();
+      ctx.arc(16, -1, 10, -Math.PI / 2, Math.PI / 2);
+      ctx.fill();
+
+      // Top strobe beacon
+      ctx.fillStyle = Math.floor(t * 2) % 2 === 0 ? '#14ccb9' : '#f5a524';
+      ctx.beginPath();
+      ctx.arc(-6, -21, 3, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.restore();
+    }
+
+    function drawMinimap(cw, ch, t) {
+      const mw = 152, mh = 76;
+      const mx = cw - mw - 14;
+      const my = 14;
+      ctx.save();
+      ctx.fillStyle = 'rgba(3, 13, 26, 0.84)';
+      ctx.strokeStyle = 'rgba(20, 204, 185, 0.45)';
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.roundRect(mx, my, mw, mh, 7);
+      ctx.fill();
+      ctx.stroke();
+
+      for (const st of getSectorStations(state.currentSector)) {
+        const p = getAnimatedStationPos(st, t);
+        const bx = mx + (p.x / WORLD_W) * mw;
+        const by = my + (p.y / WORLD_H) * mh;
+        const done = !!(state.scans[st.id] && state.scans[st.id].solved);
+        ctx.fillStyle = done ? '#34d399' : '#f5a524';
+        ctx.beginPath();
+        ctx.arc(bx, by, 3.3, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      const rx = mx + (rov.x / WORLD_W) * mw;
+      const ry = my + (rov.y / WORLD_H) * mh;
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.arc(rx, ry, 3.6, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    // ==================== 9. PHASE 1 TELEMETRY MODAL & SIDEBAR ====================
+    function renderSectorSidebar() {
+      const sec = SECTORS[state.currentSector];
+      document.getElementById('zone-checklist-title').textContent = `Sector ${state.currentSector + 1} Survey Benchmarks`;
+      const listEl = document.getElementById('zone-station-list');
+      listEl.innerHTML = '';
+
+      for (const st of getSectorStations(state.currentSector)) {
+        const rec = state.scans[st.id];
+        const done = !!(rec && rec.solved);
+        const row = document.createElement('div');
+        row.className = `station-row ${done ? 'scanned' : ''}`;
+        row.innerHTML = `
+          <div>
+            <div style="font-weight: 600; color: var(--text-main);">${st.name}</div>
+            <div class="station-meta">${done ? st.sensors[0] + ' • ' + st.sensors[1] : 'Acoustic Beacon Active — Click to Pilot'}</div>
+          </div>
+          <span class="status-chip ${done ? 'done' : ''}">${done ? `${rec.pts}/3 pts` : 'SURVEY'}</span>
+        `;
+        row.addEventListener('click', () => {
+          const p = getAnimatedStationPos(st, performance.now() / 1000);
+          rov.targetX = Math.max(60, p.x - 62);
+          rov.targetY = Math.max(95, p.y - 18);
+          rov.autoScanId = st.id;
+          SoundFX.ping();
+          showDiveToast(`Autopilot navigating to ${st.name}...`);
+        });
+        listEl.appendChild(row);
+      }
+
+      SECTORS.forEach((s, idx) => {
+        const btn = document.getElementById(`btn-zone-${idx}`);
+        const count = getSectorStations(idx).filter(st => state.scans[st.id] && state.scans[st.id].solved).length;
+        btn.textContent = `Sector ${idx + 1}: ${s.shortLabel} (${count}/4)`;
+        btn.classList.toggle('active', idx === state.currentSector);
+      });
+    }
+
+    function openStationScanModal(st) {
+      SoundFX.scanOpen();
+      if (!state.scans[st.id]) {
+        state.scans[st.id] = { attempts: 0, solved: false, pts: 0, missedFirst: false };
+      }
+      const rec = state.scans[st.id];
+
+      document.getElementById('scan-svg-box').innerHTML = getStationSVG(st.art);
+      document.getElementById('scan-sector-line').textContent = st.sectorTag;
+      document.getElementById('scan-modal-title').textContent = st.name;
+      document.getElementById('scan-obs-desc').textContent = st.obs;
+      document.getElementById('scan-sensor-badges').innerHTML = st.sensors
+        .map(s => `<span class="sensor-badge">${escapeHTML(s)}</span>`)
+        .join('');
+      document.getElementById('scan-question-text').textContent = st.question;
+
+      const optBox = document.getElementById('scan-options-box');
+      const fbBox = document.getElementById('scan-feedback-box');
+      optBox.innerHTML = '';
+      fbBox.className = 'feedback-callout';
+      fbBox.textContent = '';
+
+      st.options.forEach((optText, idx) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'mc-btn';
+        btn.id = `scan-opt-btn-${idx}`;
+        btn.textContent = `${String.fromCharCode(65 + idx)}. ${optText}`;
+        if (rec.solved) {
+          btn.disabled = true;
+          if (idx === st.correct) btn.classList.add('correct');
+        }
+        btn.addEventListener('click', () => handleScanChoice(st, idx, btn));
+        optBox.appendChild(btn);
+      });
+
+      if (rec.solved) {
+        fbBox.className = 'feedback-callout show ok';
+        fbBox.textContent = `Benchmark Verified (${rec.pts}/3 pts): ${st.explain}`;
+      }
+
+      document.getElementById('modal-scan').classList.add('open');
+    }
+
+    function handleScanChoice(st, idx, clickedBtn) {
+      const rec = state.scans[st.id];
+      if (rec.solved) return;
+      rec.attempts += 1;
+      const fbBox = document.getElementById('scan-feedback-box');
+
+      if (idx === st.correct) {
+        rec.solved = true;
+        rec.pts = rec.attempts === 1 ? 3 : (rec.attempts === 2 ? 2 : 1);
+        state.streak = rec.attempts === 1 ? state.streak + 1 : 1;
+        state.hull = Math.min(100, state.hull + 6);
+        clickedBtn.classList.add('correct');
+        document.querySelectorAll('#scan-options-box .mc-btn').forEach(b => { b.disabled = true; });
+        SoundFX.correct();
+
+        fbBox.className = 'feedback-callout show ok';
+        fbBox.textContent = `+${rec.pts}/3 Survey Points! ${st.explain} (Logged in Digital Field Guide!)`;
+
+        renderSectorSidebar();
+        saveState();
+
+        const secDone = getSectorStations(state.currentSector).every(o => state.scans[o.id] && state.scans[o.id].solved);
+        const all12 = STATIONS_DATA.every(o => state.scans[o.id] && state.scans[o.id].solved);
+        if (all12) {
+          setComms('All 12 oceanographic stations surveyed across all 3 sectors! Proceed to Phase 2: Multibeam Sonar & Pycnocline Wet-Lab!');
+        } else if (secDone && state.currentSector < 2) {
+          setComms(`Sector ${state.currentSector + 1} complete! Select Sector ${state.currentSector + 2} on the top bar to continue your global survey.`);
+        }
+      } else {
+        if (rec.attempts === 1) rec.missedFirst = true;
+        state.streak = 1;
+        clickedBtn.classList.add('wrong');
+        clickedBtn.disabled = true;
+        SoundFX.wrong();
+        fbBox.className = 'feedback-callout show err';
+        fbBox.textContent = `Recalibrate & try again for partial credit! Oceanographic Hint: ${st.hint}`;
+        saveState();
+      }
+    }
+
+    // ==================== 10. PHASE 2: SONAR & PYCNOCLINE WET-LAB ENGINE ====================
+    let labPulseVal = 0.35;
+
+    function updateLabStageGraphic() {
+      const cur = LAB_STATIONS[state.activeLabIdx];
+      const draft = state.labDrafts[cur.id] || {};
+      document.getElementById('lab-svg-holder').innerHTML =
+        getLabApparatusSVG(cur, state.labShowOverlay, draft, labPulseVal);
+      document.getElementById('lab-stage-tag').textContent = cur.type === 'sonar'
+        ? `APPARATUS: MULTIBEAM SONAR (${cur.timeStr})`
+        : (cur.id === 5 ? 'APPARATUS: 4-LAYER PYCNOCLINE TANK' : 'APPARATUS: 1 ATM WATER MASS SINK-TEST');
+    }
+
+    function renderLabUI() {
+      const tabsEl = document.getElementById('lab-tray-tabs');
+      tabsEl.innerHTML = '';
+      let solvedCount = 0;
+
+      LAB_STATIONS.forEach((st, i) => {
+        const rec = state.lab[st.id];
+        const solved = !!(rec && rec.solved);
+        if (solved) solvedCount++;
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.id = `btn-lab-tab-${st.id}`;
+        b.className = `tray-btn ${i === state.activeLabIdx ? 'active' : ''} ${solved ? 'solved' : ''}`;
+        b.textContent = solved ? `✓ ${st.code} (${rec.pts}/4)` : st.code;
+        b.addEventListener('click', () => {
+          state.activeLabIdx = i;
+          document.getElementById('lab-feedback-box').className = 'feedback-callout';
+          renderLabUI();
+        });
+        tabsEl.appendChild(b);
+      });
+
+      document.getElementById('lab-progress-label').textContent = `${solvedCount} / 6 Completed`;
+
+      const cur = LAB_STATIONS[state.activeLabIdx];
+      document.getElementById('lab-station-heading').textContent = cur.heading;
+      document.getElementById('lab-formula-banner').textContent = cur.type === 'sonar'
+        ? 'Multibeam Sonar Equation: d = (v × t) / 2   |   Speed of Sound in Seawater: v = 1,500 m/s'
+        : 'Seawater Density Rule: Lower Temp (°C) + Higher Salinity (ppt) → Higher Density (g/cm³) → Sinks!';
+
+      document.getElementById('lab-sensor-notes').innerHTML = `
+        <div style="font-weight:700; color:var(--text-main); margin-bottom:4px;">${cur.code} — Instrument &amp; Sample Telemetry:</div>
+        <ul style="margin:0; padding-left:18px;">
+          ${cur.notes.map(n => `<li>${escapeHTML(n)}</li>`).join('')}
+        </ul>
+      `;
+
+      updateLabStageGraphic();
+
+      const workBox = document.getElementById('lab-work-container');
+      const rec = state.lab[cur.id];
+      const draft = state.labDrafts[cur.id];
+
+      if (rec && rec.solved) {
+        let summaryDetail = '';
+        if (cur.type === 'sonar') {
+          summaryDetail = `Calculated Depth: <strong>${cur.expectedDepth.toLocaleString()} meters</strong> using <code>d = (1,500 m/s × ${cur.timeStr}) / 2</code>.`;
+        } else if (cur.id === 5) {
+          summaryDetail = `Verified Stratification Order (Top → Bottom): <strong>Red (0.996 g/cm³) → Yellow (1.012 g/cm³) → Green (1.025 g/cm³) → Blue (1.033 g/cm³ Gravity Current)</strong>.`;
+        } else {
+          summaryDetail = `Verified Densest Sinking Water Mass: <strong>Sample 4 (1°C, 38 ppt)</strong> — coldest temperature &amp; highest salinity maximize seawater density.`;
+        }
+        workBox.innerHTML = `
+          <div class="feedback-callout show ok" style="margin-top:0;">
+            <strong>✓ Lab Station Verified (${rec.pts} / 4 pts)</strong><br/>
+            ${summaryDetail}<br/>
+            Select the next lab station tab on the left panel!
+          </div>
+        `;
+        return;
+      }
+
+      if (cur.type === 'sonar') {
+        workBox.innerHTML = `
+          <div class="lab-form-block">
+            <label for="lab-input-depth" style="display:block; font-weight:600; margin-bottom:6px;">
+              Step A: Calculate Exact One-Way Seafloor Depth <code>d</code> (in meters) for <code>t = ${cur.timeStr}</code> at <code>v = 1,500 m/s</code>:
+            </label>
+            <input type="number" step="any" class="marine-input" id="lab-input-depth" placeholder="Enter calculated depth in meters (e.g., 150)" value="${escapeHTML(draft.depth)}" />
+          </div>
+          <div class="lab-form-block">
+            <label for="lab-select-zone" style="display:block; font-weight:600; margin-bottom:6px;">
+              Step B: Classify the Ocean Zone &amp; Tectonic/Benthic Feature at this Depth:
+            </label>
+            <select class="marine-select" id="lab-select-zone">
+              ${cur.zoneOptions.map(o => `<option value="${o.val}" ${draft.zone === o.val ? 'selected' : ''}>${escapeHTML(o.text)}</option>`).join('')}
+            </select>
+          </div>
+          <button type="button" class="btn-primary" id="btn-submit-lab">Verify Acoustic Depth &amp; Zone</button>
+        `;
+        document.getElementById('lab-input-depth').addEventListener('input', (e) => {
+          draft.depth = e.target.value;
+        });
+        document.getElementById('lab-select-zone').addEventListener('change', (e) => {
+          draft.zone = e.target.value;
+        });
+      } else if (cur.id === 5) {
+        const carboyOpts = `
+          <option value="">-- Select Stock Carboy Sample --</option>
+          <option value="red">Sample A Red (28°C, 0 ppt • 0.996 g/cm³)</option>
+          <option value="yellow">Sample B Yellow (26°C, 20 ppt • 1.012 g/cm³)</option>
+          <option value="green">Sample C Green (18°C, 35 ppt • 1.025 g/cm³)</option>
+          <option value="blue">Sample D Blue (2°C, 42 ppt • 1.033 g/cm³)</option>
+        `;
+        workBox.innerHTML = `
+          <p style="margin:0 0 10px; font-size:13px; color:var(--text-secondary);">
+            Pour all four Session 6 carboy samples onto the floating cellulose sponge to build stable pycnoclines. Match each vertical tank layer from <strong>Top (Least Dense)</strong> to <strong>Bottom (Most Dense Gravity Current)</strong>:
+          </p>
+          ${[
+            { key: 'l1', lbl: 'Top Surface Layer 1 (Floats at Surface — Least Dense):' },
+            { key: 'l2', lbl: 'Upper Pycnocline Layer 2 (Warm Brackish):' },
+            { key: 'l3', lbl: 'Lower Pycnocline Layer 3 (Cool Standard Seawater):' },
+            { key: 'l4', lbl: 'Bottom Benthic Layer 4 (Sinks Down Tank Wall as Gravity Current — Most Dense):' }
+          ].map(row => `
+            <div class="lab-form-block" style="padding:10px 12px; margin-bottom:8px;">
+              <label for="lab-tank-${row.key}" style="display:block; font-weight:600; font-size:12.5px; margin-bottom:4px;">${row.lbl}</label>
+              <select class="marine-select" id="lab-tank-${row.key}">${carboyOpts}</select>
+            </div>
+          `).join('')}
+          <button type="button" class="btn-primary" id="btn-submit-lab">Pour &amp; Verify Pycnocline Tank</button>
+        `;
+        ['l1', 'l2', 'l3', 'l4'].forEach(k => {
+          const sel = document.getElementById(`lab-tank-${k}`);
+          sel.value = draft[k] || '';
+          sel.addEventListener('change', (e) => {
+            draft[k] = e.target.value;
+            updateLabStageGraphic();
+          });
+        });
+      } else {
+        workBox.innerHTML = `
+          <div class="lab-form-block">
+            <label for="lab-sink-sample" style="display:block; font-weight:600; margin-bottom:6px;">
+              Step A: Which 1 atm water sample has the GREATEST density and sinks to the bottom of the tank?
+            </label>
+            <select class="marine-select" id="lab-sink-sample">
+              <option value="">-- Select Highest-Density Water Mass --</option>
+              <option value="s1" ${draft.sample === 's1' ? 'selected' : ''}>Sample 1 (26°C, 0 ppt)</option>
+              <option value="s2" ${draft.sample === 's2' ? 'selected' : ''}>Sample 2 (24°C, 34 ppt)</option>
+              <option value="s3" ${draft.sample === 's3' ? 'selected' : ''}>Sample 3 (12°C, 35 ppt)</option>
+              <option value="s4" ${draft.sample === 's4' ? 'selected' : ''}>Sample 4 (1°C, 38 ppt)</option>
+            </select>
+          </div>
+          <div class="lab-form-block">
+            <label for="lab-sink-rule" style="display:block; font-weight:600; margin-bottom:6px;">
+              Step B: Select the physical oceanography principle that explains why this water mass sinks:
+            </label>
+            <select class="marine-select" id="lab-sink-rule">
+              <option value="">-- Select Physical Density Principle --</option>
+              <option value="warm_fresh" ${draft.rule === 'warm_fresh' ? 'selected' : ''}>Higher temperature and lower salinity increase seawater density</option>
+              <option value="cold_salty" ${draft.rule === 'cold_salty' ? 'selected' : ''}>Lower temperature (thermal contraction) and higher salinity (dissolved salt mass) increase seawater density</option>
+              <option value="light_only" ${draft.rule === 'light_only' ? 'selected' : ''}>Sunlight pressure pushes 0 ppt water below salty brine</option>
+              <option value="equal" ${draft.rule === 'equal' ? 'selected' : ''}>All four samples have identical density regardless of temperature or salinity</option>
+            </select>
+          </div>
+          <button type="button" class="btn-primary" id="btn-submit-lab">Run Sink-Test Verification</button>
+        `;
+        document.getElementById('lab-sink-sample').addEventListener('change', (e) => { draft.sample = e.target.value; });
+        document.getElementById('lab-sink-rule').addEventListener('change', (e) => { draft.rule = e.target.value; });
+      }
+
+      document.getElementById('btn-submit-lab').addEventListener('click', verifyCurrentLabStation);
+    }
+
+    function verifyCurrentLabStation() {
+      const cur = LAB_STATIONS[state.activeLabIdx];
+      if (!state.lab[cur.id]) state.lab[cur.id] = { mistakes: 0, solved: false, pts: 0 };
+      const rec = state.lab[cur.id];
+      const draft = state.labDrafts[cur.id];
+      const fb = document.getElementById('lab-feedback-box');
+
+      let isCorrect = false;
+      if (cur.type === 'sonar') {
+        const numVal = parseFloat(String(draft.depth).replace(/,/g, '').trim());
+        isCorrect = !Number.isNaN(numVal) && Math.abs(numVal - cur.expectedDepth) < 0.6 && draft.zone === cur.expectedZone;
+      } else if (cur.id === 5) {
+        isCorrect = draft.l1 === 'red' && draft.l2 === 'yellow' && draft.l3 === 'green' && draft.l4 === 'blue';
+      } else {
+        isCorrect = draft.sample === 's4' && draft.rule === 'cold_salty';
+      }
+
+      if (isCorrect) {
+        rec.solved = true;
+        rec.pts = rec.mistakes === 0 ? 4 : (rec.mistakes === 1 ? 3 : 2);
+        if (cur.id === 5) {
+          draft.l1 = 'red'; draft.l2 = 'yellow'; draft.l3 = 'green'; draft.l4 = 'blue';
+        }
+        SoundFX.correct();
+        fb.className = 'feedback-callout';
+        saveState();
+        renderLabUI();
+      } else {
+        rec.mistakes += 1;
+        SoundFX.wrong();
+        fb.className = 'feedback-callout show err';
+        fb.textContent = `Check your calculation or stratification selection! ${cur.wrongTip}`;
+        saveState();
+      }
+    }
+
+    // ==================== 11. PHASE 3: MATRIX (10 PTS) & CRISIS TRIAGE (15 PTS) ====================
+    function verifyMatrix3A() {
+      const vals = {
+        edna: document.getElementById('mat-edna').value,
+        rov: document.getElementById('mat-rov').value,
+        auv: document.getElementById('mat-auv').value,
+        sitex: document.getElementById('mat-sitex').value,
+        sitey: document.getElementById('mat-sitey').value
+      };
+      state.matrixSelections = vals;
+
+      const key = {
+        edna: 'ctd',
+        rov: 'rov',
+        auv: 'auv',
+        sitex: 'photo',
+        sitey: 'chemo'
+      };
+      let correctCount = 0;
+      Object.keys(key).forEach(k => {
+        if (vals[k] === key[k]) correctCount++;
+      });
+
+      state.score3A = correctCount * 2;
+      const msgEl = document.getElementById('matrix-feedback');
+
+      if (correctCount === 5) {
+        SoundFX.correct();
+        msgEl.style.color = 'hsl(154, 74%, 66%)';
+        msgEl.textContent = '✓ All 5 oceanographic instruments & primary production pathways verified! (10 / 10 pts)';
+      } else {
+        SoundFX.wrong();
+        msgEl.style.color = 'hsl(38, 92%, 68%)';
+        msgEl.textContent = `${correctCount} / 5 items accurate (${state.score3A}/10 pts). Review CTD/ROV/AUV roles and Site X (150 m sunlit) vs. Site Y (2,700 m H2S vent) and re-verify!`;
+      }
+      saveState();
+    }
+
+    function renderCrisisStations() {
+      const box = document.getElementById('crisis-stations-container');
+      box.innerHTML = '';
+
+      CRISIS_STATIONS.forEach(st => {
+        const rec = state.crisisSolved[st.id] || { attempts: 0, pts: 0, solved: false };
+        const pct = rec.solved ? 96 : st.startVal;
+        const card = document.createElement('div');
+        card.className = `crisis-station ${rec.solved ? 'restored' : ''}`;
+        card.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
+            <strong style="font-size:13.5px; color:var(--text-main);">${st.title}</strong>
+            <span class="status-chip ${rec.solved ? 'done' : ''}">${rec.solved ? `${rec.pts}/5 pts` : 'ALERT'}</span>
+          </div>
+          <div class="gauge-row">
+            <div style="display:flex; justify-content:space-between;">
+              <span>${st.metricLabel}</span>
+              <span>${pct}%</span>
+            </div>
+            <div class="gauge-bar">
+              <div class="gauge-fill ${rec.solved ? 'healthy' : ''}" style="width:${pct}%;"></div>
+            </div>
+          </div>
+          <p style="margin:0; font-size:12.5px; color:var(--text-secondary); flex:1;">${st.scenario}</p>
+          <div style="display:flex; flex-direction:column; gap:6px;" id="crisis-opts-${st.id}"></div>
+          <div class="feedback-callout ${rec.solved ? 'show ok' : ''}" id="crisis-fb-${st.id}" style="font-size:12px; padding:8px 10px;">
+            ${rec.solved ? st.explain : ''}
+          </div>
+        `;
+        box.appendChild(card);
+
+        const optsEl = card.querySelector(`#crisis-opts-${st.id}`);
+        st.options.forEach((opt, idx) => {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.id = `btn-${st.id}-opt-${idx}`;
+          b.className = `mc-btn ${rec.solved && idx === st.correct ? 'correct' : ''}`;
+          b.style.fontSize = '12px';
+          b.style.padding = '8px 10px';
+          b.disabled = rec.solved;
+          b.textContent = opt;
+          b.addEventListener('click', () => {
+            if (!state.crisisSolved[st.id]) state.crisisSolved[st.id] = { attempts: 0, pts: 0, solved: false };
+            const r = state.crisisSolved[st.id];
+            r.attempts += 1;
+            const fb = card.querySelector(`#crisis-fb-${st.id}`);
+            if (idx === st.correct) {
+              r.solved = true;
+              r.pts = r.attempts === 1 ? 5 : (r.attempts === 2 ? 3 : 2);
+              SoundFX.correct();
+              saveState();
+              renderCrisisStations();
+            } else {
+              b.classList.add('wrong');
+              b.disabled = true;
+              SoundFX.wrong();
+              fb.className = 'feedback-callout show err';
+              fb.textContent = 'Incorrect oceanographic diagnosis or policy — examine physical density/upwelling mechanics or deep-sea ROV conservation and try again!';
+              saveState();
+            }
+          });
+          optsEl.appendChild(b);
+        });
+      });
+    }
+
+    // ==================== 12. PHASE 4: CER SCORER & SUBMISSION EXPORTS ====================
+    function evaluateCERLive(commitScore = false) {
+      state.cerPrompt = document.getElementById('cer-prompt-select').value;
+      state.cerClaim = document.getElementById('cer-claim').value;
+      state.cerEvidence = document.getElementById('cer-evidence').value;
+      state.cerReasoning = document.getElementById('cer-reasoning').value;
+
+      const combined = `${state.cerClaim} ${state.cerEvidence} ${state.cerReasoning}`.toLowerCase();
+      const words = combined.trim() ? combined.trim().split(/\s+/).length : 0;
+
+      const bankEl = document.getElementById('cer-vocab-bank');
+      bankEl.innerHTML = '';
+      const matchedTerms = [];
+      CER_VOCAB_TERMS.forEach(term => {
+        const rx = new RegExp(`\\b${term}\\b`, 'i');
+        const used = term.length <= 4 ? rx.test(combined) : combined.includes(term.toLowerCase());
+        if (used) matchedTerms.push(term);
+        const span = document.createElement('span');
+        span.className = `vocab-chip ${used ? 'used' : ''}`;
+        span.textContent = used ? `✓ ${term}` : term;
+        bankEl.appendChild(span);
+      });
+
+      document.getElementById('cer-live-stats').textContent =
+        `${words} words • ${matchedTerms.length} Unit 1 vocabulary terms used`;
+
+      if (commitScore) {
+        const cWords = state.cerClaim.trim() ? state.cerClaim.trim().split(/\s+/).length : 0;
+        const eWords = state.cerEvidence.trim() ? state.cerEvidence.trim().split(/\s+/).length : 0;
+        const rWords = state.cerReasoning.trim() ? state.cerReasoning.trim().split(/\s+/).length : 0;
+
+        let pts = 0;
+        if (cWords >= 7) pts += 4; else if (cWords >= 3) pts += 2;
+        if (eWords >= 18) pts += 6; else if (eWords >= 8) pts += 3;
+        if (rWords >= 12 && matchedTerms.length >= 4) pts += 5;
+        else if (rWords >= 6 && matchedTerms.length >= 2) pts += 3;
+        else if (rWords >= 3 || matchedTerms.length >= 1) pts += 1;
+
+        state.scoreCER = Math.min(15, pts);
+        const fb = document.getElementById('cer-feedback-box');
+        if (state.scoreCER >= 13) {
+          SoundFX.correct();
+          fb.className = 'feedback-callout show ok';
+          fb.textContent = `CER Synthesis Logged (${state.scoreCER}/15 pts)! Strong scientific claim, quantitative evidence, and ${matchedTerms.length} Unit 1 terms (${matchedTerms.join(', ')}). Ready for submission!`;
+        } else {
+          SoundFX.ping();
+          fb.className = 'feedback-callout show err';
+          fb.textContent = `Draft Saved (${state.scoreCER}/15 pts). For full 15/15 credit, write thorough sentences in Claim (7+ words), Evidence (18+ words citing numbers/depths/densities), and Reasoning (12+ words) using at least 4 Unit 1 terms!`;
+        }
+        saveState();
+      }
+      return { words, matchedTerms };
+    }
+
+    function renderFieldGuideModal() {
+      const box = document.getElementById('guide-cards-container');
+      box.innerHTML = '';
+      STATIONS_DATA.forEach(st => {
+        const unlocked = !!(state.scans[st.id] && state.scans[st.id].solved);
+        const div = document.createElement('div');
+        div.className = 'guide-card';
+        div.innerHTML = unlocked
+          ? `<div style="font-family:var(--mono); font-size:11px; color:var(--emerald);">✓ SURVEYED</div>
+             <strong style="font-size:13.5px; color:var(--text-main);">${escapeHTML(st.name)}</strong>
+             <div style="font-size:11.5px; color:var(--teal); margin:2px 0 6px;">${escapeHTML(st.sectorTag)}</div>
+             <p style="margin:0; color:var(--text-secondary);">${escapeHTML(st.guideSummary)}</p>`
+          : `<div style="font-family:var(--mono); font-size:11px; color:var(--text-muted);">UNSURVEYED BENCHMARK</div>
+             <strong style="color:var(--text-muted);">Locked Station (Sector ${st.sector + 1})</strong>
+             <p style="margin:4px 0 0; color:var(--text-muted);">Deploy ROV telemetry sensors at this station during Phase 1 to unlock verified field notes.</p>`;
+        box.appendChild(div);
+      });
+    }
+
+    function formatDuration(sec) {
+      const m = Math.floor(sec / 60);
+      const s = sec % 60;
+      return `${m}m ${String(s).padStart(2, '0')}s`;
+    }
+
+    function escapeHTML(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function buildOfficialReportHTML() {
+      const sc = getScores();
+      const vCode = generateVerificationCode();
+      const nowStr = new Date().toLocaleString();
+      const scannedCount = STATIONS_DATA.filter(s => state.scans[s.id] && state.scans[s.id].solved).length;
+      const labCount = LAB_STATIONS.filter(l => state.lab[l.id] && state.lab[l.id].solved).length;
+      const { matchedTerms } = evaluateCERLive(false);
+
+      const missedItems = STATIONS_DATA.filter(s => state.scans[s.id] && state.scans[s.id].missedFirst);
+      const promptLabel = state.cerPrompt === 'B'
+        ? 'Prompt B (Q12): Climate Warming, Polar Ice Melt, Pycnocline Stratification & Thermohaline Circulation'
+        : 'Prompt A (Q11): Site X (150 m Shelf) vs. Site Y (2,700 m Ridge Vent), Primary Production & ROV/MPA Conservation';
+
+      return `
+        <div class="print-banner">
+          <div>
+            <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:#475569;">Grade 9 Marine Biology • Unit 1 Official Assignment Submission</div>
+            <h2>E/V Nautilus: Global Ocean Systems &amp; Bathymetry Expedition Report</h2>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:22px; font-weight:bold;">${sc.total} / 100 pts</div>
+            <div style="font-size:12px; color:#334155;">${escapeHTML(getRankTitle(sc.total))}</div>
+          </div>
+        </div>
+
+        <div class="print-meta-grid">
+          <div><strong>Student Name:</strong> ${escapeHTML(state.studentName || 'Not Entered')}</div>
+          <div><strong>Class Period / Section:</strong> ${escapeHTML(state.studentPeriod || 'Not Entered')}</div>
+          <div><strong>Date Submitted:</strong> ${escapeHTML(nowStr)}</div>
+          <div><strong>Active Expedition Duration:</strong> ${formatDuration(state.elapsedSec)}</div>
+        </div>
+
+        <table class="print-table">
+          <thead>
+            <tr>
+              <th>Unit 1 Assessment Component</th>
+              <th>Completion Details</th>
+              <th>Points Earned</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Phase 1: Acoustic &amp; Submersible Survey</strong> (Lessons 1–5)</td>
+              <td>${scannedCount} / 12 Oceanographic Stations Surveyed Across 3 Ocean Sectors</td>
+              <td><strong>${sc.p1} / 36</strong></td>
+            </tr>
+            <tr>
+              <td><strong>Phase 2: Sonar Bathymetry &amp; Pycnocline Wet-Lab</strong> (Lessons 4 &amp; 6)</td>
+              <td>${labCount} / 6 Quantitative Sonar &amp; Seawater Density Stations Verified</td>
+              <td><strong>${sc.p2} / 24</strong></td>
+            </tr>
+            <tr>
+              <td><strong>Phase 3: Research Tech Matrix &amp; Crisis Triage</strong> (Q6, Q7, Q9, Q11, Q12)</td>
+              <td>Engineering Matrix (${sc.p3a}/10) + Mining/Upwelling/Climate Triage (${sc.p3b}/15)</td>
+              <td><strong>${sc.p3} / 25</strong></td>
+            </tr>
+            <tr>
+              <td><strong>Phase 4: CER Scientific Synthesis Report</strong> (NGSS HS-ESS2-5 / LS2-7)</td>
+              <td>${matchedTerms.length} Unit 1 Scientific Vocabulary Terms Integrated</td>
+              <td><strong>${sc.p4} / 15</strong></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="print-box">
+          <div style="font-weight:bold; margin-bottom:6px;">Student Original CER Written Response (${escapeHTML(promptLabel)})</div>
+          <p style="margin:4px 0;"><strong>Claim:</strong> ${escapeHTML(state.cerClaim || '(No claim entered)')}</p>
+          <p style="margin:4px 0;"><strong>Evidence:</strong> ${escapeHTML(state.cerEvidence || '(No evidence entered)')}</p>
+          <p style="margin:4px 0;"><strong>Reasoning:</strong> ${escapeHTML(state.cerReasoning || '(No reasoning entered)')}</p>
+          <div style="margin-top:6px; font-size:11px; color:#334155;">
+            <strong>Unit 1 Terms Detected:</strong> ${matchedTerms.length ? escapeHTML(matchedTerms.join(', ')) : 'None detected'}
+          </div>
+        </div>
+
+        <div class="print-box">
+          <div style="font-weight:bold; margin-bottom:4px;">Personalized Unit 1 Summative Review Notes (First-Try Review Items)</div>
+          ${missedItems.length === 0
+            ? '<div>Spotless first-attempt accuracy across surveyed benchmarks! Keep reviewing d = (1,500 × t) / 2, pycnocline density drivers, and ROV vs. AUV capabilities.</div>'
+            : `<ul style="margin:4px 0; padding-left:18px;">${missedItems.map(m => `<li><strong>${escapeHTML(m.name)}:</strong> ${escapeHTML(m.guideSummary)}</li>`).join('')}</ul>`}
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
+          <div>
+            <div style="font-size:11px; color:#475569;">Teacher Cryptographic Verification Code:</div>
+            <div class="print-hash">${escapeHTML(vCode)}</div>
+          </div>
+          <div style="font-size:11px; color:#475569; text-align:right; max-width:260px;">
+            Verify code authenticity anytime using the "Teacher Verify" button inside E/V Nautilus Ocean Systems Command.
+          </div>
+        </div>
+      `;
+    }
+
+    function refreshAllScoreUI() {
+      const sc = getScores();
+      const scannedCount = STATIONS_DATA.filter(s => state.scans[s.id] && state.scans[s.id].solved).length;
+      const labCount = LAB_STATIONS.filter(l => state.lab[l.id] && state.lab[l.id].solved).length;
+
+      document.getElementById('header-total-score').textContent = `${sc.total} / 100`;
+      document.getElementById('guide-count').textContent = String(scannedCount);
+      document.getElementById('header-pilot-badge').textContent = state.studentName
+        ? `${state.studentName}${state.studentPeriod ? ' • ' + state.studentPeriod : ''}`
+        : 'Scientist: Click Student Info';
+
+      const b1 = document.getElementById('pts-badge-1');
+      b1.textContent = `${sc.p1} / 36`;
+      b1.classList.toggle('done', scannedCount === 12);
+
+      const b2 = document.getElementById('pts-badge-2');
+      b2.textContent = `${sc.p2} / 24`;
+      b2.classList.toggle('done', labCount === 6);
+
+      const b3 = document.getElementById('pts-badge-3');
+      b3.textContent = `${sc.p3} / 25`;
+      b3.classList.toggle('done', sc.p3 >= 21);
+
+      const b4 = document.getElementById('pts-badge-4');
+      b4.textContent = `${sc.p4} / 15`;
+      b4.classList.toggle('done', sc.p4 >= 12);
+
+      document.getElementById('score-3a-badge').textContent = `${sc.p3a} / 10 pts`;
+      document.getElementById('score-3b-badge').textContent = `${sc.p3b} / 15 pts`;
+      document.getElementById('score-cer-badge').textContent = `${sc.p4} / 15 pts`;
+
+      document.getElementById('cert-big-score').textContent = `${sc.total} / 100`;
+      document.getElementById('cert-rank-title').textContent = getRankTitle(sc.total);
+      document.getElementById('cert-student-line').textContent = state.studentName
+        ? `${state.studentName} (${state.studentPeriod || 'No Period Listed'})`
+        : 'Missing Student Name — Click "Student Info" Top Right!';
+      document.getElementById('cert-p1').textContent = `${sc.p1} / 36 pts (${scannedCount}/12 stations)`;
+      document.getElementById('cert-p2').textContent = `${sc.p2} / 24 pts (${labCount}/6 labs)`;
+      document.getElementById('cert-p3').textContent = `${sc.p3} / 25 pts`;
+      document.getElementById('cert-p4').textContent = `${sc.p4} / 15 pts`;
+      document.getElementById('cert-time').textContent = formatDuration(state.elapsedSec);
+      document.getElementById('cert-verification-code').textContent = generateVerificationCode();
+
+      const readyEl = document.getElementById('submit-readiness-msg');
+      if (!state.studentName.trim()) {
+        readyEl.style.color = 'hsl(14, 82%, 68%)';
+        readyEl.textContent = '⚠ Enter your Student Name (click "Student Info" in top bar) before printing or downloading your assignment!';
+      } else if (sc.total < 70) {
+        readyEl.style.color = 'hsl(38, 92%, 68%)';
+        readyEl.textContent = 'Tip: Complete remaining stations, sonar calculations, or CER details above to boost your score closer to 100/100!';
+      } else {
+        readyEl.style.color = 'hsl(154, 74%, 66%)';
+        readyEl.textContent = '✓ Assignment ready for turn-in! Print/Save as PDF, download your HTML receipt, or copy your summary + CER for Google Classroom.';
+      }
+    }
+
+    function ensureStudentName() {
+      if (!state.studentName.trim()) {
+        document.getElementById('modal-welcome').classList.add('open');
+        document.getElementById('input-student-name').focus();
+        return false;
+      }
+      return true;
+    }
+
+    // ==================== 13. UI EVENT WIRING & INITIALIZATION ====================
+    function switchPhase(targetId) {
+      state.activePhase = targetId;
+      document.querySelectorAll('.stage-panel').forEach(p => p.classList.toggle('active', p.id === targetId));
+      document.querySelectorAll('.phase-tab').forEach(t => t.classList.toggle('active', t.dataset.target === targetId));
+      if (targetId === 'view-lab') renderLabUI();
+      if (targetId === 'view-crisis') renderCrisisStations();
+      if (targetId === 'view-cer') evaluateCERLive(false);
+      refreshAllScoreUI();
+    }
+
+    document.querySelectorAll('.phase-tab').forEach(tab => {
+      tab.addEventListener('click', () => switchPhase(tab.dataset.target));
+    });
+
+    document.querySelectorAll('.zone-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        state.currentSector = Number(btn.dataset.zone);
+        rov.x = 185; rov.y = 215; rov.vx = 0; rov.vy = 0; rov.targetX = null; rov.autoScanId = null;
+        spawnSectorBuoys();
+        renderSectorSidebar();
+        setComms(SECTORS[state.currentSector].briefing);
+        showDiveToast(`Entered ${SECTORS[state.currentSector].name}`);
+        SoundFX.ping();
+      });
+    });
+
+    document.getElementById('btn-sonar-ping').addEventListener('click', () => {
+      SoundFX.ping();
+      rov.scanPulse = 1.0;
+      const pending = getSectorStations(state.currentSector).find(s => !(state.scans[s.id] && state.scans[s.id].solved));
+      if (pending) {
+        showDiveToast(`Multibeam Return: ${pending.name} bearing ${pending.x > rov.x ? 'East' : 'West'}!`);
+      } else {
+        showDiveToast('All 4 benchmark stations in this ocean sector are verified!');
+      }
+    });
+
+    document.getElementById('btn-scan-nearest').addEventListener('click', tryScanNearest);
+    document.getElementById('btn-close-scan').addEventListener('click', () => {
+      document.getElementById('modal-scan').classList.remove('open');
+    });
+
+    document.getElementById('btn-toggle-ray-overlay').addEventListener('click', () => {
+      state.labShowOverlay = !state.labShowOverlay;
+      updateLabStageGraphic();
+    });
+    document.getElementById('btn-ping-lab').addEventListener('click', () => {
+      SoundFX.ping();
+      labPulseVal = (labPulseVal + 0.28) % 1;
+      updateLabStageGraphic();
+    });
+    document.getElementById('btn-reset-lab-inputs').addEventListener('click', () => {
+      const cur = LAB_STATIONS[state.activeLabIdx];
+      if (state.lab[cur.id] && state.lab[cur.id].solved) return;
+      state.labDrafts[cur.id] = cur.type === 'sonar'
+        ? { depth: '', zone: '' }
+        : (cur.id === 5 ? { l1: '', l2: '', l3: '', l4: '' } : { sample: '', rule: '' });
+      document.getElementById('lab-feedback-box').className = 'feedback-callout';
+      renderLabUI();
+    });
+
+    document.getElementById('btn-verify-matrix').addEventListener('click', verifyMatrix3A);
+
+    ['cer-prompt-select', 'cer-claim', 'cer-evidence', 'cer-reasoning'].forEach(id => {
+      document.getElementById(id).addEventListener('input', () => evaluateCERLive(false));
+    });
+    document.getElementById('btn-score-cer').addEventListener('click', () => evaluateCERLive(true));
+
+    function buildStandaloneReceiptDocument(reportBody, includePrintToolbar) {
+      const toolbarHTML = includePrintToolbar
+        ? `<div class="no-print" style="display:flex;justify-content:space-between;align-items:center;gap:12px;background:#0f172a;color:#f8fafc;padding:12px 16px;border-radius:6px;margin-bottom:16px;font-family:sans-serif;font-size:13px;">
+             <span><strong>Ready to Submit:</strong> Choose <em>"Save as PDF"</em> as the Destination in the print dialog, then attach the PDF to Google Classroom.</span>
+             <button onclick="window.print()" style="background:#14b8a6;color:#042f2e;border:none;padding:8px 14px;border-radius:6px;font-weight:bold;cursor:pointer;white-space:nowrap;">Print / Save as PDF</button>
+           </div>`
+        : '';
+      return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Marine Bio Unit 1 Assignment - ${escapeHTML(state.studentName)}</title>
+        <style>body{font-family:Georgia,serif;max-width:820px;margin:28px auto;padding:24px;color:#0f172a;background:#fff;border:2px solid #0f172a;border-radius:8px;}
+        .print-banner{border-bottom:2px solid #0f172a;padding-bottom:10px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:flex-end;}
+        .print-banner h2{margin:0;font-size:20px;}
+        .print-meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 18px;background:#f8fafc;border:1px solid #cbd5e1;padding:12px;margin-bottom:14px;font-family:sans-serif;font-size:13px;}
+        .print-table{width:100%;border-collapse:collapse;margin-bottom:14px;font-family:sans-serif;font-size:13px;}
+        .print-table th,.print-table td{border:1px solid #94a3b8;padding:8px 10px;text-align:left;}
+        .print-table th{background:#e2e8f0;}
+        .print-box{border:1px solid #94a3b8;padding:12px;margin-bottom:12px;background:#fcfdff;}
+        .print-hash{font-family:monospace;font-size:14px;font-weight:bold;padding:6px 10px;border:1.5px dashed #0f172a;display:inline-block;margin-top:4px;}
+        @media print { .no-print { display:none !important; } body { margin:0; border:none; } }</style>
+        </head><body>${toolbarHTML}${reportBody}</body></html>`;
+    }
+
+    document.getElementById('btn-print-pdf').addEventListener('click', () => {
+      if (!ensureStudentName()) return;
+      evaluateCERLive(false);
+      const reportBody = buildOfficialReportHTML();
+      document.getElementById('print-report-sheet').innerHTML = reportBody;
+      if (window.self !== window.top) {
+        const w = window.open('', '_blank');
+        if (w) {
+          w.document.open();
+          w.document.write(buildStandaloneReceiptDocument(reportBody, true));
+          w.document.close();
+          setTimeout(() => { try { w.focus(); w.print(); } catch (e) {} }, 250);
+          document.getElementById('copy-confirm-msg').textContent = '✓ Opened printable Assignment Sheet in a new tab — choose "Save as PDF"!';
+          return;
+        }
+      }
+      window.print();
+    });
+
+    document.getElementById('btn-download-receipt').addEventListener('click', () => {
+      if (!ensureStudentName()) return;
+      evaluateCERLive(false);
+      const reportBody = buildOfficialReportHTML();
+      const safeName = state.studentName.trim().replace(/[^a-zA-Z0-9_-]/g, '_');
+      const standaloneReceipt = buildStandaloneReceiptDocument(reportBody, false);
+      const blob = new Blob([standaloneReceipt], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `MarineBio_Unit1_Assignment_${safeName}.html`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      document.getElementById('copy-confirm-msg').textContent = `✓ Downloaded MarineBio_Unit1_Assignment_${safeName}.html — attach this receipt or save as PDF!`;
+    });
+
+    function copyTextWithFallback(text) {
+      const fallbackCopy = () => {
+        try {
+          const ta = document.createElement('textarea');
+          ta.value = text;
+          ta.setAttribute('readonly', '');
+          ta.style.position = 'fixed';
+          ta.style.top = '-9999px';
+          document.body.appendChild(ta);
+          ta.select();
+          const ok = document.execCommand('copy');
+          ta.remove();
+          return ok;
+        } catch (e) {
+          return false;
+        }
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        return navigator.clipboard.writeText(text).then(() => true).catch(() => fallbackCopy());
+      }
+      return Promise.resolve(fallbackCopy());
+    }
+
+    document.getElementById('btn-copy-classroom').addEventListener('click', () => {
+      if (!ensureStudentName()) return;
+      evaluateCERLive(false);
+      const sc = getScores();
+      const vCode = generateVerificationCode();
+      const summary = [
+        `=== GRADE 9 MARINE BIOLOGY: UNIT 1 OCEAN SYSTEMS EXPEDITION ===`,
+        `Student: ${state.studentName} | Period: ${state.studentPeriod || 'N/A'}`,
+        `Total Assignment Score: ${sc.total}/100 (${getRankTitle(sc.total)})`,
+        `Breakdown: Sector Survey ${sc.p1}/36 | Sonar & Pycnocline Lab ${sc.p2}/24 | Tech Matrix & Crisis ${sc.p3}/25 | CER Report ${sc.p4}/15`,
+        `Active Time: ${formatDuration(state.elapsedSec)}`,
+        `Verification Code: ${vCode}`,
+        `--- STUDENT CER SYNTHESIS (Prompt ${state.cerPrompt}) ---`,
+        `Claim: ${state.cerClaim || '(None)'}`,
+        `Evidence: ${state.cerEvidence || '(None)'}`,
+        `Reasoning: ${state.cerReasoning || '(None)'}`
+      ].join('\n');
+
+      copyTextWithFallback(summary).then((ok) => {
+        document.getElementById('copy-confirm-msg').textContent = ok
+          ? '✓ Copied complete Unit 1 Grade Summary + CER + Verification Code to clipboard!'
+          : 'Use Print/Save PDF or Download HTML Receipt above.';
+      });
+    });
+
+    document.getElementById('btn-open-guide').addEventListener('click', () => {
+      renderFieldGuideModal();
+      document.getElementById('modal-guide').classList.add('open');
+    });
+    document.getElementById('btn-close-guide').addEventListener('click', () => {
+      document.getElementById('modal-guide').classList.remove('open');
+    });
+
+    document.getElementById('btn-toggle-audio').addEventListener('click', (e) => {
+      SoundFX.enabled = !SoundFX.enabled;
+      e.currentTarget.textContent = `Audio: ${SoundFX.enabled ? 'ON' : 'OFF'}`;
+    });
+
+    document.getElementById('btn-open-profile').addEventListener('click', () => {
+      document.getElementById('input-student-name').value = state.studentName;
+      document.getElementById('input-student-period').value = state.studentPeriod;
+      document.getElementById('input-rov-color').value = state.rovColor;
+      document.getElementById('modal-welcome').classList.add('open');
+    });
+
+    document.getElementById('btn-launch-expedition').addEventListener('click', () => {
+      SoundFX.init();
+      SoundFX.ping();
+      state.studentName = document.getElementById('input-student-name').value.trim();
+      state.studentPeriod = document.getElementById('input-student-period').value.trim();
+      state.rovColor = document.getElementById('input-rov-color').value;
+      document.getElementById('modal-welcome').classList.remove('open');
+      saveState();
+    });
+
+    document.getElementById('btn-reset-all-data').addEventListener('click', () => {
+      try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+      window.location.reload();
+    });
+
+    document.getElementById('btn-open-teacher').addEventListener('click', () => {
+      document.getElementById('modal-teacher').classList.add('open');
+    });
+    document.getElementById('btn-close-teacher').addEventListener('click', () => {
+      document.getElementById('modal-teacher').classList.remove('open');
+    });
+    document.getElementById('btn-run-verify').addEventListener('click', () => {
+      const res = verifyTeacherCode(document.getElementById('input-verify-code').value);
+      const out = document.getElementById('teacher-verify-output');
+      out.className = `feedback-callout show ${res.valid ? 'ok' : 'err'}`;
+      out.textContent = res.msg;
+    });
+
+    // Restore saved progress if available
+    const hadSaved = loadState();
+    if (hadSaved) {
+      document.getElementById('input-student-name').value = state.studentName || '';
+      document.getElementById('input-student-period').value = state.studentPeriod || '';
+      document.getElementById('input-rov-color').value = state.rovColor || '#f5a524';
+      document.getElementById('mat-edna').value = (state.matrixSelections && state.matrixSelections.edna) || '';
+      document.getElementById('mat-rov').value = (state.matrixSelections && state.matrixSelections.rov) || '';
+      document.getElementById('mat-auv').value = (state.matrixSelections && state.matrixSelections.auv) || '';
+      document.getElementById('mat-sitex').value = (state.matrixSelections && state.matrixSelections.sitex) || '';
+      document.getElementById('mat-sitey').value = (state.matrixSelections && state.matrixSelections.sitey) || '';
+      document.getElementById('cer-prompt-select').value = state.cerPrompt || 'A';
+      document.getElementById('cer-claim').value = state.cerClaim || '';
+      document.getElementById('cer-evidence').value = state.cerEvidence || '';
+      document.getElementById('cer-reasoning').value = state.cerReasoning || '';
+      if (getScores().total > 0 || state.studentName) {
+        document.getElementById('saved-progress-note').textContent = `Saved expedition restored (${getScores().total}/100 pts)! Click Resume to continue.`;
+        document.getElementById('btn-launch-expedition').textContent = 'Resume Expedition';
+        document.getElementById('btn-reset-all-data').style.display = 'inline-flex';
+      }
+    }
+
+    renderSectorSidebar();
+    renderLabUI();
+    renderCrisisStations();
+    evaluateCERLive(false);
+    refreshAllScoreUI();
+
+    setInterval(() => {
+      if (!document.hidden && !document.getElementById('modal-welcome').classList.contains('open')) {
+        state.elapsedSec += 1;
+        if (state.elapsedSec % 10 === 0) saveState();
+        else document.getElementById('cert-time').textContent = formatDuration(state.elapsedSec);
+      }
+    }, 1000);
+
+    let lastTime = performance.now();
+    function frame(now) {
+      const dt = Math.min(0.05, Math.max(0.001, (now - lastTime) / 1000));
+      lastTime = now;
+      const t = now / 1000;
+      updatePhysics(dt, t);
+      drawWorld(t);
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  })();
+  </script>
+</body>
+</html>
